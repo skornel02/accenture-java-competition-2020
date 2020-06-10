@@ -1,0 +1,8 @@
+### IntelliJ IDEA ###
+
+.idea/sonarlint
+.idea/libraries
+workspace.xml
+tasks.xml
+*.iws
+*.ipr
