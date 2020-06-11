@@ -32,16 +32,9 @@ public class Worker {
     @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL)
     private final List<WaitListItem> tickets = new ArrayList<>();
 
-    public String getRfid() {
-        return rfid;
-    }
 
     public void setRfid(String rfid) {
         this.rfid = rfid;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public Status getStatus() {
