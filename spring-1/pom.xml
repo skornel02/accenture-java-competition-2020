@@ -89,12 +89,6 @@
 			<version>1.6.4</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.ajc2020</groupId>
-			<artifactId>spring-1</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-			<scope>test</scope>
-		</dependency>
 	</dependencies>
 
 	<build>
