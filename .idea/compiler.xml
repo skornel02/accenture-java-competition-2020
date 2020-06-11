@@ -12,7 +12,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="multi-modules" target="1.8" />
+      <module name="accenture-java-competition-2020" target="1.8" />
       <module name="spring-1" target="1.8" />
       <module name="spring-2" target="1.8" />
     </bytecodeTargetLevel>

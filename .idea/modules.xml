@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/multi-modules.iml" filepath="$PROJECT_DIR$/multi-modules.iml" />
+      <module fileurl="file://$PROJECT_DIR$/accenture-java-competition-2020.iml" filepath="$PROJECT_DIR$/accenture-java-competition-2020.iml" />
       <module fileurl="file://$PROJECT_DIR$/spring-1/spring-1.iml" filepath="$PROJECT_DIR$/spring-1/spring-1.iml" />
       <module fileurl="file://$PROJECT_DIR$/spring-2/spring-2.iml" filepath="$PROJECT_DIR$/spring-2/spring-2.iml" />
     </modules>
