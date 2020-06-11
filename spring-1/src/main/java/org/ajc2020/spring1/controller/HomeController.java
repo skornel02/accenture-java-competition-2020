@@ -3,6 +3,7 @@ package org.ajc2020.spring1.controller;
 import org.ajc2020.spring1.model.Worker;
 import org.ajc2020.spring1.service.WorkerServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -18,8 +19,7 @@ public class HomeController {
 
     @GetMapping("/v3/api-docs")
     public List<Worker> home() {
-        List<Worker> workers = workerService.findAll();
-        return workers;
+        return workerService.findAll();
     }
 
     @GetMapping(path = "/v3/api-docs/kecske")
@@ -39,9 +39,11 @@ public class HomeController {
         Worker worker = workerService.findByRfid(rfid);
         if (worker == null) return "Unknown RFID";
         // TODO: refuse login in case of full house
-        worker.checkin(new Date());
-        workerService.save(worker);
-        return "OK";
+        if (worker.checkin(new Date())) {
+            workerService.save(worker);
+            return "OK";
+        }
+        return "Error";
     }
 
     @GetMapping(path = "/v3/api-docs/checkout")
@@ -49,7 +51,32 @@ public class HomeController {
         Worker worker = workerService.findByRfid(rfid);
         if (worker == null) return "Unknown RFID";
         // TODO: free up space in the office
-        worker.checkout(new Date());
+        if (worker.checkout(new Date())) {
+            workerService.save(worker);
+            return "OK";
+        }
+        return "Error";
+    }
+
+    @RequestMapping(path = "/v3/api-docs/register")
+    public String register(@RequestParam String email, @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") Date date) {
+        Worker worker = workerService.findByEmail(email);
+        if (worker == null) return "Unknown email address!";
+        // TODO: register / cancel events should be bound to user
+        if (!worker.register(date)) {
+            return "Error";
+        }
+        workerService.save(worker);
+        return "OK";
+    }
+    @RequestMapping(path = "/v3/api-docs/cancel")
+    public String cancel(@RequestParam String email, @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") Date date) {
+        Worker worker = workerService.findByEmail(email);
+        if (worker == null) return "Unknown email address!";
+        // TODO: register / cancel events should be bound to user
+        if (!worker.cancel(date)) {
+            return "Error";
+        }
         workerService.save(worker);
         return "OK";
     }

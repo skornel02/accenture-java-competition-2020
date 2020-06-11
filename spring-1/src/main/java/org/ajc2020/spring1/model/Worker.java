@@ -1,9 +1,11 @@
 package org.ajc2020.spring1.model;
 
 import lombok.Data;
+import org.apache.commons.lang3.time.DateUtils;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -24,8 +26,11 @@ public class Worker {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @OneToMany(mappedBy = "worker")
+    @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL)
     private final List<Login> loginHistory = new ArrayList<>();
+
+    @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL)
+    private final List<WaitListItem> tickets = new ArrayList<>();
 
     public String getRfid() {
         return rfid;
@@ -47,17 +52,22 @@ public class Worker {
         this.status = status;
     }
 
-    public void checkin(Date timestamp) {
+    public boolean checkin(Date timestamp) {
+        if (getStatus().equals(Status.InOffice)) return false;
         setStatus(Status.InOffice);
         Login login = openOrCreateLogin();
         login.setArrive(timestamp);
+        return true;
     }
 
-    public void checkout(Date timestamp) {
+    public boolean checkout(Date timestamp) {
+        if (!getStatus().equals(Status.InOffice)) return false;
         setStatus(Status.WorkingFromHome);
         Login login = openLogin();
+        if (login == null) return false;
         login.setLeave(timestamp);
         averageTime = getAverageTimeInOffice();
+        return true;
     }
 
 
@@ -90,5 +100,43 @@ public class Worker {
 
     public double getAverageTime() {
         return averageTime;
+    }
+
+    public static Date truncateDay(Date date) {
+        return DateUtils.truncate(date, 5);
+    }
+
+    public WaitListItem getTicketForDay(Date targetDay) {
+        return tickets.stream()
+                .filter(x->truncateDay(x.getTargetDay()).equals(truncateDay(targetDay)))
+                .findFirst().orElse(null);
+    }
+
+    public boolean register(Date targetDay) {
+        targetDay = truncateDay(targetDay);
+        if (!getStatus().equals(Status.WorkingFromHome)) return false;
+        if (targetDay.before(truncateDay(new Date()))) return false;
+        if (getTicketForDay(targetDay) != null) {
+            return false;
+        }
+        WaitListItem waitListItem = new WaitListItem()
+                .setWorker(this)
+                .setCreationDate(new Date())
+                .setTargetDay(targetDay);
+
+        setStatus(Status.OnList);
+        tickets.add(waitListItem);
+        return true;
+    }
+
+    public boolean cancel(Date targetDay) {
+        WaitListItem ticket = getTicketForDay(targetDay);
+        if (!getStatus().equals(Status.OnList)) return false;
+        if (ticket == null) {
+            return false;
+        }
+        tickets.remove(ticket);
+        ticket.setWorker(null);
+        return true;
     }
 }
