@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 
 @Service
 public class WorkerServiceImpl implements WorkerService {
@@ -20,7 +22,17 @@ public class WorkerServiceImpl implements WorkerService {
         workerRepository.save(worker);
     }
 
+    @Override
+    public List<Worker> findAll() {
+        return workerRepository.findAll();
+    }
+
     public Worker findByEmail(String email) {
         return workerRepository.findWorkerByEmail(email);
+    }
+
+    @Override
+    public Worker findByRfid(String rfid) {
+        return workerRepository.findWorkerByRfid(rfid);
     }
 }

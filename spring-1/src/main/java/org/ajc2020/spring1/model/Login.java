@@ -1,7 +1,7 @@
 package org.ajc2020.spring1.model;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.util.Date;
 
 @Entity
 public class Login {
@@ -15,4 +15,25 @@ public class Login {
     private Date arrive;
 
     private Date leave;
+
+    public Date getArrive() {
+        return arrive;
+    }
+
+    public void setArrive(Date arrive) {
+        this.arrive = arrive;
+    }
+
+    public Date getLeave() {
+        return leave;
+    }
+
+    public void setLeave(Date leave) {
+        this.leave = leave;
+    }
+
+    public Login setWorker(Worker worker) {
+        this.worker = worker;
+        return this;
+    }
 }
