@@ -9,7 +9,6 @@ import java.util.Optional;
 public interface WorkerRepository extends JpaRepository<Worker, String> {
 
     Worker findWorkerByRfid(String rfid);
-    Worker findWorkerByEmail(String email);
-    Optional<Worker> findWorkerByName(String name);
+    Optional<Worker> findWorkerByEmail(String email);
     List<Worker> findAll();
 }

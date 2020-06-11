@@ -11,9 +11,7 @@ public interface WorkerService {
 
     List<Worker> findAll();
 
-    Worker findByEmail(String email);
+    Optional<Worker> findByEmail(String email);
 
     Worker findByRfid(String rfid);
-
-    Optional<Worker> findByUsername(String username);
 }

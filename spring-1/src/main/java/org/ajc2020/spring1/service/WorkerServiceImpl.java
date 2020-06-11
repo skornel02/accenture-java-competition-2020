@@ -1,19 +1,17 @@
 package org.ajc2020.spring1.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.ajc2020.spring1.model.Worker;
 import org.ajc2020.spring1.repository.WorkerRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-
+@Slf4j
 @Service
 public class WorkerServiceImpl implements WorkerService {
-    Logger logger = LoggerFactory.getLogger(WorkerServiceImpl.class);
 
     @Autowired
     private WorkerRepository workerRepository;
@@ -28,7 +26,7 @@ public class WorkerServiceImpl implements WorkerService {
         return workerRepository.findAll();
     }
 
-    public Worker findByEmail(String email) {
+    public Optional<Worker> findByEmail(String email) {
         return workerRepository.findWorkerByEmail(email);
     }
 
@@ -37,8 +35,4 @@ public class WorkerServiceImpl implements WorkerService {
         return workerRepository.findWorkerByRfid(rfid);
     }
 
-    @Override
-    public Optional<Worker> findByUsername(String username) {
-        return workerRepository.findWorkerByName(username);
-    }
 }

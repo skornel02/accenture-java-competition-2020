@@ -10,6 +10,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class HomeController {
@@ -22,14 +23,8 @@ public class HomeController {
         return workerService.findAll();
     }
 
-    @GetMapping(path = "/v3/api-docs/kecske")
-    public String asd() {
-        return "kecske";
-    }
-
-
     @PostMapping(path = "/v3/api-docs/enroll")
-    public RedirectView enroll(@RequestBody Worker worker, HttpServletRequest request) {
+    public RedirectView enroll(@RequestBody Worker worker) {
         workerService.save(worker);
         return new RedirectView("/v3/api-docs");
     }
@@ -58,26 +53,26 @@ public class HomeController {
         return "Error";
     }
 
-    @RequestMapping(path = "/v3/api-docs/register")
+    @GetMapping(path = "/v3/api-docs/register")
     public String register(@RequestParam String email, @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") Date date) {
-        Worker worker = workerService.findByEmail(email);
-        if (worker == null) return "Unknown email address!";
+        Optional<Worker> worker = workerService.findByEmail(email);
+        if (!worker.isPresent()) return "Unknown email address!";
         // TODO: register / cancel events should be bound to user
-        if (!worker.register(date)) {
+        if (!worker.get().register(date)) {
             return "Error";
         }
-        workerService.save(worker);
+        workerService.save(worker.get());
         return "OK";
     }
-    @RequestMapping(path = "/v3/api-docs/cancel")
+    @GetMapping(path = "/v3/api-docs/cancel")
     public String cancel(@RequestParam String email, @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") Date date) {
-        Worker worker = workerService.findByEmail(email);
-        if (worker == null) return "Unknown email address!";
+        Optional<Worker> worker = workerService.findByEmail(email);
+        if (!worker.isPresent()) return "Unknown email address!";
         // TODO: register / cancel events should be bound to user
-        if (!worker.cancel(date)) {
+        if (!worker.get().cancel(date)) {
             return "Error";
         }
-        workerService.save(worker);
+        workerService.save(worker.get());
         return "OK";
     }
 

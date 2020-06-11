@@ -5,7 +5,6 @@ import org.apache.commons.lang3.time.DateUtils;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -31,19 +30,6 @@ public class Worker {
 
     @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL)
     private final List<WaitListItem> tickets = new ArrayList<>();
-
-
-    public void setRfid(String rfid) {
-        this.rfid = rfid;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
 
     public boolean checkin(Date timestamp) {
         if (getStatus().equals(Status.InOffice)) return false;
@@ -89,10 +75,6 @@ public class Worker {
                 .filter(x->x.getLeave() != null)
                 .mapToLong(x->(x.getLeave().getTime() - x.getArrive().getTime()) * 1000)
                 .average().orElse(Double.NaN);
-    }
-
-    public double getAverageTime() {
-        return averageTime;
     }
 
     public static Date truncateDay(Date date) {

@@ -16,8 +16,8 @@ public class AuthManager {
         this.workerService = workerService;
     }
 
-    public Optional<Worker> findValidUser(String username, String password) {
-        Optional<Worker> userOptional = workerService.findByUsername(username);
+    public Optional<Worker> findValidUser(String email, String password) {
+        Optional<Worker> userOptional = workerService.findByEmail(email);
 
         if (userOptional.isPresent()) {
             Worker user = userOptional.get();
