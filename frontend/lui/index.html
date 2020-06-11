@@ -1,0 +1,170 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Login</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="../css/materialize.min.css"  media="screen,projection"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <meta name="google-signin-client_id" content="309708686546-ju8v0lf5ri9nvh50ed3jm3ej36sk7oof.apps.googleusercontent.com">
+    <style>
+      .custom-non-hover-anim{
+        color: rgba(0, 0, 0, 0.6);
+      }
+      .custom-non-hover-anim:hover{
+        color: rgba(0, 0, 0, 1);
+      }
+      body{
+        background-color: #f2f2f2;
+      }
+      #loader{
+        padding: 0px;
+        display: none;
+      }
+      .progress{
+        margin: 0;
+      }
+      .tabs .indicator{
+        background-color: #536dfe;
+      }
+      .tabs .tab a.active, .tabs .tab a:hover, .tabs .tab a:focus, .tabs .tab a {
+        background-color:#FFF !important;
+        color:#3d5afe;
+      }
+      .tabs .indicator {
+        background-color:#536dfe;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="row valign-wrapper">
+      <div class="col s12 m10 offset-m1 l8 offset-l2 xl6 offset-xl3">
+        <div class="card">
+          <div class="card-content">
+            <center><h4>Please log in</h4></center>
+          </div>
+          <div class="card-tabs">
+            <ul class="tabs tabs-fixed-width">
+              <li class="tab"><a class="active" href="#unamepwd">Username & Password</a></li>
+              <li class="tab"><a href="#oauth">OAuth</a></li>
+            </ul>
+          </div>
+          <div class="card-content grey lighten-4">
+            <div id="unamepwd">
+              <form id="uplogin">
+                <div class="row">
+                  <div class="input-field col s12">
+                    <i class="material-icons prefix">account_circle</i>
+                    <input id="username" type="text" class="validate" minlength="1">
+                    <label for="username">Username</label>
+                    <span class="helper-text" data-error="Please provide a valid username" data-success="Ok">Please enter your username</span>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="input-field col s12">
+                    <i class="material-icons prefix">lock</i>
+                    <input id="password" type="password" class="validate" minlength="1" autocomplete="new-password">
+                    <label for="password">Password</label>
+                    <span class="helper-text" data-error="Please provide a valid password" data-success="Ok">Please enter your password</span>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col s12">
+                    <center>
+                      <button class="btn waves-effect waves-light" type="submit" name="action">Log in
+                        <i class="material-icons right">send</i>
+                      </button>
+                    </center>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="input-field col s12">
+                    <center>
+                      <a id="oauthinstead" class="waves-effect waves-teal btn-flat custom-non-hover-anim">Log in with OAuth instead</a>
+                    </center>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div id="oauth">
+              <div class="row">
+                <div class="input-field col s12">
+                  <div class="g-signin2" data-onsuccess="onOAuth"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="loader" class="card-content grey lighten-4">
+            <div class="progress">
+              <div class="indeterminate"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="../js/materialize.min.js"></script>
+    <script>
+      $(document).ready(function(){
+        $('.tabs').tabs();
+        $('#uplogin').on('submit', function(e){
+          e.preventDefault();
+          var username = $('#username').val().trim();
+          var password = $('#password').val().trim();
+          
+          $('#loader').show();
+          var request = new XMLHttpRequest();
+          //TODO: A / jel nem kell a végére, ha nem /login/index.php :)
+          request.onreadystatechange = function(){
+            if(this.readyState == 4){
+              if(this.status == 200){
+                var resp = JSON.parse(request.responseText);
+                console.log(resp);
+                if(!resp.hasOwnProperty('success')){
+                  M.toast({html: '<i class=\'material-icons\'>error</i>&nbsp;Protocol error!', classes: 'rounded'});
+                  return;
+                }
+                if(resp.success){
+                  M.toast({html: 'Login successful!', classes: 'rounded'});
+                  window.location.href = 'http://localhost/ui';
+                }else{
+                  M.toast({html: 'Login invalid!', classes: 'rounded'});
+                }
+              }else if(this.status != 0){
+                M.toast({html: '<i class=\'material-icons\'>cancel</i>&nbsp;An error occurred!', classes: 'rounded'});
+              }
+            }
+          }
+          request.open('POST', '/login/', true);
+          request.timeout = 5000;
+          request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+          request.ontimeout = function(){
+            M.toast({html: '<i class=\'material-icons\'>timer</i>&nbsp;Timeout!', classes: 'rounded'});
+          }
+          request.onerror = function(){
+            M.toast({html: '<i class=\'material-icons\'>cancel</i>&nbsp;An error occurred!', classes: 'rounded'});
+          }
+          request.onloadend = function(){
+            $('#loader').hide();
+          }
+          request.send('username=' + encodeURIComponent(username) + 'password=' + encodeURIComponent(password));
+        });
+        $('#oauthinstead').on('click', function(e){
+          $('.tabs').tabs('select', 'oauth');
+        });
+      });
+      function onOAuth(gTypeUser){
+        //TODO: a tokent elküldeni a backendnek, illetve a bejelentkezési adatokat is
+        //token to backend
+        var user = gTypeUser.getBasicProfile();
+        var id_token = gTypeUser.getAuthResponse().id_token;
+        console.log('ID: ' + user.getId());
+        console.log('Name: ' + user.getName());
+        console.log('Image URL: ' + user.getImageUrl());
+        console.log('Email: ' + user.getEmail());
+        console.log('ID Token (to send to backend): ' + id_token);
+      }
+    </script>
+  </body>
+</html>
