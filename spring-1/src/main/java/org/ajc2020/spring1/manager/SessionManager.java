@@ -15,4 +15,8 @@ public class SessionManager {
         return (Worker) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
+    public Object getSession () {
+        return SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
+
 }
