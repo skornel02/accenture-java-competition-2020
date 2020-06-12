@@ -1,19 +1,16 @@
 package org.ajc2020.spring1.controller;
 
-import org.ajc2020.spring1.manager.SessionManager;
+import lombok.extern.slf4j.Slf4j;
 import org.ajc2020.spring1.model.Worker;
 import org.ajc2020.spring1.service.WorkerServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
+@Slf4j
 @RestController
 public class HomeController {
 
@@ -21,7 +18,7 @@ public class HomeController {
     private WorkerServiceImpl workerService;
 
     @GetMapping("/v3/api-docs")
-    public List<Worker> home() {
+    public List<Worker> home(Locale locale) {
         return workerService.findAll();
     }
 
