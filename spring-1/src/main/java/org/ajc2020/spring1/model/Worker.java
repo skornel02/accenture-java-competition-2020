@@ -53,14 +53,15 @@ public class Worker {
     private Login openOrCreateLogin() {
         return loginHistory
                 .stream()
-                .filter(x->x.getLeave() == null)
+                .filter(x -> x.getLeave() == null)
                 .findFirst()
                 .orElse(addLogin(new Login().setWorker(this)));
     }
+
     private Login openLogin() {
         return loginHistory
                 .stream()
-                .filter(x->x.getLeave() == null)
+                .filter(x -> x.getLeave() == null)
                 .findFirst()
                 .orElse(null);
     }
@@ -72,8 +73,8 @@ public class Worker {
 
     public double getAverageTimeInOffice() {
         return loginHistory.stream()
-                .filter(x->x.getLeave() != null)
-                .mapToLong(x->(x.getLeave().getTime() - x.getArrive().getTime()) * 1000)
+                .filter(x -> x.getLeave() != null)
+                .mapToLong(x -> (x.getLeave().getTime() - x.getArrive().getTime()) * 1000)
                 .average().orElse(Double.NaN);
     }
 
@@ -83,7 +84,7 @@ public class Worker {
 
     public WaitListItem getTicketForDay(Date targetDay) {
         return tickets.stream()
-                .filter(x->truncateDay(x.getTargetDay()).equals(truncateDay(targetDay)))
+                .filter(x -> truncateDay(x.getTargetDay()).equals(truncateDay(targetDay)))
                 .findFirst().orElse(null);
     }
 
