@@ -1,4 +1,4 @@
-package org.ajc2020.spring1.controller;
+package org.ajc2020.spring2.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
