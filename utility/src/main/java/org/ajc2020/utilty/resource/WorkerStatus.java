@@ -1,6 +1,6 @@
 package org.ajc2020.utilty.resource;
 
-public enum Status {
+public enum WorkerStatus {
     WorkingFromHome,
     OnList,
     InOffice

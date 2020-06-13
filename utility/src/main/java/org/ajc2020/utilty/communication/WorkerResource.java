@@ -2,7 +2,7 @@ package org.ajc2020.utilty.communication;
 
 import lombok.Builder;
 import lombok.Value;
-import org.ajc2020.utilty.resource.Status;
+import org.ajc2020.utilty.resource.WorkerStatus;
 
 @Value
 @Builder
@@ -13,6 +13,6 @@ public class WorkerResource {
     String email;
     String rfId;
     long averageTime;
-    Status status;
+    WorkerStatus status;
 
 }

@@ -1,8 +1,9 @@
 package org.ajc2020.spring1.model;
 
 import lombok.Data;
-import org.ajc2020.utilty.resource.Status;
+import org.ajc2020.utilty.resource.WorkerStatus;
 import org.apache.commons.lang3.time.DateUtils;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -14,6 +15,11 @@ import java.util.List;
 public class Worker {
 
     @Id
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid")
+    private String uuid;
+
+    @Column(unique = true)
     private String email;
 
     private String password;
@@ -25,7 +31,7 @@ public class Worker {
     private double averageTime;
 
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private WorkerStatus status;
 
     @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL)
     private final List<Login> loginHistory = new ArrayList<>();
@@ -34,16 +40,16 @@ public class Worker {
     private final List<WaitListItem> tickets = new ArrayList<>();
 
     public boolean checkin(Date timestamp) {
-        if (getStatus().equals(Status.InOffice)) return false;
-        setStatus(Status.InOffice);
+        if (getStatus().equals(WorkerStatus.InOffice)) return false;
+        setStatus(WorkerStatus.InOffice);
         Login login = openOrCreateLogin();
         login.setArrive(timestamp);
         return true;
     }
 
     public boolean checkout(Date timestamp) {
-        if (!getStatus().equals(Status.InOffice)) return false;
-        setStatus(Status.WorkingFromHome);
+        if (!getStatus().equals(WorkerStatus.InOffice)) return false;
+        setStatus(WorkerStatus.WorkingFromHome);
         Login login = openLogin();
         if (login == null) return false;
         login.setLeave(timestamp);
@@ -92,7 +98,7 @@ public class Worker {
 
     public boolean register(Date targetDay) {
         targetDay = truncateDay(targetDay);
-        if (!getStatus().equals(Status.WorkingFromHome)) return false;
+        if (!getStatus().equals(WorkerStatus.WorkingFromHome)) return false;
         if (targetDay.before(truncateDay(new Date()))) return false;
         if (getTicketForDay(targetDay) != null) {
             return false;
@@ -102,14 +108,14 @@ public class Worker {
                 .setCreationDate(new Date())
                 .setTargetDay(targetDay);
 
-        setStatus(Status.OnList);
+        setStatus(WorkerStatus.OnList);
         tickets.add(waitListItem);
         return true;
     }
 
     public boolean cancel(Date targetDay) {
         WaitListItem ticket = getTicketForDay(targetDay);
-        if (!getStatus().equals(Status.OnList)) return false;
+        if (!getStatus().equals(WorkerStatus.OnList)) return false;
         if (ticket == null) {
             return false;
         }

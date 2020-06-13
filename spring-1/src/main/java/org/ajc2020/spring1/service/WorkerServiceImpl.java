@@ -35,4 +35,9 @@ public class WorkerServiceImpl implements WorkerService {
         return workerRepository.findWorkerByRfid(rfid);
     }
 
+    @Override
+    public Optional<Worker> findByUuid(String uuid) {
+        return workerRepository.findWorkerByUuid(uuid);
+    }
+
 }
