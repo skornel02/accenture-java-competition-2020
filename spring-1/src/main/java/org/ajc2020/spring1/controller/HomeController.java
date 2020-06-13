@@ -1,6 +1,7 @@
 package org.ajc2020.spring1.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.ajc2020.spring1.exceptions.UserUpdateFailedException;
 import org.ajc2020.spring1.model.Worker;
 import org.ajc2020.spring1.service.WorkerServiceImpl;
 import org.ajc2020.utilty.communication.WorkerCreationRequest;
@@ -9,6 +10,8 @@ import org.ajc2020.spring1.exceptions.UserCreationFailedException;
 import org.ajc2020.utilty.resource.RegistrationStatus;
 import org.ajc2020.utilty.resource.RfIdStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -38,7 +41,32 @@ public class HomeController {
                         () -> new UserCreationFailedException(HttpStatus.NOT_ACCEPTABLE, resourceBundle.getString("error.user.not.created")));
     }
 
-    @PostMapping(path = "/users/enroll")
+    @PostMapping("/users/{uuid}/update")
+    public RedirectView updateWorker(@PathVariable String uuid, Locale locale, @RequestBody WorkerCreationRequest workerUpdateRequest) throws UserUpdateFailedException {
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
+        Optional<Worker> worker = workerService.findByUuid(uuid);
+        if (!worker.isPresent()) {
+            throw new UserUpdateFailedException(HttpStatus.NOT_FOUND, resourceBundle.getString("error.user.not.found"));
+        }
+        try {
+            workerService.save(worker.get().updateWith(workerUpdateRequest));
+        } catch (DataIntegrityViolationException e) {
+            throw new UserUpdateFailedException(HttpStatus.NOT_ACCEPTABLE, resourceBundle.getString("error.user.unable.to.update"));
+        }
+        return new RedirectView("/users/" + uuid);
+    }
+
+    @DeleteMapping("/users/{uuid}")
+    public void deleteWorker(@PathVariable String uuid, Locale locale) {
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
+        try {
+            workerService.deleteByUuid(uuid);
+        } catch (EmptyResultDataAccessException e) {
+            throw new UserUpdateFailedException(HttpStatus.NOT_FOUND, resourceBundle.getString("error.user.not.found"));
+        }
+    }
+
+    @PostMapping(path = "/users")
     public RedirectView enroll(@RequestBody WorkerCreationRequest workerCreationRequest) {
         Worker worker = new Worker(workerCreationRequest);
         workerService.save(worker);
@@ -92,6 +120,5 @@ public class HomeController {
         workerService.save(worker.get());
         return new RegistrationStatus(RegistrationStatus.Status.OK);
     }
-
 
 }
