@@ -8,6 +8,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="spring-2" />
+        <module name="utility" />
         <module name="spring-1" />
       </profile>
     </annotationProcessing>
@@ -15,6 +16,7 @@
       <module name="accenture-java-competition-2020" target="1.8" />
       <module name="spring-1" target="1.8" />
       <module name="spring-2" target="1.8" />
+      <module name="utility" target="1.8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">

@@ -1,6 +1,7 @@
 package org.ajc2020.spring1.model;
 
 import lombok.Data;
+import org.ajc2020.utilty.resource.Status;
 import org.apache.commons.lang3.time.DateUtils;
 
 import javax.persistence.*;
@@ -11,6 +12,7 @@ import java.util.List;
 @Entity
 @Data
 public class Worker {
+
     @Id
     private String email;
 
