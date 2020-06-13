@@ -1,6 +1,6 @@
 package org.ajc2020.spring1;
 
-import org.ajc2020.utilty.resource.Status;
+import org.ajc2020.utilty.resource.WorkerStatus;
 import org.ajc2020.spring1.model.Worker;
 import org.junit.Assert;
 import org.junit.Test;
@@ -15,7 +15,7 @@ public class TestLoginTimes {
     public void userLoginChangesAverageTime() throws Exception {
 
         Worker joseph = new Worker();
-        joseph.setStatus(Status.WorkingFromHome);
+        joseph.setStatus(WorkerStatus.WorkingFromHome);
 
         joseph.checkin(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse("01/01/2020 15:00:00"));
         joseph.checkout(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse("01/01/2020 15:15:00"));
