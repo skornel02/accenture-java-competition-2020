@@ -1,6 +1,8 @@
 package org.ajc2020.spring1.model;
 
 import lombok.Data;
+import org.ajc2020.utilty.communication.WorkerCreationRequest;
+import org.ajc2020.utilty.communication.WorkerResource;
 import org.ajc2020.utilty.resource.WorkerStatus;
 import org.apache.commons.lang3.time.DateUtils;
 import org.hibernate.annotations.GenericGenerator;
@@ -38,6 +40,18 @@ public class Worker {
 
     @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL)
     private final List<WaitListItem> tickets = new ArrayList<>();
+
+    public Worker() {
+    }
+
+    public Worker(WorkerCreationRequest workerCreationRequest) {
+        setEmail(workerCreationRequest.getEmail());
+        setName(workerCreationRequest.getName());
+        setPassword(workerCreationRequest.getPassword());
+        setRfid(workerCreationRequest.getRfId());
+        setStatus(WorkerStatus.WorkingFromHome);
+
+    }
 
     public boolean checkin(Date timestamp) {
         if (getStatus().equals(WorkerStatus.InOffice)) return false;
@@ -122,5 +136,16 @@ public class Worker {
         tickets.remove(ticket);
         ticket.setWorker(null);
         return true;
+    }
+
+    public WorkerResource toResource() {
+        return WorkerResource.builder()
+                .status(getStatus())
+                .rfId(getRfid())
+                .name(getName())
+                .email(getEmail())
+                .averageTime(getAverageTime())
+                .id(getUuid())
+                .build();
     }
 }

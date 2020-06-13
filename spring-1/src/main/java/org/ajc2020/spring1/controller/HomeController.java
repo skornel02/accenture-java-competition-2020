@@ -3,10 +3,14 @@ package org.ajc2020.spring1.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.ajc2020.spring1.model.Worker;
 import org.ajc2020.spring1.service.WorkerServiceImpl;
+import org.ajc2020.utilty.communication.WorkerCreationRequest;
+import org.ajc2020.utilty.communication.WorkerResource;
+import org.ajc2020.spring1.exceptions.UserCreationFailedException;
 import org.ajc2020.utilty.resource.RegistrationStatus;
 import org.ajc2020.utilty.resource.RfIdStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -25,12 +29,18 @@ public class HomeController {
     }
 
     @GetMapping("/users/{uuid}")
-    public Worker worker(@PathVariable String uuid) {
-        return workerService.findByUuid(uuid).orElse(null);
+    public WorkerResource worker(@PathVariable String uuid, Locale locale) throws UserCreationFailedException {
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
+        return workerService
+                .findByUuid(uuid)
+                .map(Worker::toResource)
+                .orElseThrow(
+                        () -> new UserCreationFailedException(HttpStatus.NOT_ACCEPTABLE, resourceBundle.getString("error.user.not.created")));
     }
 
     @PostMapping(path = "/users/enroll")
-    public RedirectView enroll(@RequestBody Worker worker) {
+    public RedirectView enroll(@RequestBody WorkerCreationRequest workerCreationRequest) {
+        Worker worker = new Worker(workerCreationRequest);
         workerService.save(worker);
         return new RedirectView("/users/" + worker.getUuid());
     }

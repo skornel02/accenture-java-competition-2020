@@ -8,11 +8,11 @@ import org.ajc2020.utilty.resource.WorkerStatus;
 @Builder
 public class WorkerResource {
 
-    long id;
+    String id;
     String name;
     String email;
     String rfId;
-    long averageTime;
+    double averageTime;
     WorkerStatus status;
 
 }
