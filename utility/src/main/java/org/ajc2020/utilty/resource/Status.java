@@ -1,4 +1,4 @@
-package org.ajc2020.spring1.model;
+package org.ajc2020.utilty.resource;
 
 public enum Status {
     WorkingFromHome,

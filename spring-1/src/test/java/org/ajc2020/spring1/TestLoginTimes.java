@@ -1,6 +1,6 @@
 package org.ajc2020.spring1;
 
-import org.ajc2020.spring1.model.Status;
+import org.ajc2020.utilty.resource.Status;
 import org.ajc2020.spring1.model.Worker;
 import org.junit.Assert;
 import org.junit.Test;

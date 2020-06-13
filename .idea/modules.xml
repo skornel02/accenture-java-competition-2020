@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/accenture-java-competition-2020.iml" filepath="$PROJECT_DIR$/accenture-java-competition-2020.iml" />
       <module fileurl="file://$PROJECT_DIR$/spring-1/spring-1.iml" filepath="$PROJECT_DIR$/spring-1/spring-1.iml" />
       <module fileurl="file://$PROJECT_DIR$/spring-2/spring-2.iml" filepath="$PROJECT_DIR$/spring-2/spring-2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/utility/utility.iml" filepath="$PROJECT_DIR$/utility/utility.iml" />
     </modules>
   </component>
 </project>
