@@ -4,8 +4,8 @@
       <settings>
         <option name="imageTag" value="spring-1" />
         <option name="buildCliOptions" value="" />
-        <option name="command" value="" />
-        <option name="containerName" value="" />
+        <option name="command" value="--hostname backend.kibe" />
+        <option name="containerName" value="backend.kibe" />
         <option name="entrypoint" value="" />
         <option name="portBindings">
           <list>

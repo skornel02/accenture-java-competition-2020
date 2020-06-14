@@ -1,6 +1,8 @@
 package org.ajc2020.utilty.resource;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 public enum PermissionLevel {
@@ -11,7 +13,12 @@ public enum PermissionLevel {
     DEVICE("device"),
     INVALID("");
 
+
     private final String authority;
+
+    PermissionLevel() {
+        this.authority = "";
+    }
 
     PermissionLevel(String authority) {
         this.authority = authority;

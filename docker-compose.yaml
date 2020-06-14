@@ -1,0 +1,25 @@
+version: '3'
+services:
+  backend.kibe:
+    container_name: backend.kibe
+    build:
+      context: spring-1
+      dockerfile: Dockerfile
+    networks:
+      - kibe-network
+    ports:
+      - 8080:8080
+  frontend.kibe:
+    container_name: frontend.kibe
+    build:
+      context: spring-2
+      dockerfile: Dockerfile
+    depends_on:
+      - backend.kibe
+    networks:
+      - kibe-network
+    ports:
+    - 8081:8080
+
+networks:
+  kibe-network:
