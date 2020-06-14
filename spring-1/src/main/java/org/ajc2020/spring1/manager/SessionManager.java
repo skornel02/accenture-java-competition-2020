@@ -1,7 +1,7 @@
 package org.ajc2020.spring1.manager;
 
 import org.ajc2020.spring1.model.Admin;
-import org.ajc2020.spring1.model.PermissionLevel;
+import org.ajc2020.utilty.resource.PermissionLevel;
 import org.ajc2020.spring1.model.Worker;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;

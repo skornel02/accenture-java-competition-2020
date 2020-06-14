@@ -5,7 +5,7 @@ import lombok.Value;
 
 @Value
 @Builder
-public class AdminResource {
+public class AdminResource implements UserType {
     String uuid;
     String name;
     String email;

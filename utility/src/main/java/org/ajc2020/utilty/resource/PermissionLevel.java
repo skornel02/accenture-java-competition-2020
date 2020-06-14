@@ -1,4 +1,4 @@
-package org.ajc2020.spring1.model;
+package org.ajc2020.utilty.resource;
 
 import lombok.Getter;
 
@@ -7,7 +7,7 @@ public enum PermissionLevel {
 
     WORKER("worker"),
     ADMIN("admin"),
-    SUPER_ADMIN("superAdmin"),
+    SUPER_ADMIN("super-admin"),
     DEVICE("device"),
     INVALID("");
 

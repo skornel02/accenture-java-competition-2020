@@ -3,7 +3,7 @@ package org.ajc2020.spring1.controller;
 import org.ajc2020.spring1.exceptions.UserUpdateFailedException;
 import org.ajc2020.spring1.manager.SessionManager;
 import org.ajc2020.spring1.model.Admin;
-import org.ajc2020.spring1.model.PermissionLevel;
+import org.ajc2020.utilty.resource.PermissionLevel;
 import org.ajc2020.spring1.service.AdminService;
 import org.ajc2020.utilty.communication.AdminCreationRequest;
 import org.ajc2020.utilty.communication.AdminResource;
