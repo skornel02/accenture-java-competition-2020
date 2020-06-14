@@ -8,7 +8,7 @@ import java.util.Date;
 
 @Data
 @Entity
-public class WaitListItem {
+public class Ticket {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
