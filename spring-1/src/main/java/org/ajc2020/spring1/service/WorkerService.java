@@ -18,4 +18,6 @@ public interface WorkerService {
     Optional<Worker> findByUuid(String uuid);
 
     void deleteByUuid(String uuid);
+
+    long countUsersInOffice();
 }

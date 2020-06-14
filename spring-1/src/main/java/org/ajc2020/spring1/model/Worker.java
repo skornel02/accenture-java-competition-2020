@@ -11,6 +11,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Data
@@ -32,14 +33,11 @@ public class Worker implements User {
 
     private double averageTime;
 
-    @Enumerated(EnumType.STRING)
-    private WorkerStatus status;
+    @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL)
+    private final List<OfficeHours> officeHoursHistory = new ArrayList<>();
 
     @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL)
-    private final List<Login> loginHistory = new ArrayList<>();
-
-    @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL)
-    private final List<WaitListItem> tickets = new ArrayList<>();
+    private final List<Ticket> tickets = new ArrayList<>();
 
     public Worker() {
     }
@@ -49,52 +47,69 @@ public class Worker implements User {
         setName(workerCreationRequest.getName());
         setPassword(workerCreationRequest.getPassword());
         setRfid(workerCreationRequest.getRfId());
-        setStatus(WorkerStatus.WorkingFromHome);
-
     }
 
     public boolean checkin(Date timestamp) {
         if (getStatus().equals(WorkerStatus.InOffice)) return false;
-        setStatus(WorkerStatus.InOffice);
-        Login login = openOrCreateLogin();
-        login.setArrive(timestamp);
+        Ticket ticket = getTicketForDay(today());
+        if (ticket != null) {
+            tickets.remove(ticket);
+            ticket.setWorker(null);
+        }
+        OfficeHours officeHours = openOrCreateLogin();
+        officeHours.setArrive(timestamp);
         return true;
     }
 
     public boolean checkout(Date timestamp) {
         if (!getStatus().equals(WorkerStatus.InOffice)) return false;
-        setStatus(WorkerStatus.WorkingFromHome);
-        Login login = openLogin();
-        if (login == null) return false;
-        login.setLeave(timestamp);
+        Optional<OfficeHours> login = openLogin();
+        if (!login.isPresent()) return false;
+        login.get().setLeave(timestamp);
         averageTime = getAverageTimeInOffice();
         return true;
     }
 
+    public Date today() {
+        return truncateDay(new Date());
+    }
 
-    private Login openOrCreateLogin() {
-        return loginHistory
+    public boolean hasTicketForToday() {
+        return getTicketForDay(today()) != null;
+    }
+
+    private boolean isLoggedIn() {
+        return openLogin().map(OfficeHours::isLoggedIn).orElse(false);
+    }
+
+    public WorkerStatus getStatus() {
+        if (hasTicketForToday()) return WorkerStatus.OnList;
+        if (isLoggedIn()) return WorkerStatus.InOffice;
+        return WorkerStatus.WorkingFromHome;
+    }
+
+    private OfficeHours openOrCreateLogin() {
+        return officeHoursHistory
                 .stream()
                 .filter(x -> x.getLeave() == null)
                 .findFirst()
-                .orElse(addLogin(new Login().setWorker(this)));
+                .orElse(addLogin(new OfficeHours().setWorker(this)));
     }
 
-    private Login openLogin() {
-        return loginHistory
+    private Optional<OfficeHours> openLogin() {
+        return officeHoursHistory
                 .stream()
                 .filter(x -> x.getLeave() == null)
-                .findFirst()
-                .orElse(null);
+                .findFirst();
     }
 
-    private Login addLogin(Login login) {
-        loginHistory.add(login);
-        return login;
+    private OfficeHours addLogin(OfficeHours officeHours) {
+        officeHoursHistory.add(officeHours);
+        return officeHours;
     }
 
     public double getAverageTimeInOffice() {
-        return loginHistory.stream()
+        return officeHoursHistory.stream()
                 .filter(x -> x.getLeave() != null)
                 .mapToLong(x -> (x.getLeave().getTime() - x.getArrive().getTime()) * 1000)
                 .average().orElse(Double.NaN);
@@ -104,7 +119,7 @@ public class Worker implements User {
         return DateUtils.truncate(date, 5);
     }
 
-    public WaitListItem getTicketForDay(Date targetDay) {
+    public Ticket getTicketForDay(Date targetDay) {
         return tickets.stream()
                 .filter(x -> truncateDay(x.getTargetDay()).equals(truncateDay(targetDay)))
                 .findFirst().orElse(null);
@@ -112,24 +127,21 @@ public class Worker implements User {
 
     public boolean register(Date targetDay) {
         targetDay = truncateDay(targetDay);
-        if (!getStatus().equals(WorkerStatus.WorkingFromHome)) return false;
-        if (targetDay.before(truncateDay(new Date()))) return false;
+        if (targetDay.before(truncateDay(today()))) return false;
         if (getTicketForDay(targetDay) != null) {
             return false;
         }
-        WaitListItem waitListItem = new WaitListItem()
+        Ticket ticket = new Ticket()
                 .setWorker(this)
-                .setCreationDate(new Date())
+                .setCreationDate(today())
                 .setTargetDay(targetDay);
 
-        setStatus(WorkerStatus.OnList);
-        tickets.add(waitListItem);
+        tickets.add(ticket);
         return true;
     }
 
     public boolean cancel(Date targetDay) {
-        WaitListItem ticket = getTicketForDay(targetDay);
-        if (!getStatus().equals(WorkerStatus.OnList)) return false;
+        Ticket ticket = getTicketForDay(targetDay);
         if (ticket == null) {
             return false;
         }

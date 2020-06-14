@@ -10,7 +10,7 @@ import java.util.Date;
 
 @Data
 @Entity
-public class Login {
+public class OfficeHours {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,5 +23,9 @@ public class Login {
     private Date arrive;
 
     private Date leave;
+
+    public boolean isLoggedIn() {
+        return getLeave() == null;
+    }
 
 }
