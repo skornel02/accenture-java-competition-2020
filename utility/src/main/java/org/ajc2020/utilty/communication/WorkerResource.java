@@ -1,18 +1,21 @@
 package org.ajc2020.utilty.communication;
 
 import lombok.Builder;
-import lombok.Value;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.ajc2020.utilty.resource.WorkerStatus;
+import org.springframework.hateoas.RepresentationModel;
 
-@Value
+@Data
+@EqualsAndHashCode(callSuper = true)
 @Builder
-public class WorkerResource implements UserType{
+public class WorkerResource extends RepresentationModel<WorkerResource> {
 
-    String id;
-    String name;
-    String email;
-    String rfId;
-    double averageTime;
-    WorkerStatus status;
+    private String id;
+    private String name;
+    private String email;
+    private String rfId;
+    private double averageTime;
+    private WorkerStatus status;
 
 }
