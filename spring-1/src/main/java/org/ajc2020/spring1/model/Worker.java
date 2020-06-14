@@ -2,6 +2,7 @@ package org.ajc2020.spring1.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
+import org.ajc2020.utilty.resource.PermissionLevel;
 import org.ajc2020.utilty.communication.WorkerCreationRequest;
 import org.ajc2020.utilty.communication.WorkerResource;
 import org.ajc2020.utilty.resource.WorkerStatus;

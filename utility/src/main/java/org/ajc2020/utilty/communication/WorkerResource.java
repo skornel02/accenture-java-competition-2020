@@ -6,7 +6,7 @@ import org.ajc2020.utilty.resource.WorkerStatus;
 
 @Value
 @Builder
-public class WorkerResource {
+public class WorkerResource implements UserType{
 
     String id;
     String name;
