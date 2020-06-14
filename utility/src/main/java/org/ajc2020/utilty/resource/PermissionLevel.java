@@ -18,12 +18,10 @@ public enum PermissionLevel {
     }
 
     public boolean atLeast(PermissionLevel level) {
-        if (level == DEVICE)
-            return this == DEVICE;
-
         switch (this) {
             case SUPER_ADMIN:
                 return true;
+            case DEVICE:
             case ADMIN:
                 return level != SUPER_ADMIN;
             case WORKER:
