@@ -14,11 +14,15 @@ import java.util.stream.Collectors;
 public class SessionManager {
 
     public boolean isSessionWorker() {
-        return SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof Worker;
+        return getSession() instanceof Worker;
     }
 
     public boolean isSessionAdmin() {
-        return SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof Admin;
+        return getSession() instanceof Admin;
+    }
+
+    public boolean isSessionDevice() {
+        return getPermission() == PermissionLevel.DEVICE && getSession() == null;
     }
 
     public Worker getWorker() {
@@ -44,6 +48,8 @@ public class SessionManager {
             return PermissionLevel.ADMIN;
         if (authorities.stream().anyMatch(PermissionLevel.WORKER.getAuthority()::equals))
             return PermissionLevel.WORKER;
+        if (authorities.stream().anyMatch(PermissionLevel.DEVICE.getAuthority()::equals))
+            return PermissionLevel.DEVICE;
         return PermissionLevel.INVALID;
     }
 

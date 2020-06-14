@@ -8,6 +8,7 @@ public enum PermissionLevel {
     WORKER("worker"),
     ADMIN("admin"),
     SUPER_ADMIN("superAdmin"),
+    DEVICE("device"),
     INVALID("");
 
     private final String authority;
@@ -17,6 +18,9 @@ public enum PermissionLevel {
     }
 
     public boolean atLeast(PermissionLevel level) {
+        if (level == DEVICE)
+            return this == DEVICE;
+
         switch (this) {
             case SUPER_ADMIN:
                 return true;

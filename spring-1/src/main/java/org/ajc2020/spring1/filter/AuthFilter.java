@@ -1,6 +1,8 @@
 package org.ajc2020.spring1.filter;
 
+import org.ajc2020.spring1.config.KIBeConfig;
 import org.ajc2020.spring1.manager.AuthManager;
+import org.ajc2020.spring1.model.PermissionLevel;
 import org.ajc2020.spring1.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,19 +19,21 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Optional;
 
 @Component
 public final class AuthFilter extends OncePerRequestFilter {
 
     private static final String USER_PREFIX = "Basic";
-    private static final String DEVICE_PREFIX = "DeviceToken";
 
     private final AuthManager authManager;
+    private final KIBeConfig config;
 
     @Autowired
-    public AuthFilter(AuthManager authManager) {
+    public AuthFilter(AuthManager authManager, KIBeConfig config) {
         this.authManager = authManager;
+        this.config = config;
     }
 
     @Override
@@ -55,6 +59,17 @@ public final class AuthFilter extends OncePerRequestFilter {
                     }
                 }
             } catch (IllegalArgumentException ignored) { /*Invalid base64 format */ }
+        }
+        if (auth.startsWith(config.getDevice().getAuthorizationType())) {
+            String token = auth.replaceFirst(config.getDevice().getAuthorizationType(), "").trim();
+            if (Objects.equals(config.getDevice().getToken(), token)) {
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(null,
+                        token,
+                        Collections.singleton(new SimpleGrantedAuthority(PermissionLevel.DEVICE.getAuthority())));
+
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
         }
         chain.doFilter(request, response);
     }

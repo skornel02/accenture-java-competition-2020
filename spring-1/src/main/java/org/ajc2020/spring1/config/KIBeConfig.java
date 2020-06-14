@@ -13,4 +13,8 @@ public class KIBeConfig {
     @NestedConfigurationProperty
     AdminConfiguration admin = new AdminConfiguration();
 
+
+    @NestedConfigurationProperty
+    DeviceConfiguration device = new DeviceConfiguration();
+
 }
