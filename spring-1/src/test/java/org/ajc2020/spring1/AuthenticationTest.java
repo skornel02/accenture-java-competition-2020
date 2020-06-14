@@ -1,6 +1,7 @@
 package org.ajc2020.spring1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.ajc2020.spring1.config.KIBeConfig;
 import org.ajc2020.spring1.filter.AuthFilter;
 import org.ajc2020.spring1.manager.SessionManager;
 import org.ajc2020.spring1.model.Admin;
@@ -41,6 +42,9 @@ public class AuthenticationTest {
 
     @Autowired
     private SessionManager sessionManager;
+
+    @Autowired
+    private KIBeConfig config;
 
     private MockMvc mockMvc;
 
@@ -135,6 +139,17 @@ public class AuthenticationTest {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "No user set");
             }
         }
+
+        @GetMapping("/device")
+        public ResponseEntity<Void> returnDeviceMe() {
+            try {
+                assertEquals(PermissionLevel.DEVICE, sessionManager.getPermission());
+                return ResponseEntity.ok().build();
+            } catch (NullPointerException ex) {
+                // Spring security config won't allow unauthorized to access endpoints.
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "No user set");
+            }
+        }
     }
 
     @Test
@@ -181,6 +196,10 @@ public class AuthenticationTest {
                 .andDo(print())
                 .andExpect(status().is2xxSuccessful());
 
+        mockMvc.perform(get("/device").header("Authorization", config.getDevice().getAuthorizationType() + " " + config.getDevice().getToken())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is2xxSuccessful())
+                .andDo(print());
     }
 
     @Test
