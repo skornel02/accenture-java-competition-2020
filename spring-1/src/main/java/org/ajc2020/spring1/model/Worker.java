@@ -14,7 +14,7 @@ import java.util.List;
 
 @Entity
 @Data
-public class Worker {
+public class Worker implements User {
 
     @Id
     @GeneratedValue(generator = "system-uuid")
@@ -163,5 +163,20 @@ public class Worker {
             setRfid(workerUpdateRequest.getRfId());
         }
         return this;
+    }
+
+    @Override
+    public String getLoginName() {
+        return getEmail();
+    }
+
+    @Override
+    public String getLoginPassword() {
+        return getPassword();
+    }
+
+    @Override
+    public PermissionLevel getPermissionLevel() {
+        return PermissionLevel.WORKER;
     }
 }

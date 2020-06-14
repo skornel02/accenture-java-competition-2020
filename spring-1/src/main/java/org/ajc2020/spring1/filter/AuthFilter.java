@@ -1,7 +1,7 @@
 package org.ajc2020.spring1.filter;
 
 import org.ajc2020.spring1.manager.AuthManager;
-import org.ajc2020.spring1.model.Worker;
+import org.ajc2020.spring1.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,7 +22,7 @@ import java.util.Optional;
 @Component
 public final class AuthFilter extends OncePerRequestFilter {
 
-    private static final String WORKER_PREFIX = "Basic";
+    private static final String USER_PREFIX = "Basic";
     private static final String DEVICE_PREFIX = "DeviceToken";
 
     private final AuthManager authManager;
@@ -35,19 +35,20 @@ public final class AuthFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         String auth = Optional.ofNullable(request.getHeader("Authorization")).orElse("-");
-        if (auth.startsWith(WORKER_PREFIX)) {
-            String tokenEncoded = auth.replaceFirst(WORKER_PREFIX, "").trim();
+        if (auth.startsWith(USER_PREFIX)) {
+            String tokenEncoded = auth.replaceFirst(USER_PREFIX, "").trim();
             try {
                 String decoded = new String(Base64.getDecoder().decode(tokenEncoded));
-                String[] splitted = decoded.split(":");
-                if (splitted.length == 2) {
-                    String username = splitted[0];
-                    String password = splitted[1];
-                    Optional<Worker> user = authManager.findValidUser(username, password);
-                    if (user.isPresent()) {
-                        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user.get(),
+                String[] split = decoded.split(":");
+                if (split.length == 2) {
+                    String username = split[0];
+                    String password = split[1];
+                    Optional<User> userOptional = authManager.findValidUser(username, password);
+                    if (userOptional.isPresent()) {
+                        User user = userOptional.get();
+                        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user,
                                 decoded,
-                                Collections.singleton(new SimpleGrantedAuthority("WORKER")));
+                                Collections.singleton(new SimpleGrantedAuthority(user.getPermissionLevel().getAuthority())));
 
                         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                         SecurityContextHolder.getContext().setAuthentication(authentication);

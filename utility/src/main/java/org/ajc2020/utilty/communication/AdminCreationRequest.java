@@ -21,4 +21,7 @@ public class AdminCreationRequest {
     @NotNull
     @NotEmpty
     private String password;
+
+    @NotNull
+    private boolean superAdmin;
 }
