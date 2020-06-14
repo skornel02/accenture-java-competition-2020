@@ -21,4 +21,8 @@ public class OfficeSettings {
     @Size(min = 0, max = 1)
     private double operationPercentage;
 
+    public int getEffectiveCapacity() {
+        return (int) Math.floor(capacity * operationPercentage);
+    }
+
 }
