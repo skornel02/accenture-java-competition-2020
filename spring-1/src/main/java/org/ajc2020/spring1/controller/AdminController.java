@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("admins")
@@ -34,16 +35,19 @@ public class AdminController {
     }
 
     @GetMapping
-    public List<Admin> admins(Locale locale) {
+    public List<AdminResource> admins(Locale locale) {
         ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
         if (!sessionManager.getPermission().atLeast(PermissionLevel.SUPER_ADMIN))
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, resourceBundle.getString("error.forbidden.superadmin"));
 
-        return adminService.findAll();
+        return adminService.findAll()
+                .stream()
+                .map(Admin::toResource)
+                .collect(Collectors.toList());
     }
 
     @PostMapping
-    public ResponseEntity<Admin> createAdmin(@Valid @RequestBody AdminCreationRequest adminCreationRequest, Locale locale) {
+    public ResponseEntity<AdminResource> createAdmin(@Valid @RequestBody AdminCreationRequest adminCreationRequest, Locale locale) {
         ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
         if (!sessionManager.getPermission().atLeast(PermissionLevel.SUPER_ADMIN))
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, resourceBundle.getString("error.forbidden.superadmin"));
@@ -51,7 +55,7 @@ public class AdminController {
         Admin admin = new Admin(adminCreationRequest);
         adminService.save(admin);
         return ResponseEntity.created(URI.create("/admins/"+admin.getUuid()))
-                .body(admin);
+                .body(admin.toResource());
     }
 
     @GetMapping(path = "/{uuid}")
@@ -66,7 +70,7 @@ public class AdminController {
     }
 
     @PatchMapping("/{uuid}")
-    public void updateAdmin(@PathVariable String uuid, @RequestBody AdminCreationRequest adminUpdateRequest, Locale locale) {
+    public AdminResource updateAdmin(@PathVariable String uuid, @RequestBody AdminCreationRequest adminUpdateRequest, Locale locale) {
         ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
         if (!sessionManager.getPermission().atLeast(PermissionLevel.SUPER_ADMIN))
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, resourceBundle.getString("error.forbidden.superadmin"));
@@ -74,6 +78,7 @@ public class AdminController {
         Optional<Admin> admin = adminService.findByUuid(uuid);
         if (!admin.isPresent()) throw new UserUpdateFailedException(HttpStatus.NOT_FOUND,  resourceBundle.getString("error.user.not.found"));
         adminService.save(admin.get().updateWith(adminUpdateRequest));
+        return admin.get().toResource();
     }
 
     @DeleteMapping("/{uuid}")

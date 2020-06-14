@@ -7,32 +7,32 @@ public class RfIdStatus {
     private Status status;
 
     private static RfIdStatus okStatus = new RfIdStatus(Status.OK);
-    private static RfIdStatus errorStatus = new RfIdStatus(Status.Error);
-    private static RfIdStatus unknownRfidStatus = new RfIdStatus(Status.UnknownRfId);
-    private static RfIdStatus fullHouseStatus = new RfIdStatus(Status.FullHouse);
+    private static RfIdStatus errorStatus = new RfIdStatus(Status.ERROR);
+    private static RfIdStatus unknownRfidStatus = new RfIdStatus(Status.UNKNOWN_RF_ID);
+    private static RfIdStatus fullHouseStatus = new RfIdStatus(Status.FULL_HOUSE);
 
-    public static RfIdStatus Ok() {
+    public static RfIdStatus ok() {
         return okStatus;
     }
 
-    public static RfIdStatus Error() {
+    public static RfIdStatus error() {
         return errorStatus;
     }
 
-    public static RfIdStatus UnknownRfid() {
+    public static RfIdStatus unknownRfid() {
         return unknownRfidStatus;
     }
 
-    public static RfIdStatus FullHouse() {return fullHouseStatus;}
+    public static RfIdStatus fullHouse() {return fullHouseStatus;}
 
     public RfIdStatus(Status status) {
         this.status = status;
     }
 
     public enum Status {
-        UnknownRfId,
+        UNKNOWN_RF_ID,
         OK,
-        Error,
-        FullHouse
+        ERROR,
+        FULL_HOUSE
     }
 }
