@@ -34,6 +34,7 @@ public class Admin implements User {
         setEmail(adminCreationRequest.getEmail());
         setName(adminCreationRequest.getName());
         setPassword(adminCreationRequest.getPassword());
+        setSuperAdmin(adminCreationRequest.isSuperAdmin());
     }
 
     public AdminResource toResource() {
@@ -46,13 +47,13 @@ public class Admin implements User {
     }
 
     public Admin updateWith(AdminCreationRequest adminUpdateRequest) {
-        if (!adminUpdateRequest.getEmail().isEmpty()) {
+        if (adminUpdateRequest.getEmail() != null && !adminUpdateRequest.getEmail().isEmpty()) {
             setEmail(adminUpdateRequest.getEmail());
         }
-        if (!adminUpdateRequest.getName().isEmpty()) {
+        if (adminUpdateRequest.getEmail() != null && !adminUpdateRequest.getName().isEmpty()) {
             setName(adminUpdateRequest.getName());
         }
-        if (!adminUpdateRequest.getPassword().isEmpty()) {
+        if (adminUpdateRequest.getEmail() != null && !adminUpdateRequest.getPassword().isEmpty()) {
             setPassword(adminUpdateRequest.getPassword());
         }
         return this;

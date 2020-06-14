@@ -5,6 +5,8 @@ import lombok.Data;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -15,10 +17,10 @@ public class OfficeSettings {
     @GeneratedValue
     private long id;
 
-    @Size(min = 1)
+    @Min(1)
     private int capacity;
 
-    @Size(min = 0, max = 1)
+    @Max(1)
     private double operationPercentage;
 
     public int getEffectiveCapacity() {

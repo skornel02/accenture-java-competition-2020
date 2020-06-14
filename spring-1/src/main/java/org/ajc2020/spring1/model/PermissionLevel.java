@@ -16,4 +16,17 @@ public enum PermissionLevel {
         this.authority = authority;
     }
 
+    public boolean atLeast(PermissionLevel level) {
+        switch (this) {
+            case SUPER_ADMIN:
+                return true;
+            case ADMIN:
+                return level != SUPER_ADMIN;
+            case WORKER:
+                return level == WORKER;
+            default:
+                return false;
+        }
+    }
+
 }
