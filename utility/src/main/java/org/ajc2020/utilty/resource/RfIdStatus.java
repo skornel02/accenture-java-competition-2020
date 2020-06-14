@@ -9,6 +9,7 @@ public class RfIdStatus {
     private static RfIdStatus okStatus = new RfIdStatus(Status.OK);
     private static RfIdStatus errorStatus = new RfIdStatus(Status.Error);
     private static RfIdStatus unknownRfidStatus = new RfIdStatus(Status.UnknownRfId);
+    private static RfIdStatus fullHouseStatus = new RfIdStatus(Status.FullHouse);
 
     public static RfIdStatus Ok() {
         return okStatus;
@@ -18,9 +19,11 @@ public class RfIdStatus {
         return errorStatus;
     }
 
-    public static RfIdStatus UnkownRfid() {
+    public static RfIdStatus UnknownRfid() {
         return unknownRfidStatus;
     }
+
+    public static RfIdStatus FullHouse() {return fullHouseStatus;}
 
     public RfIdStatus(Status status) {
         this.status = status;
@@ -29,6 +32,7 @@ public class RfIdStatus {
     public enum Status {
         UnknownRfId,
         OK,
-        Error
+        Error,
+        FullHouse
     }
 }

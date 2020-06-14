@@ -6,6 +6,7 @@ import org.ajc2020.spring1.exceptions.UserUpdateFailedException;
 import org.ajc2020.spring1.model.Admin;
 import org.ajc2020.spring1.model.Worker;
 import org.ajc2020.spring1.service.AdminServiceImpl;
+import org.ajc2020.spring1.service.OfficeService;
 import org.ajc2020.spring1.service.WorkerServiceImpl;
 import org.ajc2020.utilty.communication.AdminCreationRequest;
 import org.ajc2020.utilty.communication.AdminResource;
@@ -32,6 +33,9 @@ public class HomeController {
 
     @Autowired
     private AdminServiceImpl adminService;
+
+    @Autowired
+    private OfficeService officeService;
 
     @GetMapping("/users")
     public List<Worker> home(Locale locale) {
@@ -82,8 +86,10 @@ public class HomeController {
     @GetMapping(path = "/rfid/{rfid}/checkin")
     public RfIdStatus checkin(@PathVariable String rfid) {
         Worker worker = workerService.findByRfid(rfid);
-        if (worker == null) return RfIdStatus.UnkownRfid();
-        // TODO: refuse login in case of full house
+        if (worker == null) return RfIdStatus.UnknownRfid();
+        if (officeService.getOfficeSetting().getEffectiveCapacity() >= workerService.countUsersInOffice()) {
+            return RfIdStatus.FullHouse();
+        }
         if (worker.checkin(new Date())) {
             workerService.save(worker);
             return RfIdStatus.Ok();
@@ -94,8 +100,7 @@ public class HomeController {
     @GetMapping(path = "/rfid/{rfid}/checkout")
     public RfIdStatus checkout(@PathVariable String rfid) {
         Worker worker = workerService.findByRfid(rfid);
-        if (worker == null) return RfIdStatus.UnkownRfid();
-        // TODO: free up space in the office
+        if (worker == null) return RfIdStatus.UnknownRfid();
         if (worker.checkout(new Date())) {
             workerService.save(worker);
             return RfIdStatus.Ok();
@@ -107,7 +112,6 @@ public class HomeController {
     public RegistrationStatus register(@PathVariable String uuid, @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
         Optional<Worker> worker = workerService.findByUuid(uuid);
         if (!worker.isPresent()) return new RegistrationStatus(RegistrationStatus.Status.UnknownUser);
-        // TODO: register / cancel events should be bound to user
         if (!worker.get().register(date)) {
             return new RegistrationStatus(RegistrationStatus.Status.Error);
         }
@@ -119,7 +123,6 @@ public class HomeController {
     public RegistrationStatus cancel(@PathVariable String uuid, @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
         Optional<Worker> worker = workerService.findByUuid(uuid);
         if (!worker.isPresent()) return new RegistrationStatus(RegistrationStatus.Status.UnknownUser);
-        // TODO: register / cancel events should be bound to user
         if (!worker.get().cancel(date)) {
             return new RegistrationStatus(RegistrationStatus.Status.Error);
         }
