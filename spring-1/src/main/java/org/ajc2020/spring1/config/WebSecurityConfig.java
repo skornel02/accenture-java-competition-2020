@@ -32,7 +32,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
                 .authorizeRequests()
-                .antMatchers("/swagger-ui.html", "/v3/api-docs", "/swagger-ui/**",
+                .antMatchers("/swagger-ui.html", "/v3/api-docs/**", "/swagger-ui/**",
                         "/rfid/**").permitAll()
                 .anyRequest().authenticated()
 

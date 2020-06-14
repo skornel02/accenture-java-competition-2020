@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("users")
@@ -36,12 +37,15 @@ public class WorkerController {
     }
 
     @GetMapping
-    public List<Worker> home(Locale locale) {
+    public List<WorkerResource> home(Locale locale) {
         ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
         if (!sessionManager.getPermission().atLeast(PermissionLevel.ADMIN))
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, resourceBundle.getString("error.forbidden.admin"));
 
-        return workerService.findAll();
+        return workerService.findAll()
+                .stream()
+                .map(Worker::toResource)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{uuid}")
@@ -58,7 +62,7 @@ public class WorkerController {
     }
 
     @PatchMapping("/{uuid}")
-    public void updateWorker(@PathVariable String uuid, Locale locale, @RequestBody WorkerCreationRequest workerUpdateRequest) throws UserUpdateFailedException {
+    public WorkerResource updateWorker(@PathVariable String uuid, Locale locale, @RequestBody WorkerCreationRequest workerUpdateRequest) throws UserUpdateFailedException {
         ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
         if (!sessionManager.getPermission().atLeast(PermissionLevel.ADMIN))
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, resourceBundle.getString("error.forbidden.admin"));
@@ -69,26 +73,28 @@ public class WorkerController {
         }
         try {
             workerService.save(worker.get().updateWith(workerUpdateRequest));
+            return worker.get().toResource();
         } catch (DataIntegrityViolationException e) {
             throw new UserUpdateFailedException(HttpStatus.NOT_FOUND, resourceBundle.getString("error.user.unable.to.update"));
         }
     }
 
     @DeleteMapping("/{uuid}")
-    public void deleteWorker(@PathVariable String uuid, Locale locale) {
+    public ResponseEntity<Void> deleteWorker(@PathVariable String uuid, Locale locale) {
         ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
         if (!sessionManager.getPermission().atLeast(PermissionLevel.ADMIN))
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, resourceBundle.getString("error.forbidden.admin"));
 
         try {
             workerService.deleteByUuid(uuid);
+            return ResponseEntity.noContent().build();
         } catch (EmptyResultDataAccessException e) {
             throw new UserUpdateFailedException(HttpStatus.NOT_FOUND, resourceBundle.getString("error.user.not.found"));
         }
     }
 
     @PostMapping
-    public ResponseEntity<Worker> enroll(@Valid @RequestBody WorkerCreationRequest workerCreationRequest, Locale locale) {
+    public ResponseEntity<WorkerResource> enroll(@Valid @RequestBody WorkerCreationRequest workerCreationRequest, Locale locale) {
         ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
         if (!sessionManager.getPermission().atLeast(PermissionLevel.ADMIN))
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, resourceBundle.getString("error.forbidden.admin"));
@@ -96,7 +102,7 @@ public class WorkerController {
         Worker worker = new Worker(workerCreationRequest);
         workerService.save(worker);
         return ResponseEntity.created(URI.create("/users/" + worker.getUuid()))
-                .body(worker);
+                .body(worker.toResource());
     }
 
 
