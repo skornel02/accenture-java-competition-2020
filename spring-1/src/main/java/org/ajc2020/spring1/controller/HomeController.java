@@ -29,7 +29,12 @@ public class HomeController {
     public RfIdStatus checkin(@PathVariable String rfid) {
         Worker worker = workerService.findByRfid(rfid);
         if (worker == null) return RfIdStatus.UnknownRfid();
-        if (officeService.getOfficeSetting().getEffectiveCapacity() >= workerService.countUsersInOffice()) {
+        long workerRank = worker.hasTicketForToday() ?
+                workerService.getRank(worker) :
+                workerService.countUsersWaiting();
+
+        if (officeService.getOfficeSetting().getEffectiveCapacity() >=
+                workerService.countUsersInOffice() + workerRank) {
             return RfIdStatus.FullHouse();
         }
         if (worker.checkin(new Date())) {

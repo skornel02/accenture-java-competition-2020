@@ -1,7 +1,6 @@
 package org.ajc2020.spring1.repository;
 
 import org.ajc2020.spring1.model.Admin;
-import org.ajc2020.spring1.model.Worker;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
