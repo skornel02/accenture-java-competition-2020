@@ -1,8 +1,7 @@
 package org.ajc2020.spring1.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
@@ -18,6 +17,7 @@ public class OfficeHours {
 
     @ManyToOne
     @Accessors(chain = true)
+    @JsonBackReference
     private Worker worker;
 
     private Date arrive;

@@ -1,5 +1,6 @@
 package org.ajc2020.spring1.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -22,6 +23,7 @@ public class Ticket {
 
     @ManyToOne
     @Accessors(chain = true)
+    @JsonBackReference
     private Worker worker;
 
 }
