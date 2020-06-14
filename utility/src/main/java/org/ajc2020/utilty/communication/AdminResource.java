@@ -9,4 +9,5 @@ public class AdminResource {
     String uuid;
     String name;
     String email;
+    boolean superAdmin;
 }

@@ -1,6 +1,7 @@
 package org.ajc2020.spring1.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.ajc2020.spring1.exceptions.UserCreationFailedException;
 import org.ajc2020.spring1.exceptions.UserUpdateFailedException;
 import org.ajc2020.spring1.model.Admin;
 import org.ajc2020.spring1.model.Worker;
@@ -10,7 +11,6 @@ import org.ajc2020.utilty.communication.AdminCreationRequest;
 import org.ajc2020.utilty.communication.AdminResource;
 import org.ajc2020.utilty.communication.WorkerCreationRequest;
 import org.ajc2020.utilty.communication.WorkerResource;
-import org.ajc2020.spring1.exceptions.UserCreationFailedException;
 import org.ajc2020.utilty.resource.RegistrationStatus;
 import org.ajc2020.utilty.resource.RfIdStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +39,7 @@ public class HomeController {
     }
 
     @GetMapping("/users/{uuid}")
-    public WorkerResource worker(@PathVariable String uuid, Locale locale) throws UserCreationFailedException {
+    public WorkerResource worker(@PathVariable String uuid, Locale locale) {
         ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
         return workerService
                 .findByUuid(uuid)

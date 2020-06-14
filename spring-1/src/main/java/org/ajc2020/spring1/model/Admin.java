@@ -12,7 +12,7 @@ import javax.persistence.Id;
 
 @Entity
 @Data
-public class Admin {
+public class Admin implements User {
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid")
@@ -24,6 +24,8 @@ public class Admin {
     private String password;
 
     private String name;
+
+    private boolean superAdmin;
 
     public Admin() {
     }
@@ -39,6 +41,7 @@ public class Admin {
                 .email(getEmail())
                 .name(getName())
                 .uuid(getUuid())
+                .superAdmin(isSuperAdmin())
                 .build();
     }
 
@@ -53,5 +56,20 @@ public class Admin {
             setPassword(adminUpdateRequest.getPassword());
         }
         return this;
+    }
+
+    @Override
+    public String getLoginName() {
+        return getEmail();
+    }
+
+    @Override
+    public String getLoginPassword() {
+        return getPassword();
+    }
+
+    @Override
+    public PermissionLevel getPermissionLevel() {
+        return isSuperAdmin() ? PermissionLevel.SUPER_ADMIN : PermissionLevel.ADMIN;
     }
 }
