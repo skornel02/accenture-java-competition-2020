@@ -16,4 +16,6 @@ public interface WorkerService {
     Worker findByRfid(String rfid);
 
     Optional<Worker> findByUuid(String uuid);
+
+    void deleteByUuid(String uuid);
 }

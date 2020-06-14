@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.ajc2020.spring1.model.Worker;
 import org.ajc2020.spring1.repository.WorkerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,6 +39,11 @@ public class WorkerServiceImpl implements WorkerService {
     @Override
     public Optional<Worker> findByUuid(String uuid) {
         return workerRepository.findWorkerByUuid(uuid);
+    }
+
+    @Override
+    public void deleteByUuid(String uuid) {
+        workerRepository.deleteById(uuid);
     }
 
 }

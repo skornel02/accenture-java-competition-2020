@@ -148,4 +148,20 @@ public class Worker {
                 .id(getUuid())
                 .build();
     }
+
+    public Worker updateWith(WorkerCreationRequest workerUpdateRequest) {
+        if (!workerUpdateRequest.getEmail().isEmpty()) {
+            setEmail(workerUpdateRequest.getEmail());
+        }
+        if (!workerUpdateRequest.getName().isEmpty()) {
+            setName(workerUpdateRequest.getName());
+        }
+        if (!workerUpdateRequest.getPassword().isEmpty()) {
+            setPassword(workerUpdateRequest.getPassword());
+        }
+        if (!workerUpdateRequest.getRfId().isEmpty()) {
+            setRfid(workerUpdateRequest.getRfId());
+        }
+        return this;
+    }
 }
