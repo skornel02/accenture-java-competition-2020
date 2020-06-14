@@ -1,6 +1,5 @@
 package org.ajc2020.spring1.manager;
 
-import lombok.val;
 import org.ajc2020.spring1.model.Admin;
 import org.ajc2020.spring1.model.PermissionLevel;
 import org.ajc2020.spring1.model.Worker;

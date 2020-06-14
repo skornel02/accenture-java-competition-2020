@@ -38,41 +38,48 @@ public class HomeController {
     private OfficeService officeService;
 
     @GetMapping("/users")
-    public List<Worker> home(Locale locale) {
+    public List<Worker> home() {
         return workerService.findAll();
+    }
+
+    private static final HashMap<String, ResourceBundle> messages = new HashMap<>();
+
+    private static String getMessage(Locale locale, String key) {
+        String language = locale.getDisplayLanguage();
+        if (!messages.containsKey(language)) {
+            messages.put(language, ResourceBundle.getBundle("messages", Locale.forLanguageTag(language)));
+        }
+        return messages.get(language).getString(key);
     }
 
     @GetMapping("/users/{uuid}")
     public WorkerResource worker(@PathVariable String uuid, Locale locale) {
-        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
         return workerService
                 .findByUuid(uuid)
                 .map(Worker::toResource)
                 .orElseThrow(
-                        () -> new UserCreationFailedException(HttpStatus.NOT_ACCEPTABLE, resourceBundle.getString("error.user.not.created")));
+                        () -> new UserCreationFailedException(HttpStatus.NOT_ACCEPTABLE, getMessage(locale, "error.user.not.created")));
     }
 
     @PatchMapping("/users/{uuid}")
     public void updateWorker(@PathVariable String uuid, Locale locale, @RequestBody WorkerCreationRequest workerUpdateRequest) throws UserUpdateFailedException {
-        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
         Optional<Worker> worker = workerService.findByUuid(uuid);
         if (!worker.isPresent()) {
-            throw new UserUpdateFailedException(HttpStatus.NOT_FOUND, resourceBundle.getString("error.user.not.found"));
+            throw new UserUpdateFailedException(HttpStatus.NOT_FOUND, getMessage(locale, "error.user.not.found"));
         }
         try {
             workerService.save(worker.get().updateWith(workerUpdateRequest));
         } catch (DataIntegrityViolationException e) {
-            throw new UserUpdateFailedException(HttpStatus.NOT_ACCEPTABLE, resourceBundle.getString("error.user.unable.to.update"));
+            throw new UserUpdateFailedException(HttpStatus.NOT_ACCEPTABLE, getMessage(locale, "error.user.unable.to.update"));
         }
     }
 
     @DeleteMapping("/users/{uuid}")
     public void deleteWorker(@PathVariable String uuid, Locale locale) {
-        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
         try {
             workerService.deleteByUuid(uuid);
         } catch (EmptyResultDataAccessException e) {
-            throw new UserUpdateFailedException(HttpStatus.NOT_FOUND, resourceBundle.getString("error.user.not.found"));
+            throw new UserUpdateFailedException(HttpStatus.NOT_FOUND, getMessage(locale, "error.user.not.found"));
         }
     }
 
@@ -87,7 +94,12 @@ public class HomeController {
     public RfIdStatus checkin(@PathVariable String rfid) {
         Worker worker = workerService.findByRfid(rfid);
         if (worker == null) return RfIdStatus.UnknownRfid();
-        if (officeService.getOfficeSetting().getEffectiveCapacity() >= workerService.countUsersInOffice()) {
+        long workerRank = worker.hasTicketForToday() ?
+                workerService.getRank(worker) :
+                workerService.countUsersWaiting();
+
+        if (officeService.getOfficeSetting().getEffectiveCapacity() >=
+                workerService.countUsersInOffice() + workerRank) {
             return RfIdStatus.FullHouse();
         }
         if (worker.checkin(new Date())) {
@@ -134,7 +146,7 @@ public class HomeController {
     public RedirectView createAdmin(@RequestBody AdminCreationRequest adminCreationRequest) {
         Admin admin = new Admin(adminCreationRequest);
         adminService.save(admin);
-        return new RedirectView("/admins/"+admin.getUuid());
+        return new RedirectView("/admins/" + admin.getUuid());
     }
 
     @GetMapping(path = "/admins")
@@ -144,25 +156,23 @@ public class HomeController {
 
     @GetMapping(path = "/admins/{uuid}")
     public AdminResource getAdmin(@PathVariable String uuid, Locale locale) {
-        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
-        return adminService.findByUuid(uuid).map(Admin::toResource).orElseThrow(()->new UserUpdateFailedException(HttpStatus.NOT_FOUND, resourceBundle.getString("error.user.not.found")));
+        return adminService.findByUuid(uuid).map(Admin::toResource).orElseThrow(() -> new UserUpdateFailedException(HttpStatus.NOT_FOUND, getMessage(locale, "error.user.not.found")));
     }
 
     @PatchMapping("/admins/{uuid}")
     public void updateAdmin(@PathVariable String uuid, @RequestBody AdminCreationRequest adminUpdateRequest, Locale locale) {
-        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
         Optional<Admin> admin = adminService.findByUuid(uuid);
-        if (!admin.isPresent()) throw new UserUpdateFailedException(HttpStatus.NOT_FOUND,  resourceBundle.getString("error.user.not.found"));
+        if (!admin.isPresent())
+            throw new UserUpdateFailedException(HttpStatus.NOT_FOUND, getMessage(locale, "error.user.not.found"));
         adminService.save(admin.get().updateWith(adminUpdateRequest));
     }
 
     @DeleteMapping("/admins/{uuid}")
     public void deleteAdmin(@PathVariable String uuid, Locale locale) {
-        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
         try {
             adminService.deleteByUuid(uuid);
         } catch (EmptyResultDataAccessException e) {
-            throw new UserUpdateFailedException(HttpStatus.NOT_FOUND, resourceBundle.getString("error.user.not.found"));
+            throw new UserUpdateFailedException(HttpStatus.NOT_FOUND, getMessage(locale, "error.user.not.found"));
         }
     }
 

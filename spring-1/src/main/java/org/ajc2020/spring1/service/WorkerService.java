@@ -20,4 +20,8 @@ public interface WorkerService {
     void deleteByUuid(String uuid);
 
     long countUsersInOffice();
+
+    long countUsersWaiting();
+
+    long getRank(Worker worker);
 }
