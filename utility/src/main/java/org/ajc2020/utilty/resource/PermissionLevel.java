@@ -11,6 +11,7 @@ public enum PermissionLevel {
     DEVICE("device"),
     INVALID("");
 
+
     private final String authority;
 
     PermissionLevel(String authority) {

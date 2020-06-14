@@ -2,6 +2,7 @@
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
     <meta charset="utf-8">
+    <meta th:name="${_csrf.parameterName}" th:content="${_csrf.token}"/>
     <title th:text="#{login.login}">Login</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link type="text/css" rel="stylesheet" th:href="@{css/materialize.min.css}" href="../static/css/materialize.min.css"
@@ -31,11 +32,14 @@
             </div>
             <div class="card-content grey lighten-4">
                 <div id="unamepwd">
-                    <form id="uplogin">
+                    <form id="uplogin" method="POST" action="/login">
                         <div class="row">
                             <div class="input-field col s12">
                                 <i class="material-icons prefix">account_circle</i>
-                                <input id="username" type="text" class="validate" minlength="1">
+                                <input id="username" name="username" type="text" class="validate" minlength="1">
+                                <input type="hidden"
+                                       th:name="${_csrf.parameterName}"
+                                       th:value="${_csrf.token}"/>
                                 <label for="username" th:text="#{login.field.username}">Username</label>
                                 <span class="helper-text" data-error="Please provide a valid username" data-success="Ok"
                                       th:text="#{login.field.username.hint}">Please enter your username</span>
@@ -44,7 +48,7 @@
                         <div class="row">
                             <div class="input-field col s12">
                                 <i class="material-icons prefix">lock</i>
-                                <input id="password" type="password" class="validate" minlength="1">
+                                <input id="password" name="password" type="password" class="validate" minlength="1">
                                 <label for="password" th:text="#{login.field.password}">Password</label>
                                 <span class="helper-text" data-error="Please provide a valid password" data-success="Ok"
                                       th:text="#{login.field.password.hint}">Please enter your password</span>
@@ -90,67 +94,9 @@
     const loginTimeout = /*[[#{login.timeout}]]*/ "Timeout!";
     const loginSuccess = /*[[#{login.success}]]*/ "Login successful!";
     const loginInvalid = /*[[#{login.invalid}]]*/ "Login invalid!";
+    let _csrf_token = /*[[${_csrf.token}]]*/ '';
+    let _csrf_param_name = /*[[${_csrf.parameterName}]]*/ '';
     /*]]>*/
-    $(document).ready(function () {
-        $('.tabs').tabs();
-        $('#uplogin').on('submit', function (e) {
-            e.preventDefault();
-            let username = $('#username').val().trim();
-            let password = $('#password').val().trim();
-
-            $('#loader').show();
-            let request = new XMLHttpRequest();
-            //TODO: A / jel nem kell a végére, ha nem /login/index.php :)
-            request.onreadystatechange = function () {
-                if (this.readyState === 4) {
-                    if (this.status === 200) {
-                        let resp = JSON.parse(request.responseText);
-                        console.log(resp);
-                        if (!resp.hasOwnProperty('success')) {
-                            M.toast({
-                                html: '<i class=\'material-icons\'>error</i>&nbsp;' + loginProtocolError,
-                                classes: 'rounded'
-                            });
-                            return;
-                        }
-                        if (resp.success) {
-                            M.toast({html: loginSuccess, classes: 'rounded'});
-                            window.location.href = '/main';
-                        } else {
-                            M.toast({html: loginInvalid, classes: 'rounded'});
-                        }
-                    } else if (this.status !== 0) {
-                        M.toast({
-                            html: '<i class=\'material-icons\'>cancel</i>&nbsp;' + loginError,
-                            classes: 'rounded'
-                        });
-                    }
-                }
-            }
-            request.open('POST', '/login', true);
-            request.timeout = 5000;
-            request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-            request.ontimeout = function () {
-                M.toast({
-                    html: '<i class=\'material-icons\'>timer</i>&nbsp;' + loginTimeout,
-                    classes: 'rounded'
-                });
-            }
-            request.onerror = function () {
-                M.toast({
-                    html: '<i class=\'material-icons\'>cancel</i>&nbsp;<span th:text="#{login.error}">An error occurred!</span>',
-                    classes: 'rounded'
-                });
-            }
-            request.onloadend = function () {
-                $('#loader').hide();
-            }
-            request.send('username=' + encodeURIComponent(username) + '&password=' + encodeURIComponent(password));
-        });
-        $('#oauthinstead').on('click', function (e) {
-            $('.tabs').tabs('select', 'oauth');
-        });
-    });
 
     function onOAuth(gTypeUser) {
         //TODO: a tokent elküldeni a backendnek, illetve a bejelentkezési adatokat is
