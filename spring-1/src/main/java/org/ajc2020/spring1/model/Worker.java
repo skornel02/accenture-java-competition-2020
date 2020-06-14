@@ -1,5 +1,6 @@
 package org.ajc2020.spring1.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import org.ajc2020.utilty.communication.WorkerCreationRequest;
 import org.ajc2020.utilty.communication.WorkerResource;
@@ -34,9 +35,11 @@ public class Worker implements User {
     private double averageTime;
 
     @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private final List<OfficeHours> officeHoursHistory = new ArrayList<>();
 
     @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private final List<Ticket> tickets = new ArrayList<>();
 
     public Worker() {
@@ -162,16 +165,16 @@ public class Worker implements User {
     }
 
     public Worker updateWith(WorkerCreationRequest workerUpdateRequest) {
-        if (!workerUpdateRequest.getEmail().isEmpty()) {
+        if (workerUpdateRequest.getEmail() != null && !workerUpdateRequest.getEmail().isEmpty()) {
             setEmail(workerUpdateRequest.getEmail());
         }
-        if (!workerUpdateRequest.getName().isEmpty()) {
+        if (workerUpdateRequest.getName() != null && !workerUpdateRequest.getName().isEmpty()) {
             setName(workerUpdateRequest.getName());
         }
-        if (!workerUpdateRequest.getPassword().isEmpty()) {
+        if (workerUpdateRequest.getPassword() != null && !workerUpdateRequest.getPassword().isEmpty()) {
             setPassword(workerUpdateRequest.getPassword());
         }
-        if (!workerUpdateRequest.getRfId().isEmpty()) {
+        if (workerUpdateRequest.getRfId() != null && !workerUpdateRequest.getRfId().isEmpty()) {
             setRfid(workerUpdateRequest.getRfId());
         }
         return this;
@@ -190,5 +193,18 @@ public class Worker implements User {
     @Override
     public PermissionLevel getPermissionLevel() {
         return PermissionLevel.WORKER;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Worker{");
+        sb.append("uuid='").append(uuid).append('\'');
+        sb.append(", email='").append(email).append('\'');
+        sb.append(", password='").append(password).append('\'');
+        sb.append(", rfid='").append(rfid).append('\'');
+        sb.append(", name='").append(name).append('\'');
+        sb.append(", averageTime=").append(averageTime);
+        sb.append('}');
+        return sb.toString();
     }
 }
