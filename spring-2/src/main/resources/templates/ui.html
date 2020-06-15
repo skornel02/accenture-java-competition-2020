@@ -14,6 +14,18 @@
     </div>
     <div class="col s12 m12 l12" th:if="!${adminMode}">
         <h1 th:text="#{dashboard.greet(${username})}">Hello Worker!</h1>
+        <h5>New ticket</h5>
+        <form action="/register" method="get" >
+            <input type="date" name="date">
+            <input type="hidden" name="uuid" th:value="${uuid}">
+            <input type="submit" value="Register">
+        </form>
+        <h5>Delete ticket</h5>
+        <form action="/cancel" method="get" >
+            <input type="date" name="date">
+            <input type="hidden" name="uuid" th:value="${uuid}">
+            <input type="submit" value="Cancel">
+        </form>
     </div>
 </div>
 
