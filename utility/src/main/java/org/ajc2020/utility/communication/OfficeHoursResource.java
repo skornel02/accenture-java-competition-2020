@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.hateoas.RepresentationModel;
 
+import javax.validation.constraints.NotNull;
 import java.time.OffsetDateTime;
 
 @Data
@@ -12,6 +13,7 @@ import java.time.OffsetDateTime;
 @Builder
 public class OfficeHoursResource extends RepresentationModel<OfficeHoursResource> {
 
+    @NotNull
     private OffsetDateTime arrive;
     private OffsetDateTime leave;
 

@@ -38,6 +38,7 @@ public class AuthenticationController {
         MeInformation.MeInformationBuilder builder = MeInformation.builder()
                 .permission(sessionManager.getPermission());
         List<Link> links = new ArrayList<>();
+        links.add(linkTo(methodOn(OfficeController.class).returnOfficeSettings(null)).withRel("office-settings"));
         if (sessionManager.isSessionWorker()) {
             Worker worker = workerService.findByUuid(sessionManager.getWorker().getUuid()).get();
             builder = builder.worker(worker.toResource());
@@ -57,6 +58,9 @@ public class AuthenticationController {
             links.add(linkTo(methodOn(AdminController.class)
                     .returnAdmin(sessionManager.getAdmin().getUuid(), null)).withRel("self"));
             links.add(linkTo(methodOn(WorkerController.class).returnWorkers(null)).withRel("workers"));
+            links.add(linkTo(methodOn(OfficeController.class).returnBeenInsideResources(null)).withRel("workers that left"));
+            links.add(linkTo(methodOn(OfficeController.class).returnInsideResource(null)).withRel("workers inside"));
+            links.add(linkTo(methodOn(OfficeController.class).returnWaitingResource(null)).withRel("workers waiting"));
             if (sessionManager.getAdmin().isSuperAdmin()) {
                 links.add(linkTo(methodOn(AdminController.class).returnAdmins(null)).withRel("admins"));
             }

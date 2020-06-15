@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.hateoas.RepresentationModel;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
@@ -13,7 +14,9 @@ import java.time.OffsetDateTime;
 @Builder
 public class TicketResource extends RepresentationModel<TicketResource> {
 
+    @NotNull
     private LocalDate targetDay;
+    @NotNull
     private OffsetDateTime creationDate;
 
 }
