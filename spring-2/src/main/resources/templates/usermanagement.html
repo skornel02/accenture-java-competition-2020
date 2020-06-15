@@ -112,34 +112,34 @@
                    th:name="${_csrf.parameterName}"
                    th:value="${_csrf.token}"/>
 
-            <h5 class="center">Edit Worker</h5>
+            <h5 class="center" th:text="#{edit.worker}">Edit Worker</h5>
             <table>
                 <tr id="edit.user.name.row">
-                    <td><label for="edit.user.name">Name:</label></td>
+                    <td><label for="edit.user.name" th:text="#{editor.name}">Name:</label></td>
                     <td><input id="edit.user.name" name="edit.user.name"></td>
                 </tr>
                 <tr id="edit.user.email.row">
-                    <td><label for="edit.user.email">Email:</label></td>
+                    <td><label for="edit.user.email" th:text="#{editor.email}">Email:</label></td>
                     <td><input id="edit.user.email" name="edit.user.email"></td>
                 </tr>
                 <tr id="edit.user.rfid.row">
-                    <td><label for="edit.user.rfid">RFID:</label></td>
+                    <td><label for="edit.user.rfid" th:text="#{editor.rfid}">RFID:</label></td>
                     <td><input id="edit.user.rfid" name="edit.user.rfid"></td>
                 </tr>
                 <tr id="edit.user.password.row">
-                    <td><label for="edit.user.password">Password:</label></td>
+                    <td><label for="edit.user.password" th:text="#{editor.password}">Password:</label></td>
                     <td><input id="edit.user.password" type="password" name="edit.user.password"></td>
                 </tr>
                 <tr id="edit.user.password.confirm.row">
-                    <td><label for="edit.user.password.confirm">Password:</label></td>
+                    <td><label for="edit.user.password.confirm" th:text="#{editor.password.confirm}">Password:</label></td>
                     <td><input id="edit.user.password.confirm" type="password" name="edit.user.password.confirm"></td>
                 </tr>
 
                 <tr>
-                    <td><input type="submit" value="Submit" class="btn-flat"></td>
+                    <td><input type="submit" th:value="#{editor.create}" value="Submit" class="btn-flat"></td>
                     <td>
                         <button type="submit" class="modal-close waves-effect waves-green btn-flat"
-                                data-target="edit-user-modal" onclick="return false;">Cancel
+                                data-target="edit-user-modal" onclick="return false;" th:text="#{editor.cancel}">Cancel
                         </button>
                     </td>
                 </tr>
@@ -157,31 +157,31 @@
             <h5 class="center">Create Worker</h5>
             <table>
                 <tr>
-                    <td><label for="create.user.name">Name:</label></td>
+                    <td><label for="create.user.name" th:text="#{editor.name}">Name:</label></td>
                     <td><input id="create.user.name" name="create.user.name"></td>
                 </tr>
                 <tr>
-                    <td><label for="create.user.email">Email:</label></td>
+                    <td><label for="create.user.email" th:text="#{editor.email}">Email:</label></td>
                     <td><input id="create.user.email" name="create.user.email"></td>
                 </tr>
                 <tr>
-                    <td><label for="create.user.rfid">RFID:</label></td>
+                    <td><label for="create.user.rfid" th:text="#{editor.rfid}">RFID:</label></td>
                     <td><input id="create.user.rfid" name="create.user.rfid"></td>
                 </tr>
                 <tr>
-                    <td><label for="create.user.password">Password:</label></td>
+                    <td><label for="create.user.password" th:text="#{editor.password}">Password:</label></td>
                     <td><input id="create.user.password" type="password" name="create.user.password"></td>
                 </tr>
                 <tr>
-                    <td><label for="create.user.password.confirm">Password:</label></td>
+                    <td><label for="create.user.password.confirm" th:text="#{editor.password.confirm}">Password:</label></td>
                     <td><input id="create.user.password.confirm" type="password" name="create.user.password.confirm">
                     </td>
                 </tr>
                 <tr>
-                    <td><input type="submit" value="Submit" class="btn-flat"></td>
+                    <td><input type="submit" value="Submit" th:value="#{editor.save}" class="btn-flat"></td>
                     <td>
                         <button type="submit" class="modal-close waves-effect waves-green btn-flat"
-                                data-target="edit-user-modal" onclick="return false;">Cancel
+                                data-target="edit-user-modal" onclick="return false;" th:text="#{editor.cancel}">Cancel
                         </button>
                     </td>
                 </tr>
@@ -196,29 +196,29 @@
             <input type="hidden"
                    th:name="${_csrf.parameterName}"
                    th:value="${_csrf.token}"/>
-            <h5 class="center">Edit Admin</h5>
+            <h5 class="center" th:text="#{edit.admin}">Edit Admin</h5>
             <table>
                 <tr id="edit.admin.name.row">
-                    <td><label for="edit.admin.name">Name:</label></td>
+                    <td><label for="edit.admin.name" th:text="#{editor.name}">Name:</label></td>
                     <td><input id="edit.admin.name" name="edit.admin.name"></td>
                 </tr>
                 <tr id="edit.admin.email.row">
-                    <td><label for="edit.admin.email">Email:</label></td>
+                    <td><label for="edit.admin.email" th:text="#{editor.email}">Email:</label></td>
                     <td><input id="edit.admin.email" name="edit.admin.email"></td>
                 </tr>
                 <tr id="edit.admin.password.row">
-                    <td><label for="edit.admin.password">New password:</label></td>
+                    <td><label for="edit.admin.password" th:text="#{editor.password}">New password:</label></td>
                     <td><input id="edit.admin.password" type="password" name="edit.admin.password"></td>
                 </tr>
                 <tr id="edit.admin.password.confirm.row">
-                    <td><label for="edit.admin.password.confirm">Confirm password:</label></td>
+                    <td><label for="edit.admin.password.confirm" th:text="#{editor.password.confirm}">Confirm password:</label></td>
                     <td><input id="edit.admin.password.confirm" type="password" name="edit.admin.password.confirm"></td>
                 </tr>
                 <tr>
-                    <td><input type="submit" value="Submit" class="btn-flat"></td>
+                    <td><input type="submit" value="Submit" th:value="#{editor.save}" class="btn-flat"></td>
                     <td>
                         <button type="submit" class="modal-close waves-effect waves-green btn-flat"
-                                data-target="edit-admin-modal" onclick="return false;">Cancel
+                                data-target="edit-admin-modal" onclick="return false;" th:text="#{editor.cancel}">Cancel
                         </button>
                     </td>
                 </tr>
@@ -232,30 +232,30 @@
             <input type="hidden"
                    th:name="${_csrf.parameterName}"
                    th:value="${_csrf.token}"/>
-            <h5 class="center">Create Admin</h5>
+            <h5 class="center" th:text="#{create.admin}">Create Admin</h5>
             <table>
                 <tr>
-                    <td><label for="create.admin.name">Name:</label></td>
+                    <td><label for="create.admin.name" th:text="#{editor.name}">Name:</label></td>
                     <td><input id="create.admin.name" name="create.admin.name"></td>
                 </tr>
                 <tr>
-                    <td><label for="create.admin.email">Email:</label></td>
+                    <td><label for="create.admin.email" th:text="#{editor.email}">Email:</label></td>
                     <td><input id="create.admin.email" name="create.admin.email"></td>
                 </tr>
                 <tr>
-                    <td><label for="create.admin.password">New password:</label></td>
+                    <td><label for="create.admin.password" th:text="#{editor.password}">New password:</label></td>
                     <td><input id="create.admin.password" type="password" name="create.admin.password"></td>
                 </tr>
                 <tr>
-                    <td><label for="create.admin.password.confirm">Confirm password:</label></td>
+                    <td><label for="create.admin.password.confirm" th:text="#{editor.password.confirm}">Confirm password:</label></td>
                     <td><input id="create.admin.password.confirm" type="password" name="create.admin.password.confirm">
                     </td>
                 </tr>
                 <tr>
-                    <td><input type="submit" value="Submit" class="btn-flat"></td>
+                    <td><input type="submit" value="Submit" th:value="#{editor.create}" class="btn-flat"></td>
                     <td>
                         <button type="submit" class="modal-close waves-effect waves-green btn-flat"
-                                data-target="edit-admin-modal" onclick="return false;">Cancel
+                                data-target="edit-admin-modal" onclick="return false;" th:text="#{editor.cancel}">Cancel
                         </button>
                     </td>
                 </tr>

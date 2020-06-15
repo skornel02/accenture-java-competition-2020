@@ -134,6 +134,37 @@ public class WebController {
         return new RedirectView("/");
     }
 
+    @GetMapping("/building/capacity")
+    public RedirectView setCapacity(
+            @ModelAttribute("login") UserInfo userInfo,
+            @RequestParam int capacity,
+            @RequestParam double percentage
+    ) {
+        OfficeResource officeResource = OfficeResource.builder()
+                .capacity(capacity)
+                .percentage(percentage / 100)
+                .build();
+        patchRequest(userInfo, "office-settings", officeResource);
+        return new RedirectView("/building");
+    }
+
+    @GetMapping("/building")
+    public String building(
+            @ModelAttribute("login") UserInfo userInfo,
+            Model model
+    ) {
+        Optional<String> fullName = authorize(userInfo);
+        if (!fullName.isPresent()) return "lui";
+        setModel(userInfo, fullName.get(), model);
+        try {
+            ResponseEntity<OfficeResource> officeResource = getRequest(userInfo, "office-settings", OfficeResource.class);
+            model.addAttribute("building", officeResource.getBody());
+            return "building";
+        } catch (Exception ignored)  {
+            return "lui";
+        }
+    }
+
     @GetMapping("/cancel")
     public RedirectView cancel(
             @ModelAttribute("login") UserInfo userInfo,

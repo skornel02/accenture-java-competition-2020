@@ -1,6 +1,7 @@
 package org.ajc2020.spring1.model;
 
 import lombok.Data;
+import org.ajc2020.utility.communication.OfficeResource;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -25,6 +26,18 @@ public class OfficeSettings {
 
     public int getEffectiveCapacity() {
         return (int) Math.floor(capacity * operationPercentage);
+    }
+
+    public void fromResource(OfficeResource newValues) {
+        setCapacity(newValues.getCapacity());
+        setOperationPercentage(newValues.getPercentage());
+    }
+
+    public OfficeResource toResource() {
+        return OfficeResource.builder()
+                .capacity(capacity)
+                .percentage(operationPercentage)
+                .build();
     }
 
 }
