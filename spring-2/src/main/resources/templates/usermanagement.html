@@ -42,7 +42,7 @@
                 <td><a href="#" th:text="${user.getRfId()}"
                        th:onclick="editUserRfid([[${user.getId()}]], [[${user.getRfId()}]])">36324743743747</a></td>
                 <td><a href="#" th:text="#{users.change.password}"
-                       th:onclick="editAdminPassword([[${user.getId()}]])">Change password</a>
+                       th:onclick="editUserPassword([[${user.getId()}]])">Change password</a>
                 </td>
 
                 <td th:switch="${user.getStatus()}">
@@ -327,6 +327,7 @@
         $('#edit\\.user\\.password\\.row').show();
         $('#edit\\.user\\.password\\.row').val("");
         $('#edit\\.user\\.password\\.confirm\\.row').show();
+        $('#edit\\.user\\.uuid').val(uuid);
         modal.modal();
         modal.modal('open');
     }
@@ -374,6 +375,7 @@
         $('#edit\\.admin\\.password\\.row').show();
         $('#edit\\.admin\\.password\\.row').val("");
         $('#edit\\.admin\\.password\\.confirm\\.row').show();
+        $('#edit\\.admin\\.uuid').val(uuid);
         modal.modal();
         modal.modal('open');
     }

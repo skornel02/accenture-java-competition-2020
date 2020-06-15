@@ -18,4 +18,9 @@ public class MeInformation extends RepresentationModel<MeInformation> {
     private WorkerResource worker;
     private AdminResource admin;
 
+    public String getUuid() {
+        if (admin != null) return admin.getUuid();
+        if (worker != null) return worker.getId();
+        return "";
+    }
 }

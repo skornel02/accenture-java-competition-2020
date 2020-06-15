@@ -6,6 +6,7 @@ import org.ajc2020.utility.communication.*;
 import org.ajc2020.utility.resource.PermissionLevel;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +15,8 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -27,11 +30,13 @@ public class WebController {
         public UserInfo() {
         }
 
-        public UserInfo(String userName, String password) {
+        public UserInfo(String userName, String password, String uuid) {
             this.userName = userName;
             this.password = password;
+            this.uuid = uuid;
         }
 
+        private String uuid = "";
         private String userName = "";
         private String password = "";
         private boolean isAdmin;
@@ -70,12 +75,17 @@ public class WebController {
         return Optional.of(fullName);
     }
 
+    private void setModel(UserInfo userInfo, String fullName, Model model) {
+        model.addAttribute("adminMode", userInfo.isAdmin || userInfo.isSuperAdmin);
+        model.addAttribute("username", fullName);
+        model.addAttribute("uuid", userInfo.uuid);
+    }
+
     @GetMapping("/")
     public String main(@ModelAttribute("login") UserInfo userInfo, Model model) {
         Optional<String> fullName = authorize(userInfo);
         if (!fullName.isPresent()) return "lui";
-        model.addAttribute("adminMode", userInfo.isAdmin || userInfo.isSuperAdmin);
-        model.addAttribute("username", fullName.get());
+        setModel(userInfo, fullName.get(), model);
         return "ui";
     }
 
@@ -83,13 +93,12 @@ public class WebController {
     public String users(@ModelAttribute("login") UserInfo userInfo, Model model) {
         Optional<String> fullName = authorize(userInfo);
         if (!fullName.isPresent()) return "lui";
+        setModel(userInfo, fullName.get(), model);
 
         model.addAttribute("users", getRequest(userInfo, "users", WorkerResource[].class).getBody());
         if (userInfo.isSuperAdmin()) {
             model.addAttribute("admins", getRequest(userInfo, "admins", AdminResource[].class).getBody());
         }
-        model.addAttribute("adminMode", userInfo.isAdmin || userInfo.isSuperAdmin);
-        model.addAttribute("username", fullName);
         return "usermanagement";
     }
 
@@ -113,6 +122,41 @@ public class WebController {
         }
         return new RedirectView("/users");
 
+    }
+
+    @GetMapping("/register")
+    public RedirectView register(
+            @ModelAttribute("login") UserInfo userInfo,
+            @RequestParam String uuid,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date date
+    ) {
+        putRequest(userInfo, "users/"+uuid+"/tickets/"+new SimpleDateFormat("yyyy-MM-dd").format(date), "");
+        return new RedirectView("/");
+    }
+
+    @GetMapping("/cancel")
+    public RedirectView cancel(
+            @ModelAttribute("login") UserInfo userInfo,
+            @RequestParam String uuid,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date date
+    ) {
+        deleteRequest(userInfo, "users/"+uuid+"/tickets/"+new SimpleDateFormat("yyyy-MM-dd").format(date));
+        return new RedirectView("/");
+    }
+
+    @GetMapping("/users/{uuid}/reservations")
+    public String reservations(
+            @ModelAttribute("login") UserInfo userInfo,
+            @PathVariable String uuid
+    ) {
+        try {
+            WorkerResource workerResource = getRequest(userInfo, "users/"+uuid, WorkerResource.class).getBody();
+            // TODO: 2.0:  get tickets
+            return "reservations";
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "ui";
     }
 
     @PostMapping("/updateAdmin")
@@ -190,6 +234,7 @@ public class WebController {
                 .rfId(rfid)
                 .build();
         try {
+            log.info(workerCreationRequest.toString());
             patchRequest(userInfo, "users/" + uuid, workerCreationRequest);
         } catch (Exception e) {
             e.printStackTrace();
@@ -243,6 +288,15 @@ public class WebController {
         restTemplate.postForObject(url, input, String.class);
     }
 
+    private <T> void putRequest(UserInfo login, String path, T input) {
+        String url = joinUrlParts(restServiceUrl, path);
+        log.info("Put for " + url);
+        RestTemplate restTemplate = new RestTemplateBuilder()
+                .basicAuthentication(login.userName, login.password)
+                .build();
+        restTemplate.put(url, input, String.class);
+    }
+
     private void deleteRequest(UserInfo login, String path) {
         String url = joinUrlParts(restServiceUrl, path);
         log.info("Delete for " + url);
@@ -255,11 +309,12 @@ public class WebController {
     @PostMapping("/login")
     public RedirectView handleLogin(@RequestParam String username, @RequestParam String password, @ModelAttribute("login") UserInfo userInfo) {
         try {
-            ResponseEntity<MeInformation> response = getRequest(new UserInfo(username, password), "auth-information", MeInformation.class);
+            ResponseEntity<MeInformation> response = getRequest(new UserInfo(username, password, ""), "auth-information", MeInformation.class);
             if (response.getStatusCode().is2xxSuccessful()) {
                 userInfo.setPassword(password);
                 userInfo.setUserName(username);
                 userInfo.setAdmin(Objects.requireNonNull(response.getBody()).getPermission().atLeast(PermissionLevel.ADMIN));
+                userInfo.setUuid(response.getBody().getUuid());
                 userInfo.setSuperAdmin(response.getBody().getPermission().atLeast(PermissionLevel.SUPER_ADMIN));
                 return new RedirectView("/");
             }
@@ -273,6 +328,7 @@ public class WebController {
     public RedirectView handleLogout(@ModelAttribute("login") UserInfo userInfo) {
         userInfo.userName = "";
         userInfo.password = "";
+        userInfo.uuid = "";
         return new RedirectView("/login");
     }
 
