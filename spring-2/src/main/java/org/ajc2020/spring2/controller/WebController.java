@@ -2,6 +2,7 @@ package org.ajc2020.spring2.controller;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.ajc2020.utilty.communication.AdminCreationRequest;
 import org.ajc2020.utilty.communication.AdminResource;
 import org.ajc2020.utilty.communication.MeInformation;
 import org.ajc2020.utilty.communication.WorkerResource;
@@ -93,6 +94,28 @@ public class WebController {
         return "usermanagement";
     }
 
+    @PostMapping("/updateAdmin")
+    public RedirectView updateAdmin(
+            @ModelAttribute("login") UserInfo userInfo,
+            @RequestParam(name = "edit.admin.uuid") String uuid,
+            @RequestParam(name = "edit.admin.name") String name,
+            @RequestParam(name = "edit.admin.email") String email,
+            @RequestParam(name = "edit.admin.password") String password
+    ) {
+        AdminCreationRequest adminCreationRequest = AdminCreationRequest.builder()
+                .email(email)
+                .name(name)
+                .password(password)
+                .build();
+        try {
+            patchRequest(userInfo, "admins/" + uuid, AdminCreationRequest.class, adminCreationRequest);
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+        return new RedirectView("/users");
+    }
+
     private String joinUrlParts(String... parts) {
         return String.join("/", parts);
     }
@@ -104,6 +127,15 @@ public class WebController {
                 .basicAuthentication(login.userName, login.password)
                 .build();
         return restTemplate.getForEntity(url, t);
+    }
+
+    private <T> void patchRequest(UserInfo login, String path, Class<T> t, T input) {
+        String url = joinUrlParts(restServiceUrl, path);
+        log.info("Patch for " + url);
+        RestTemplate restTemplate = new RestTemplateBuilder()
+                .basicAuthentication(login.userName, login.password)
+                .build();
+        restTemplate.patchForObject(url, input, String.class);
     }
 
     @PostMapping("/login")
@@ -137,4 +169,5 @@ public class WebController {
         // TODO: create calendar view
         return "lui";
     }
+
 }
