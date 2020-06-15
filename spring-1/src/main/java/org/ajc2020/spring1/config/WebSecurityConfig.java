@@ -2,12 +2,15 @@ package org.ajc2020.spring1.config;
 
 import org.ajc2020.spring1.filter.AuthFilter;
 import org.ajc2020.spring1.filter.CustomCorsFilter;
+import org.ajc2020.utility.resource.PermissionLevel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.stereotype.Component;
+
+import static org.ajc2020.utility.resource.PermissionLevel.*;
 
 @Component
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -34,6 +37,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/swagger-ui.html", "/v3/api-docs/**", "/swagger-ui/**",
                         "/rfid/**").permitAll()
+                .antMatchers("/admins/**").hasAnyAuthority(SUPER_ADMIN.getAuthority())
+                .antMatchers("/rfids/**").hasAnyAuthority(SUPER_ADMIN.getAuthority(), ADMIN.getAuthority(), DEVICE.getAuthority())
                 .anyRequest().authenticated()
 
                 .and()

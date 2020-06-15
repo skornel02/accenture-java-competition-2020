@@ -31,10 +31,10 @@ public class Admin implements User {
     public Admin() {
     }
 
-    public Admin(AdminCreationRequest adminCreationRequest) {
+    public Admin(AdminCreationRequest adminCreationRequest, String password) {
         setEmail(adminCreationRequest.getEmail());
         setName(adminCreationRequest.getName());
-        setPassword(adminCreationRequest.getPassword());
+        setPassword(password);
         setSuperAdmin(adminCreationRequest.isSuperAdmin());
     }
 

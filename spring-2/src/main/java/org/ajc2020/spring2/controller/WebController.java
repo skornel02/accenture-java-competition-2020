@@ -144,7 +144,7 @@ public class WebController {
                 .capacity(capacity)
                 .percentage(percentage / 100)
                 .build();
-        patchRequest(userInfo, "office-settings", officeResource);
+        patchRequest(userInfo, "office/settings", officeResource);
         return new RedirectView("/building");
     }
 
@@ -157,7 +157,7 @@ public class WebController {
         if (!fullName.isPresent()) return "lui";
         setModel(userInfo, fullName.get(), model);
         try {
-            ResponseEntity<OfficeResource> officeResource = getRequest(userInfo, "office-settings", OfficeResource.class);
+            ResponseEntity<OfficeResource> officeResource = getRequest(userInfo, "office/settings", OfficeResource.class);
             model.addAttribute("building", officeResource.getBody());
             return "building";
         } catch (Exception ignored)  {

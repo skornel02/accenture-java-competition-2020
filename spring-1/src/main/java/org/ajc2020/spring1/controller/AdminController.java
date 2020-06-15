@@ -2,6 +2,7 @@ package org.ajc2020.spring1.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import org.ajc2020.spring1.manager.AuthManager;
 import org.ajc2020.spring1.manager.SessionManager;
 import org.ajc2020.spring1.model.Admin;
 import org.ajc2020.spring1.service.AdminService;
@@ -31,11 +32,14 @@ public class AdminController {
 
     private final SessionManager sessionManager;
     private final AdminService adminService;
+    private final AuthManager authManager;
 
     public AdminController(SessionManager sessionManager,
-                           AdminService adminService) {
+                           AdminService adminService,
+                           AuthManager authManager) {
         this.sessionManager = sessionManager;
         this.adminService = adminService;
+        this.authManager = authManager;
     }
 
     public static AdminResource addLinks(AdminResource resource) {
@@ -51,11 +55,7 @@ public class AdminController {
             security = {@SecurityRequirement(name = "user", scopes = "super-admin")}
     )
     @GetMapping
-    public List<AdminResource> returnAdmins(Locale locale) {
-        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
-        if (!sessionManager.getPermission().atLeast(PermissionLevel.SUPER_ADMIN))
-            throw new ForbiddenException(resourceBundle.getString("error.forbidden.superadmin"));
-
+    public List<AdminResource> returnAdmins() {
         return adminService.findAll()
                         .stream()
                         .map(Admin::toResource)
@@ -74,7 +74,7 @@ public class AdminController {
         if (!sessionManager.getPermission().atLeast(PermissionLevel.SUPER_ADMIN))
             throw new ForbiddenException(resourceBundle.getString("error.forbidden.superadmin"));
 
-        Admin admin = new Admin(adminCreationRequest);
+        Admin admin = new Admin(adminCreationRequest, authManager.encryptPassword(adminCreationRequest.getPassword()));
         adminService.save(admin);
         return ResponseEntity.created(URI.create("/admins/" + admin.getUuid()))
                 .body(addLinks(admin.toResource()));
@@ -88,8 +88,6 @@ public class AdminController {
     @GetMapping(path = "/{uuid}")
     public AdminResource returnAdmin(@PathVariable String uuid, Locale locale) {
         ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
-        if (!sessionManager.getPermission().atLeast(PermissionLevel.SUPER_ADMIN))
-            throw new ForbiddenException(resourceBundle.getString("error.forbidden.superadmin"));
 
         return adminService.findByUuid(uuid)
                 .map(Admin::toResource)
@@ -105,8 +103,6 @@ public class AdminController {
     @PatchMapping("/{uuid}")
     public AdminResource updateAdmin(@PathVariable String uuid, @RequestBody AdminCreationRequest adminUpdateRequest, Locale locale) {
         ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
-        if (!sessionManager.getPermission().atLeast(PermissionLevel.SUPER_ADMIN))
-            throw new ForbiddenException(resourceBundle.getString("error.forbidden.superadmin"));
 
         Optional<Admin> admin = adminService.findByUuid(uuid);
         if (!admin.isPresent())
@@ -123,8 +119,6 @@ public class AdminController {
     @DeleteMapping("/{uuid}")
     public ResponseEntity<Void> deleteAdmin(@PathVariable String uuid, Locale locale) {
         ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
-        if (!sessionManager.getPermission().atLeast(PermissionLevel.SUPER_ADMIN))
-            throw new ForbiddenException(resourceBundle.getString("error.forbidden.superadmin"));
 
         try {
             adminService.deleteByUuid(uuid);

@@ -62,7 +62,7 @@ public class AuthenticationController {
             links.add(linkTo(methodOn(OfficeController.class).returnInsideResource(null)).withRel("workers inside"));
             links.add(linkTo(methodOn(OfficeController.class).returnWaitingResource(null)).withRel("workers waiting"));
             if (sessionManager.getAdmin().isSuperAdmin()) {
-                links.add(linkTo(methodOn(AdminController.class).returnAdmins(null)).withRel("admins"));
+                links.add(linkTo(methodOn(AdminController.class).returnAdmins()).withRel("admins"));
             }
         }
         return ResponseEntity.ok(builder.build().add(links));

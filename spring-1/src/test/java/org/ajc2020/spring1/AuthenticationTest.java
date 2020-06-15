@@ -3,6 +3,7 @@ package org.ajc2020.spring1;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.ajc2020.spring1.config.KIBeConfig;
 import org.ajc2020.spring1.filter.AuthFilter;
+import org.ajc2020.spring1.manager.AuthManager;
 import org.ajc2020.spring1.manager.SessionManager;
 import org.ajc2020.spring1.model.Admin;
 import org.ajc2020.utility.resource.PermissionLevel;
@@ -37,6 +38,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AuthenticationTest {
 
+    private static final String PASSWORD = "password";
+
     @Autowired
     private AuthFilter authFilter;
 
@@ -45,6 +48,9 @@ public class AuthenticationTest {
 
     @Autowired
     private KIBeConfig config;
+
+    @Autowired
+    private AuthManager authManager;
 
     private MockMvc mockMvc;
 
@@ -68,17 +74,17 @@ public class AuthenticationTest {
     public void setUp() {
         worker1 = new Worker();
         worker1.setEmail("email1");
-        worker1.setPassword("password1");
+        worker1.setPassword(authManager.encryptPassword(PASSWORD));
         worker2 = new Worker();
         worker2.setEmail("email2");
-        worker2.setPassword("password2");
+        worker2.setPassword(authManager.encryptPassword(PASSWORD));
         admin1 = new Admin();
         admin1.setEmail("emailAdmin1");
-        admin1.setPassword("adminPassword1");
+        admin1.setPassword(authManager.encryptPassword(PASSWORD));
         admin1.setSuperAdmin(false);
         admin2 = new Admin();
         admin2.setEmail("emailAdmin2");
-        admin2.setPassword("adminPassword2");
+        admin2.setPassword(authManager.encryptPassword(PASSWORD));
         admin2.setSuperAdmin(true);
 
         mockMvc = MockMvcBuilders
@@ -156,7 +162,7 @@ public class AuthenticationTest {
     public void normalFunction() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
 
-        String base64User1 = baseEncode(worker1.getEmail(), worker1.getPassword());
+        String base64User1 = baseEncode(worker1.getEmail(), PASSWORD);
         MvcResult resultUser1 = mockMvc.perform(get("/me").header("Authorization", "Basic " + base64User1).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful())
                 .andReturn();
@@ -165,7 +171,7 @@ public class AuthenticationTest {
         mockMvc.perform(get("/worker").header("Authorization", "Basic " + base64User1).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful());
 
-        String base64User2 = baseEncode(worker2.getEmail(), worker2.getPassword());
+        String base64User2 = baseEncode(worker2.getEmail(), PASSWORD);
         MvcResult resultUser2 = mockMvc.perform(get("/me").header("Authorization", "Basic " + base64User2).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful())
                 .andReturn();
@@ -174,7 +180,7 @@ public class AuthenticationTest {
         mockMvc.perform(get("/worker").header("Authorization", "Basic " + base64User2).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful());
 
-        String base64Admin1 = baseEncode(admin1.getEmail(), admin1.getPassword());
+        String base64Admin1 = baseEncode(admin1.getEmail(), PASSWORD);
         MvcResult resultAdmin1 = mockMvc.perform(get("/me").header("Authorization", "Basic " + base64Admin1).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful())
                 .andDo(print())
@@ -185,7 +191,7 @@ public class AuthenticationTest {
                 .andDo(print())
                 .andExpect(status().is2xxSuccessful());
 
-        String base64Admin2 = baseEncode(admin2.getEmail(), admin2.getPassword());
+        String base64Admin2 = baseEncode(admin2.getEmail(), PASSWORD);
         MvcResult resultAdmin2 = mockMvc.perform(get("/me").header("Authorization", "Basic " + base64Admin2).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful())
                 .andDo(print())
@@ -204,7 +210,7 @@ public class AuthenticationTest {
 
     @Test
     public void invalidUsernameAndPassword() throws Exception {
-        String base64InvalidUser1 = baseEncode(worker1.getEmail(), worker1.getPassword() + "bad");
+        String base64InvalidUser1 = baseEncode(worker1.getEmail(), PASSWORD + "bad");
         mockMvc.perform(get("/me").header("Authorization", "Basic " + base64InvalidUser1).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden());
 
