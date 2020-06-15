@@ -1,11 +1,12 @@
-package org.ajc2020.utilty.exceptions;
+package org.ajc2020.utility.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.FORBIDDEN)
-public class UserUpdateFailedException  extends RuntimeException {
-    public UserUpdateFailedException(String message) {
+public class ForbiddenException extends RuntimeException {
+
+    public ForbiddenException(String message) {
         super(message);
     }
 }

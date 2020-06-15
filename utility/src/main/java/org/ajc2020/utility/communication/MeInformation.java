@@ -1,7 +1,7 @@
-package org.ajc2020.utilty.communication;
+package org.ajc2020.utility.communication;
 
 import lombok.*;
-import org.ajc2020.utilty.resource.PermissionLevel;
+import org.ajc2020.utility.resource.PermissionLevel;
 import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.constraints.NotNull;

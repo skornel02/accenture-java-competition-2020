@@ -1,7 +1,7 @@
-package org.ajc2020.utilty.communication;
+package org.ajc2020.utility.communication;
 
 import lombok.*;
-import org.ajc2020.utilty.resource.WorkerStatus;
+import org.ajc2020.utility.resource.WorkerStatus;
 import org.springframework.hateoas.RepresentationModel;
 
 @Data

@@ -1,9 +1,9 @@
 package org.ajc2020.spring1.model;
 
 import lombok.Data;
-import org.ajc2020.utilty.communication.AdminCreationRequest;
-import org.ajc2020.utilty.communication.AdminResource;
-import org.ajc2020.utilty.resource.PermissionLevel;
+import org.ajc2020.utility.communication.AdminCreationRequest;
+import org.ajc2020.utility.communication.AdminResource;
+import org.ajc2020.utility.resource.PermissionLevel;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Column;

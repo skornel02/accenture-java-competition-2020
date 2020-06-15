@@ -2,7 +2,7 @@ package org.ajc2020.spring1.filter;
 
 import org.ajc2020.spring1.config.KIBeConfig;
 import org.ajc2020.spring1.manager.AuthManager;
-import org.ajc2020.utilty.resource.PermissionLevel;
+import org.ajc2020.utility.resource.PermissionLevel;
 import org.ajc2020.spring1.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

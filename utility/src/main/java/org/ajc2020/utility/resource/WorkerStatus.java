@@ -1,4 +1,4 @@
-package org.ajc2020.utilty.resource;
+package org.ajc2020.utility.resource;
 
 public enum WorkerStatus {
     WorkingFromHome,

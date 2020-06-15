@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.ajc2020.spring1.model.Ticket;
 import org.ajc2020.spring1.model.Worker;
 import org.ajc2020.spring1.repository.WorkerRepository;
-import org.ajc2020.utilty.resource.WorkerStatus;
+import org.ajc2020.utility.resource.WorkerStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
