@@ -3,9 +3,11 @@ package org.ajc2020.spring1.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.ajc2020.utility.communication.TicketResource;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 @Data
 @Entity
@@ -19,10 +21,17 @@ public class Ticket {
     private LocalDate targetDay;
 
     @Accessors(chain = true)
-    private LocalDate creationDate;
+    private OffsetDateTime creationDate;
 
     @ManyToOne
     @Accessors(chain = true)
     @JsonBackReference
     private Worker worker;
+
+    public TicketResource toResource() {
+        return TicketResource.builder()
+                .targetDay(targetDay)
+                .creationDate(creationDate)
+                .build();
+    }
 }

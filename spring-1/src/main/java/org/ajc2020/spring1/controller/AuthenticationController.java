@@ -38,17 +38,29 @@ public class AuthenticationController {
         MeInformation.MeInformationBuilder builder = MeInformation.builder()
                 .permission(sessionManager.getPermission());
         List<Link> links = new ArrayList<>();
+        links.add(linkTo(methodOn(OfficeController.class).returnOfficeSettings(null)).withRel("office-settings"));
         if (sessionManager.isSessionWorker()) {
             Worker worker = workerService.findByUuid(sessionManager.getWorker().getUuid()).get();
             builder = builder.worker(worker.toResource());
             links.add(linkTo(methodOn(WorkerController.class)
                     .returnWorker(worker.getUuid(), null)).withRel("self"));
+            links.add(linkTo(methodOn(HomeController.class)
+                    .register(worker.getRfid(), null, null)).withRel("manage ticket"));
+            links.add(linkTo(methodOn(WorkerController.class)
+                    .returnOfficeHours(worker.getUuid(), null)).withRel("office hours"));
+            links.add(linkTo(methodOn(WorkerController.class)
+                    .returnTickets(worker.getUuid(), null)).withRel("tickets"));
+            links.add(linkTo(methodOn(HomeController.class)
+                    .calculateRemainingTimeTillEntry(worker.getUuid(), null)).withRel("view estimated time"));
         }
         if (sessionManager.isSessionAdmin()) {
             builder = builder.admin(sessionManager.getAdmin().toResource());
             links.add(linkTo(methodOn(AdminController.class)
                     .returnAdmin(sessionManager.getAdmin().getUuid(), null)).withRel("self"));
             links.add(linkTo(methodOn(WorkerController.class).returnWorkers(null)).withRel("workers"));
+            links.add(linkTo(methodOn(OfficeController.class).returnBeenInsideResources(null)).withRel("workers that left"));
+            links.add(linkTo(methodOn(OfficeController.class).returnInsideResource(null)).withRel("workers inside"));
+            links.add(linkTo(methodOn(OfficeController.class).returnWaitingResource(null)).withRel("workers waiting"));
             if (sessionManager.getAdmin().isSuperAdmin()) {
                 links.add(linkTo(methodOn(AdminController.class).returnAdmins(null)).withRel("admins"));
             }

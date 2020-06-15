@@ -3,6 +3,7 @@ package org.ajc2020.spring1.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.ajc2020.utility.communication.OfficeHoursResource;
 
 import javax.persistence.*;
 import java.time.OffsetDateTime;
@@ -26,6 +27,13 @@ public class OfficeHours {
 
     public boolean isLoggedIn() {
         return getLeave() == null;
+    }
+
+    public OfficeHoursResource toResource() {
+        return OfficeHoursResource.builder()
+                .arrive(arrive)
+                .leave(leave)
+                .build();
     }
 
 }

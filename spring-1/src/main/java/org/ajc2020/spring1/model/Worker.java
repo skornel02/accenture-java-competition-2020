@@ -80,6 +80,10 @@ public class Worker implements User {
         return LocalDate.now();
     }
 
+    public OffsetDateTime now() {
+        return OffsetDateTime.now();
+    }
+
     public boolean hasTicketForToday() {
         return getTicketForDay(today()) != null;
     }
@@ -134,7 +138,7 @@ public class Worker implements User {
         }
         Ticket ticket = new Ticket()
                 .setWorker(this)
-                .setCreationDate(today())
+                .setCreationDate(now())
                 .setTargetDay(targetDay);
 
         tickets.add(ticket);
