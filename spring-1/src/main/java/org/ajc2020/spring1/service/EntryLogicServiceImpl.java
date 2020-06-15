@@ -11,12 +11,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Service
-public class EntryLogicServiceImp implements EntryLogicService {
+public class EntryLogicServiceImpl implements EntryLogicService {
 
     private final WorkerService workerService;
     private final OfficeService officeService;
 
-    public EntryLogicServiceImp(WorkerService workerService, OfficeService officeService) {
+    public EntryLogicServiceImpl(WorkerService workerService, OfficeService officeService) {
         this.workerService = workerService;
         this.officeService = officeService;
     }

@@ -2,7 +2,7 @@ package org.ajc2020.spring1;
 
 import org.ajc2020.spring1.model.OfficeSettings;
 import org.ajc2020.spring1.model.Worker;
-import org.ajc2020.spring1.service.EntryLogicServiceImp;
+import org.ajc2020.spring1.service.EntryLogicServiceImpl;
 import org.ajc2020.spring1.service.OfficeService;
 import org.ajc2020.spring1.service.WorkerServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +25,7 @@ public class EntryLogicTest {
     private static final int TEST_FOLD_AMOUNT = 5;
 
     @Autowired
-    EntryLogicServiceImp entryLogicService;
+    EntryLogicServiceImpl entryLogicService;
 
     @MockBean
     WorkerServiceImpl workerService;
