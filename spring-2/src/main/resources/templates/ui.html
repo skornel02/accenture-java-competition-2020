@@ -10,17 +10,17 @@
     <div class="col s12 m12 l12" th:insert="fragments/main.html :: navigation">
     </div>
     <div class="col s12 m12 l12" th:if="${adminMode}">
-        <h1 th:text="#{dashboard.greet(${username})}">Hello Admin!</h1>
+        <h5 th:text="#{dashboard.greet(${username})}">Hello Admin!</h5>
     </div>
     <div class="col s12 m12 l12" th:if="!${adminMode}">
-        <h1 th:text="#{dashboard.greet(${username})}">Hello Worker!</h1>
-        <h5 th:text="#{ticket.new}">New ticket</h5>
+        <h5 th:text="#{dashboard.greet(${username})}">Hello Worker!</h5>
+        <h6 th:text="#{ticket.new}">New ticket</h6>
         <form action="/register" method="get" >
             <input type="date" name="date">
             <input type="hidden" name="uuid" th:value="${uuid}">
             <input type="submit" value="Register" th:value="#{ticket.register}">
         </form>
-        <h5 th:text="#{ticket.delete}">Delete ticket</h5>
+        <h6 th:text="#{ticket.delete}">Delete ticket</h6>
         <form action="/cancel" method="get" >
             <input type="date" name="date">
             <input type="hidden" name="uuid" th:value="${uuid}">
