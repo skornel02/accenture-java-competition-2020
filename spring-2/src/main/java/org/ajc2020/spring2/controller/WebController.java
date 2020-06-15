@@ -96,10 +96,19 @@ public class WebController {
         setModel(userInfo, fullName.get(), model);
 
         model.addAttribute("users", getRequest(userInfo, "users", WorkerResource[].class).getBody());
+        return "usermanagement";
+    }
+
+    @GetMapping("/admins")
+    public String admions(@ModelAttribute("login") UserInfo userInfo, Model model) {
+        Optional<String> fullName = authorize(userInfo);
+        if (!fullName.isPresent()) return "lui";
+        setModel(userInfo, fullName.get(), model);
+
         if (userInfo.isSuperAdmin()) {
             model.addAttribute("admins", getRequest(userInfo, "admins", AdminResource[].class).getBody());
         }
-        return "usermanagement";
+        return "adminmanagement";
     }
 
     @PostMapping("/createAdmin")
@@ -120,7 +129,7 @@ public class WebController {
             e.printStackTrace();
 
         }
-        return new RedirectView("/users");
+        return new RedirectView("/admins");
 
     }
 
@@ -209,7 +218,7 @@ public class WebController {
             e.printStackTrace();
 
         }
-        return new RedirectView("/users");
+        return new RedirectView("/admins");
     }
 
     @GetMapping("/deleteAdmin/{uuid}")
