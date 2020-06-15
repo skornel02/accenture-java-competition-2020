@@ -204,6 +204,7 @@ public class Worker implements User {
         sb.append(", password='").append(password).append('\'');
         sb.append(", rfid='").append(rfid).append('\'');
         sb.append(", name='").append(name).append('\'');
+        sb.append(", averageTime='").append(averageTime).append('\'');
         sb.append('}');
         return sb.toString();
     }

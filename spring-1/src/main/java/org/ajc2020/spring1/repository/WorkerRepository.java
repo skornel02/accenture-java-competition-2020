@@ -15,4 +15,5 @@ public interface WorkerRepository extends JpaRepository<Worker, String> {
     List<Worker> findAll();
 
     Optional<Worker> findWorkerByUuid(String uuid);
+
 }
