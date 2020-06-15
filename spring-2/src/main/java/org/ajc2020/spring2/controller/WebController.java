@@ -2,11 +2,8 @@ package org.ajc2020.spring2.controller;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.ajc2020.utilty.communication.AdminCreationRequest;
-import org.ajc2020.utilty.communication.AdminResource;
-import org.ajc2020.utilty.communication.MeInformation;
-import org.ajc2020.utilty.communication.WorkerResource;
-import org.ajc2020.utilty.resource.PermissionLevel;
+import org.ajc2020.utility.communication.*;
+import org.ajc2020.utility.resource.PermissionLevel;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
@@ -88,10 +85,34 @@ public class WebController {
         if (!fullName.isPresent()) return "lui";
 
         model.addAttribute("users", getRequest(userInfo, "users", WorkerResource[].class).getBody());
-        model.addAttribute("admins", getRequest(userInfo, "admins", AdminResource[].class).getBody());
+        if (userInfo.isSuperAdmin()) {
+            model.addAttribute("admins", getRequest(userInfo, "admins", AdminResource[].class).getBody());
+        }
         model.addAttribute("adminMode", userInfo.isAdmin || userInfo.isSuperAdmin);
         model.addAttribute("username", fullName);
         return "usermanagement";
+    }
+
+    @PostMapping("/createAdmin")
+    public RedirectView createAdmin(
+            @ModelAttribute("login") UserInfo userInfo,
+            @RequestParam(name = "create.admin.name") String name,
+            @RequestParam(name = "create.admin.email") String email,
+            @RequestParam(name = "create.admin.password") String password
+    ) {
+        AdminCreationRequest adminCreationRequest = AdminCreationRequest.builder()
+                .email(email)
+                .name(name)
+                .password(password)
+                .build();
+        try {
+            postRequest(userInfo, "admins", adminCreationRequest);
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+        return new RedirectView("/users");
+
     }
 
     @PostMapping("/updateAdmin")
@@ -108,13 +129,88 @@ public class WebController {
                 .password(password)
                 .build();
         try {
-            patchRequest(userInfo, "admins/" + uuid, AdminCreationRequest.class, adminCreationRequest);
+            patchRequest(userInfo, "admins/" + uuid, adminCreationRequest);
         } catch (Exception e) {
             e.printStackTrace();
 
         }
         return new RedirectView("/users");
     }
+
+    @GetMapping("/deleteAdmin/{uuid}")
+    public RedirectView deleteAdmin(
+            @ModelAttribute("login") UserInfo userInfo,
+            @PathVariable(name = "uuid") String uuid
+    ) {
+        try {
+            deleteRequest(userInfo, "admins/" + uuid);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new RedirectView("/users");
+    }
+
+    @PostMapping("/createUser")
+    public RedirectView createUser(
+            @ModelAttribute("login") UserInfo userInfo,
+            @RequestParam(name = "create.user.name") String name,
+            @RequestParam(name = "create.user.email") String email,
+            @RequestParam(name = "create.user.rfid") String rfid,
+            @RequestParam(name = "create.user.password") String password
+    ) {
+        WorkerCreationRequest workerCreationRequest = WorkerCreationRequest.builder()
+                .email(email)
+                .name(name)
+                .password(password)
+                .rfId(rfid)
+                .build();
+        try {
+            postRequest(userInfo, "users", workerCreationRequest);
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+        return new RedirectView("/users");
+
+    }
+
+    @PostMapping("/updateUser")
+    public RedirectView updateUser(
+            @ModelAttribute("login") UserInfo userInfo,
+            @RequestParam(name = "edit.user.uuid") String uuid,
+            @RequestParam(name = "edit.user.name") String name,
+            @RequestParam(name = "edit.user.email") String email,
+            @RequestParam(name = "edit.user.rfid") String rfid,
+            @RequestParam(name = "edit.user.password") String password
+    ) {
+        WorkerCreationRequest workerCreationRequest = WorkerCreationRequest.builder()
+                .email(email)
+                .name(name)
+                .password(password)
+                .rfId(rfid)
+                .build();
+        try {
+            patchRequest(userInfo, "users/" + uuid, workerCreationRequest);
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+        return new RedirectView("/users");
+    }
+
+    @GetMapping("/deleteUser/{uuid}")
+    public RedirectView deleteUser(
+            @ModelAttribute("login") UserInfo userInfo,
+            @PathVariable(name = "uuid") String uuid
+    ) {
+        try {
+            deleteRequest(userInfo, "users/" + uuid);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new RedirectView("/users");
+    }
+
 
     private String joinUrlParts(String... parts) {
         return String.join("/", parts);
@@ -129,13 +225,31 @@ public class WebController {
         return restTemplate.getForEntity(url, t);
     }
 
-    private <T> void patchRequest(UserInfo login, String path, Class<T> t, T input) {
+    private <T> void patchRequest(UserInfo login, String path, T input) {
         String url = joinUrlParts(restServiceUrl, path);
         log.info("Patch for " + url);
         RestTemplate restTemplate = new RestTemplateBuilder()
                 .basicAuthentication(login.userName, login.password)
                 .build();
         restTemplate.patchForObject(url, input, String.class);
+    }
+
+    private <T> void postRequest(UserInfo login, String path, T input) {
+        String url = joinUrlParts(restServiceUrl, path);
+        log.info("Post for " + url);
+        RestTemplate restTemplate = new RestTemplateBuilder()
+                .basicAuthentication(login.userName, login.password)
+                .build();
+        restTemplate.postForObject(url, input, String.class);
+    }
+
+    private void deleteRequest(UserInfo login, String path) {
+        String url = joinUrlParts(restServiceUrl, path);
+        log.info("Delete for " + url);
+        RestTemplate restTemplate = new RestTemplateBuilder()
+                .basicAuthentication(login.userName, login.password)
+                .build();
+        restTemplate.delete(url);
     }
 
     @PostMapping("/login")

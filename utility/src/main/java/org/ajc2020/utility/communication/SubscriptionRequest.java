@@ -1,9 +1,7 @@
-package org.ajc2020.utilty.communication;
+package org.ajc2020.utility.communication;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AccessLevel;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.FutureOrPresent;

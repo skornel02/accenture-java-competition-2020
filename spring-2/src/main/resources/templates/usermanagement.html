@@ -45,23 +45,25 @@
                        th:onclick="editAdminPassword([[${user.getId()}]])">Change password</a>
                 </td>
 
-                <td th:if="${user.getStatus().equals(org.ajc2020.utilty.resource.WorkerStatus.InOffice)}"><a href="#"><i
-                        class="material-icons" th:title="#{icons.check.out}">swap_horiz</i><span
-                        th:text="#{icons.check.out}">Check out</span></a></td>
-                <td th:if="${!user.getStatus().equals(org.ajc2020.utilty.resource.WorkerStatus.InOffice)}"><a
-                        href="#"><i class="material-icons" th:title="#{icons.check.in}">code</i><span
-                        th:text="#{icons.check.in}">Check in</span></a></td>
+                <td th:switch="${user.getStatus()}">
+                    <a th:case="InOffice" href="#"><i
+                            class="material-icons" th:title="#{icons.check.out}">swap_horiz</i><span
+                            th:text="#{icons.check.out}">Check out</span></a>
+                    <a th:case="*" href="#"><i class="material-icons" th:title="#{icons.check.in}">code</i><span
+                            th:text="#{icons.check.in}">Check in</span></a>
+                </td>
+
                 <td><a href="#"><i class="material-icons" th:title="#{icons.reservations}">verified_user</i><span
                         th:text="#{icons.reservations}">reservations</span></a>
                 </td>
-                <td><a href="#"><i class="material-icons" th:title="#{icons.delete}">delete_forever</i><span
+                <td><a th:href="${'/deleteUser/'+user.getId()}"><i class="material-icons" th:title="#{icons.delete}">delete_forever</i><span
                         th:text="#{users.delete}">Delete</span></a></td>
-            </tr>
-            <tr>
-                <td colspan="8"><a href="#" th:text="#{users.new.user}">New worker</a></td>
             </tr>
             </tbody>
         </table>
+        <button data-target="create-user-modal" class="btn modal-trigger" th:text="#{users.new.user}">Create
+            user
+        </button>
         <h3 th:text="#{users.admins}">Admins</h3>
         <table class="responsive-table striped bordered">
             <thead>
@@ -91,15 +93,15 @@
                 </td>
                 <td><a href="#"><i class="material-icons" th:text="check_circle_outline">check_circle_outline</i></a>
                 </td>
-                <td><a href="#"><i class="material-icons" th:title="#{icons.delete}">delete_forever</i><span
+                <td><a th:href="${'/deleteAdmin/'+admin.getUuid()}"><i class="material-icons"
+                                                                       th:title="#{icons.delete}">delete_forever</i><span
                         th:text="#{users.delete}">Delete</span></a></td>
 
             </tr>
-            <tr>
-                <td colspan="4"><a href="#" th:text="#{users.new.admin}">New admin</a></td>
-            </tr>
             </tbody>
         </table>
+        <button data-target="create-admin-modal" class="btn modal-trigger"
+                th:text="#{users.new.admin}"></button>
     </div>
 </div>
 <div class="col s12 m3 modal" id="edit-user-modal">
@@ -112,9 +114,68 @@
 
             <h5 class="center">Edit Worker</h5>
             <table>
-                <tr>
+                <tr id="edit.user.name.row">
                     <td><label for="edit.user.name">Name:</label></td>
                     <td><input id="edit.user.name" name="edit.user.name"></td>
+                </tr>
+                <tr id="edit.user.email.row">
+                    <td><label for="edit.user.email">Email:</label></td>
+                    <td><input id="edit.user.email" name="edit.user.email"></td>
+                </tr>
+                <tr id="edit.user.rfid.row">
+                    <td><label for="edit.user.rfid">RFID:</label></td>
+                    <td><input id="edit.user.rfid" name="edit.user.rfid"></td>
+                </tr>
+                <tr id="edit.user.password.row">
+                    <td><label for="edit.user.password">Password:</label></td>
+                    <td><input id="edit.user.password" type="password" name="edit.user.password"></td>
+                </tr>
+                <tr id="edit.user.password.confirm.row">
+                    <td><label for="edit.user.password.confirm">Password:</label></td>
+                    <td><input id="edit.user.password.confirm" type="password" name="edit.user.password.confirm"></td>
+                </tr>
+
+                <tr>
+                    <td><input type="submit" value="Submit" class="btn-flat"></td>
+                    <td>
+                        <button type="submit" class="modal-close waves-effect waves-green btn-flat"
+                                data-target="edit-user-modal" onclick="return false;">Cancel
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+<div class="col s12 m3 modal" id="create-user-modal">
+    <div class="card-panel modal-content">
+        <form action="/createUser" method="post">
+            <input type="hidden"
+                   th:name="${_csrf.parameterName}"
+                   th:value="${_csrf.token}"/>
+
+            <h5 class="center">Create Worker</h5>
+            <table>
+                <tr>
+                    <td><label for="create.user.name">Name:</label></td>
+                    <td><input id="create.user.name" name="create.user.name"></td>
+                </tr>
+                <tr>
+                    <td><label for="create.user.email">Email:</label></td>
+                    <td><input id="create.user.email" name="create.user.email"></td>
+                </tr>
+                <tr>
+                    <td><label for="create.user.rfid">RFID:</label></td>
+                    <td><input id="create.user.rfid" name="create.user.rfid"></td>
+                </tr>
+                <tr>
+                    <td><label for="create.user.password">Password:</label></td>
+                    <td><input id="create.user.password" type="password" name="create.user.password"></td>
+                </tr>
+                <tr>
+                    <td><label for="create.user.password.confirm">Password:</label></td>
+                    <td><input id="create.user.password.confirm" type="password" name="create.user.password.confirm">
+                    </td>
                 </tr>
                 <tr>
                     <td><input type="submit" value="Submit" class="btn-flat"></td>
@@ -165,6 +226,43 @@
         </form>
     </div>
 </div>
+<div class="col s12 m3 modal" id="create-admin-modal">
+    <div class="card-panel modal-content">
+        <form action="/createAdmin" method="post">
+            <input type="hidden"
+                   th:name="${_csrf.parameterName}"
+                   th:value="${_csrf.token}"/>
+            <h5 class="center">Create Admin</h5>
+            <table>
+                <tr>
+                    <td><label for="create.admin.name">Name:</label></td>
+                    <td><input id="create.admin.name" name="create.admin.name"></td>
+                </tr>
+                <tr>
+                    <td><label for="create.admin.email">Email:</label></td>
+                    <td><input id="create.admin.email" name="create.admin.email"></td>
+                </tr>
+                <tr>
+                    <td><label for="create.admin.password">New password:</label></td>
+                    <td><input id="create.admin.password" type="password" name="create.admin.password"></td>
+                </tr>
+                <tr>
+                    <td><label for="create.admin.password.confirm">Confirm password:</label></td>
+                    <td><input id="create.admin.password.confirm" type="password" name="create.admin.password.confirm">
+                    </td>
+                </tr>
+                <tr>
+                    <td><input type="submit" value="Submit" class="btn-flat"></td>
+                    <td>
+                        <button type="submit" class="modal-close waves-effect waves-green btn-flat"
+                                data-target="edit-admin-modal" onclick="return false;">Cancel
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
 
 <script type="text/javascript" th:src="@{js/materialize.min.js}" src="../static/js/materialize.min.js"></script>
 <script>
@@ -172,25 +270,65 @@
         $('.modal').modal();
     });
 
+    function clearUserForm() {
+        $('#edit\\.user\\.uuid').val("");
+
+        $('#edit\\.user\\.name').val("");
+        $('#edit\\.user\\.name\\.row').hide();
+
+        $('#edit\\.user\\.email').val("");
+        $('#edit\\.user\\.email\\.row').hide();
+
+        $('#edit\\.user\\.rfid').val("");
+        $('#edit\\.user\\.rfid\\.row').hide();
+
+        $('#edit\\.user\\.password').val("");
+        $('#edit\\.user\\.password\\.row').hide();
+
+        $('#edit\\.user\\.password\\.confirm').val("");
+        $('#edit\\.user\\.password\\.confirm\\.row').hide();
+    }
+
+
     function editUserName(uuid, oldName) {
-        let name = prompt("Name:", oldName);
-        if (name !== null) {
-            // TODO: make request, etc.
-        }
+        clearUserForm();
+        let modal = $('#edit-user-modal');
+        $('#edit\\.user\\.name').val(oldName);
+        $('#edit\\.user\\.name\\.row').show();
+        $('#edit\\.user\\.uuid').val(uuid);
+        modal.modal();
+        modal.modal('open');
     }
 
     function editUserEmail(uuid, oldName) {
-        let name = prompt("Email:", oldName);
-        if (name !== null) {
-            // TODO: make request, etc.
-        }
+        clearUserForm();
+        let modal = $('#edit-user-modal');
+        $('#edit\\.user\\.email').val(oldName);
+        $('#edit\\.user\\.email\\.row').show();
+        $('#edit\\.user\\.uuid').val(uuid);
+        modal.modal();
+        modal.modal('open');
     }
 
     function editUserRfid(uuid, oldName) {
-        let name = prompt("Rfid:", oldName);
-        if (name !== null) {
-            // TODO: make request, etc.
-        }
+        clearUserForm();
+        let modal = $('#edit-user-modal');
+        $('#edit\\.user\\.rfid').val(oldName);
+        $('#edit\\.user\\.rfid\\.row').show();
+        $('#edit\\.user\\.uuid').val(uuid);
+        modal.modal();
+        modal.modal('open');
+    }
+
+    function editUserPassword(uuid) {
+        clearUserForm();
+        let modal = $('#edit-user-modal');
+        $('#edit\\.user\\.password').val("");
+        $('#edit\\.user\\.password\\.row').show();
+        $('#edit\\.user\\.password\\.row').val("");
+        $('#edit\\.user\\.password\\.confirm\\.row').show();
+        modal.modal();
+        modal.modal('open');
     }
 
     function clearAdminForm() {
@@ -232,8 +370,8 @@
     function editAdminPassword(uuid) {
         clearAdminForm();
         let modal = $('#edit-admin-modal');
-        $('#edit\\.admin\\.email\\.password').val("");
-        $('#edit\\.admin\\.email\\.password\\.row').show();
+        $('#edit\\.admin\\.password').val("");
+        $('#edit\\.admin\\.password\\.row').show();
         $('#edit\\.admin\\.password\\.row').val("");
         $('#edit\\.admin\\.password\\.confirm\\.row').show();
         modal.modal();

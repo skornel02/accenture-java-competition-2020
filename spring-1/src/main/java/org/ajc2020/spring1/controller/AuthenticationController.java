@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.ajc2020.spring1.manager.SessionManager;
 import org.ajc2020.spring1.model.Worker;
 import org.ajc2020.spring1.service.WorkerService;
-import org.ajc2020.utilty.communication.MeInformation;
+import org.ajc2020.utility.communication.MeInformation;
 import org.springframework.hateoas.Link;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

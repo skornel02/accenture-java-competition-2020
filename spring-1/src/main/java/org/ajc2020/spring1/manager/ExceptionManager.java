@@ -2,10 +2,10 @@ package org.ajc2020.spring1.manager;
 
 import org.ajc2020.spring1.model.ErrorResponseEntity;
 import org.ajc2020.spring1.model.ExceptionResponse;
-import org.ajc2020.utilty.exceptions.ForbiddenException;
-import org.ajc2020.utilty.exceptions.UserCreationFailedException;
-import org.ajc2020.utilty.exceptions.UserNotFoundException;
-import org.ajc2020.utilty.exceptions.UserUpdateFailedException;
+import org.ajc2020.utility.exceptions.ForbiddenException;
+import org.ajc2020.utility.exceptions.UserCreationFailedException;
+import org.ajc2020.utility.exceptions.UserNotFoundException;
+import org.ajc2020.utility.exceptions.UserUpdateFailedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

@@ -1,4 +1,4 @@
-package org.ajc2020.utilty.communication;
+package org.ajc2020.utility.communication;
 
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;

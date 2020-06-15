@@ -4,8 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.ajc2020.spring1.config.KIBeConfig;
 import org.ajc2020.spring1.model.Admin;
 import org.ajc2020.spring1.service.AdminService;
-import org.ajc2020.utilty.communication.AdminCreationRequest;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.ajc2020.utility.communication.AdminCreationRequest;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
 
