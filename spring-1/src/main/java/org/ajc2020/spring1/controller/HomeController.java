@@ -5,13 +5,16 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.slf4j.Slf4j;
 import org.ajc2020.spring1.manager.SessionManager;
 import org.ajc2020.spring1.model.Worker;
-import org.ajc2020.spring1.service.OfficeService;
-import org.ajc2020.spring1.service.WorkerServiceImpl;
+import org.ajc2020.spring1.service.EntryLogicService;
+import org.ajc2020.spring1.service.WorkerService;
+import org.ajc2020.utility.communication.RemainingTime;
 import org.ajc2020.utility.exceptions.ForbiddenException;
+import org.ajc2020.utility.exceptions.UserNotFoundException;
 import org.ajc2020.utility.resource.PermissionLevel;
 import org.ajc2020.utility.resource.RegistrationStatus;
 import org.ajc2020.utility.resource.RfIdStatus;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -21,15 +24,15 @@ import java.util.*;
 public class HomeController {
 
     private final SessionManager sessionManager;
-    private final WorkerServiceImpl workerService;
-    private final OfficeService officeService;
+    private final WorkerService workerService;
+    private final EntryLogicService entryLogicService;
 
     public HomeController(SessionManager sessionManager,
-                          OfficeService officeService,
-                          WorkerServiceImpl workerService) {
+                          WorkerService workerService,
+                          EntryLogicService entryLogicService) {
         this.sessionManager = sessionManager;
-        this.officeService = officeService;
         this.workerService = workerService;
+        this.entryLogicService = entryLogicService;
     }
 
     @Operation(
@@ -46,12 +49,8 @@ public class HomeController {
 
         Worker worker = workerService.findByRfid(rfid);
         if (worker == null) return RfIdStatus.unknownRfid();
-        long workerRank = worker.hasTicketForToday() ?
-                workerService.getRank(worker) :
-                workerService.countUsersWaiting();
 
-        if (officeService.getOfficeSetting().getEffectiveCapacity() >=
-                workerService.countUsersInOffice() + workerRank) {
+        if (!entryLogicService.isWorkerAllowedInside(worker)) {
             return RfIdStatus.fullHouse();
         }
         if (worker.checkin(new Date())) {
@@ -108,7 +107,7 @@ public class HomeController {
             tags = "Tickets",
             security = {@SecurityRequirement(name = "user")}
     )
-    @DeleteMapping(path = "/users/{uuid}/tickets/{date}")
+    @DeleteMapping("/users/{uuid}/tickets/{date}")
     public RegistrationStatus cancel(@PathVariable String uuid,
                                      @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
                                      Locale locale) {
@@ -125,5 +124,31 @@ public class HomeController {
         workerService.save(worker.get());
         return new RegistrationStatus(RegistrationStatus.Status.OK);
     }
+
+    @Operation(
+            description = "Calculate expected waiting time",
+            tags = "Tickets",
+            security = {@SecurityRequirement(name = "user")}
+    )
+    @GetMapping("/users/{uuid}/entry-time-remaining")
+    public ResponseEntity<RemainingTime> calculateRemainingTimeTillEntry(@PathVariable String uuid, Locale locale) {
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
+        if (!sessionManager.getPermission().atLeast(PermissionLevel.ADMIN)
+                && !(sessionManager.isSessionWorker() && Objects.equals(uuid, sessionManager.getWorker().getUuid())))
+            throw new ForbiddenException(resourceBundle.getString("error.forbidden.admin"));
+
+        Optional<Worker> workerOpt = workerService.findByUuid(uuid);
+        if (!workerOpt.isPresent())
+            throw new UserNotFoundException(resourceBundle.getString("error.user.not.found"));
+        Worker worker = workerOpt.get();
+
+        return ResponseEntity.ok(
+                RemainingTime.builder()
+                        .projectedEntryTime(entryLogicService.getEstimatedTimeRemainingForWorker(worker))
+                        .status(worker.getStatus())
+                        .build()
+        );
+    }
+
 
 }

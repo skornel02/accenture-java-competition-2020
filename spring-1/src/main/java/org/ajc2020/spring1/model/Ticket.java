@@ -6,6 +6,7 @@ import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Objects;
 
 @Data
 @Entity
@@ -25,5 +26,4 @@ public class Ticket {
     @Accessors(chain = true)
     @JsonBackReference
     private Worker worker;
-
 }

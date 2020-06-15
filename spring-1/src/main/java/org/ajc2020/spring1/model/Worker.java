@@ -10,10 +10,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Entity
 @Data
@@ -204,7 +201,24 @@ public class Worker implements User {
         sb.append(", password='").append(password).append('\'');
         sb.append(", rfid='").append(rfid).append('\'');
         sb.append(", name='").append(name).append('\'');
+        sb.append(", averageTime='").append(averageTime).append('\'');
         sb.append('}');
         return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Worker worker = (Worker) o;
+        return Objects.equals(uuid, worker.uuid) &&
+                Objects.equals(email, worker.email) &&
+                Objects.equals(rfid, worker.rfid) &&
+                Objects.equals(name, worker.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uuid, email, rfid, name);
     }
 }

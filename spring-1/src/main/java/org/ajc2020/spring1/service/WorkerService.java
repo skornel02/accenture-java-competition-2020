@@ -19,9 +19,13 @@ public interface WorkerService {
 
     void deleteByUuid(String uuid);
 
-    long countUsersInOffice();
+    List<Worker> getUsersInOffice();
 
-    long countUsersWaiting();
+    int countUsersInOffice();
 
-    long getRank(Worker worker);
+    List<Worker> getUsersWaiting();
+
+    int countUsersWaiting();
+
+    int getRank(Worker worker);
 }

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -49,25 +50,39 @@ public class WorkerServiceImpl implements WorkerService {
     }
 
     @Override
-    public long countUsersInOffice() {
-        return findAll().stream().filter(x -> x.getStatus().equals(WorkerStatus.InOffice)).count();
+    public int countUsersInOffice() {
+        return getUsersInOffice().size();
     }
 
     @Override
-    public long countUsersWaiting() {
-        return findAll().stream().filter(x -> x.getStatus().equals(WorkerStatus.OnList)).count();
-    }
-
-    @Override
-    public long getRank(Worker worker) {
-        if (!worker.hasTicketForToday()) return Long.MAX_VALUE;
-        Date today = worker.today();
+    public List<Worker> getUsersInOffice() {
         return findAll().stream()
+                .filter(worker -> worker.getStatus() == WorkerStatus.InOffice)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public int countUsersWaiting() {
+        return getUsersWaiting().size();
+    }
+
+    @Override
+    public List<Worker> getUsersWaiting() {
+        return findAll().stream()
+                .filter(worker -> worker.getStatus() == WorkerStatus.OnList)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public int getRank(Worker worker) {
+        if (!worker.hasTicketForToday()) return Integer.MAX_VALUE;
+        Date today = worker.today();
+        return Math.toIntExact(findAll().stream()
                 .filter(Worker::hasTicketForToday)
                 .map(x -> x.getTicketForDay(today))
                 .map(Ticket::getCreationDate)
                 .filter(x -> x.before(worker.getTicketForDay(today).getCreationDate()))
-                .count();
+                .count());
     }
 
 }
