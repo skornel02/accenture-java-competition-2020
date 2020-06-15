@@ -16,9 +16,9 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Objects;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @Slf4j
 @Controller
@@ -86,6 +86,21 @@ public class WebController {
         Optional<String> fullName = authorize(userInfo);
         if (!fullName.isPresent()) return "lui";
         setModel(userInfo, fullName.get(), model);
+        if (!userInfo.isAdmin() && !userInfo.isSuperAdmin()) {
+            String[] reservations =
+                    Arrays.stream(
+                            Objects.requireNonNull(
+                                    getRequest(userInfo, "users/" + userInfo.getUuid() + "/tickets", TicketResource[].class)
+                                            .getBody()))
+                            .map(TicketResource::getTargetDay)
+                            .map(x->x.format(DateTimeFormatter.ISO_DATE))
+                            .toArray(String[]::new);
+            log.info("Dumping " + reservations.length + " items");
+            for( String s : reservations) {
+                log.info(s);
+            }
+            model.addAttribute("reservations", reservations);
+        }
         return "ui";
     }
 
@@ -136,10 +151,9 @@ public class WebController {
     @GetMapping("/register")
     public RedirectView register(
             @ModelAttribute("login") UserInfo userInfo,
-            @RequestParam String uuid,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date date
     ) {
-        putRequest(userInfo, "users/"+uuid+"/tickets/"+new SimpleDateFormat("yyyy-MM-dd").format(date), "");
+        putRequest(userInfo, "users/"+userInfo.getUuid()+"/tickets/"+new SimpleDateFormat("yyyy-MM-dd").format(date), "");
         return new RedirectView("/");
     }
 
@@ -177,10 +191,9 @@ public class WebController {
     @GetMapping("/cancel")
     public RedirectView cancel(
             @ModelAttribute("login") UserInfo userInfo,
-            @RequestParam String uuid,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date date
     ) {
-        deleteRequest(userInfo, "users/"+uuid+"/tickets/"+new SimpleDateFormat("yyyy-MM-dd").format(date));
+        deleteRequest(userInfo, "users/"+userInfo.getUuid()+"/tickets/"+new SimpleDateFormat("yyyy-MM-dd").format(date));
         return new RedirectView("/");
     }
 

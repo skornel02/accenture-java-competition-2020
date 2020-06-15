@@ -14,22 +14,132 @@
     </div>
     <div class="col s12 m12 l12" th:if="!${adminMode}">
         <h5 th:text="#{dashboard.greet(${username})}">Hello Worker!</h5>
-        <h6 th:text="#{ticket.new}">New ticket</h6>
-        <form action="/register" method="get" >
-            <input type="date" name="date">
-            <input type="hidden" name="uuid" th:value="${uuid}">
-            <input type="submit" value="Register" th:value="#{ticket.register}">
-        </form>
-        <h6 th:text="#{ticket.delete}">Delete ticket</h6>
-        <form action="/cancel" method="get" >
-            <input type="date" name="date">
-            <input type="hidden" name="uuid" th:value="${uuid}">
-            <input type="submit" value="Cancel" th:value="#{ticket.cancel}">
-        </form>
+
+        <input type="text" class="datepicker" id="sched_picker">
+        <div class="row">
+            <div class="col s12 center">
+                <h4 id="counter">&nbsp;</h4>
+            </div>
+        </div>
+        <div>
+            <div class="col s12 center">
+                <h5 id="errorMessage">&nbsp;</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s12 center">
+                <h5>Select a date you would like to come in</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s12" id="toRenderDatepickerIn"></div>
+        </div>
+<!--        <h6 th:text="#{ticket.new}">New ticket</h6>-->
+<!--        <form action="/register" method="get" >-->
+<!--            <input type="date" name="date">-->
+<!--            <input type="hidden" name="uuid" th:value="${uuid}">-->
+<!--            <input type="submit" value="Register" th:value="#{ticket.register}">-->
+<!--        </form>-->
+<!--        <h6 th:text="#{ticket.delete}">Delete ticket</h6>-->
+<!--        <form action="/cancel" method="get" >-->
+<!--            <input type="date" name="date">-->
+<!--            <input type="hidden" name="uuid" th:value="${uuid}">-->
+<!--            <input type="submit" value="Cancel" th:value="#{ticket.cancel}">-->
+<!--        </form>-->
     </div>
 </div>
 
 <script type="text/javascript" th:src="@{js/materialize.min.js}" src="../static/js/materialize.min.js"></script>
+<script th:inline="javascript">
+    /*<!<CDATA[*/
+    const ticketNew = /*[[#{ticket.new}]]*/ "New ticket";
+    const ticketRegister = /*[[#{ticket.register}]]*/ "Register ticket";
+    const ticketCancel = /*[[#{ticket.reset}]]*/ "Reset";
+    const ticketDelete = /*[[#{ticket.delete}]]*/ "Delete ticket";
+    const reservations = /*[[${reservations}]]*/ [];
+    /*]]>*/
 
+    function addOneMonth(dateToAddTo){
+        return new Date((dateToAddTo.getMonth() === 11 ? dateToAddTo.getFullYear() + 1 : dateToAddTo.getFullYear()), (dateToAddTo.getMonth() + 1) % 12, Math.min(dateToAddTo.getDate(), new Date((dateToAddTo.getMonth() === 11 ? dateToAddTo.getFullYear() + 1 : dateToAddTo.getFullYear()), (dateToAddTo.getMonth() + 2) % 12, 0).getDate()));
+    }
+    $(document).ready(function(){
+        M.Modal.defaults.preventScrolling=false;
+        let picker = document.querySelector('#sched_picker');
+        let now = new Date();
+        let nextMonth = addOneMonth(now);
+        M.Datepicker.init(picker,
+            {
+                format: "yyyy-mm-dd",
+                firstDay : 1,
+                minDate: now,
+                maxDate: nextMonth,
+                yearRange: [now.getFullYear(), nextMonth.getFullYear()],
+                container: document.querySelector("#toRenderDatepickerIn"),
+                i18n:
+                    {
+                        "done": ticketRegister,
+                        "cancel": ticketCancel
+                    },
+                disableDayFn: function(date){
+                    date.setDate(date.getDate() + 1);
+                    return reservations.indexOf(date.toISOString().split('T')[0]) > -1;
+                }
+            }
+        );
+        var instance = M.Datepicker.getInstance(picker);
+        instance.open();
+        instance.modal.$overlay.remove();
+        instance.doneBtn.setAttribute("id", "doneButton");
+        instance.cancelBtn.setAttribute("id", "resetButton");
+        instance.cancelBtn.outerHTML = instance.cancelBtn.outerHTML;
+        instance.doneBtn.outerHTML = instance.doneBtn.outerHTML;
+        document.querySelector("#resetButton").onclick = function(){instance.gotoDate(now);};
+        document.querySelector("#doneButton").onclick = function(){
+            if(instance.toString().length === 0){
+                M.toast({html: 'Please choose a date!'});
+                return;
+            }
+            document.location = "/register?date="+instance.toString();
+            console.log(instance.toString());
+            //TODO: reserve date instance.toString()
+        };
+    });
+
+    var runCountdown = true;
+    var expectedTimeStamp = 0;
+
+    setInterval(function(){
+        var now = new Date();
+        if(!runCountdown)
+            return;
+        if(expectedTimeStamp === 0){
+            document.getElementById("counter").innerHTML = "&nbsp;";
+            return;
+        }
+        let expected = new Date(expectedTimeStamp * 1000);
+        if(now.toDateString() === expected.toDateString()){
+            if(now >= expected){
+                document.getElementById("counter").innerText = "You can enter now";
+            }else{
+                let remaining = (Date.parse(expected) - Date.parse(now)) / 1000;
+                let hour = (remaining - (remaining % 3600)) / 3600;
+                remaining -= hour * 3600;
+                let min = (remaining - (remaining % 60)) / 60;
+                let sec = remaining % 60;
+                document.getElementById("counter").innerText = "You can enter in " + ("0" + hour).slice(-2) + ":" + ("0" + min).slice(-2) + ":" + ("0" + sec).slice(-2);
+            }
+        }else{
+            if(now > expected){
+                document.getElementById("counter").innerText = "You could have entered on " + expected.toLocaleDateString("en-US");
+            }else{
+                document.getElementById("counter").innerText = "You can enter on " + expected.toLocaleDateString("en-US");
+            }
+        }
+    }, 1000);
+
+    setInterval(function(){
+        //TODO: request "you are welcome" timestamp, change expectedTimeStamp and runCountdown according to results
+    }, 15000);
+</script>
 </body>
 </html>

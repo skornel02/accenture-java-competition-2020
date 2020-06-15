@@ -51,3 +51,16 @@ table.striped > tbody > tr:nth-child(odd) {
 table.striped > tbody > tr:nth-child(even) {
     background-color: rgba(220, 220, 220, 0.5);
 }
+
+#sched_picker{
+    display: none;
+}
+.datepicker-modal{
+    width: 100% !important;
+    position: initial !important;
+    box-shadow: initial !important;
+    -webkit-box-shadown: initial !important;
+}
+#errorMessage{
+    color: red;
+}
