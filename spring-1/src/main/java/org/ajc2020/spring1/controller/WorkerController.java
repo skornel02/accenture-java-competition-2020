@@ -2,6 +2,7 @@ package org.ajc2020.spring1.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import org.ajc2020.spring1.manager.AuthManager;
 import org.ajc2020.spring1.manager.SessionManager;
 import org.ajc2020.spring1.model.OfficeHours;
 import org.ajc2020.spring1.model.Ticket;
@@ -34,11 +35,14 @@ public class WorkerController {
 
     private final SessionManager sessionManager;
     private final WorkerService workerService;
+    private final AuthManager authManager;
 
     public WorkerController(SessionManager sessionManager,
-                            WorkerService workerService) {
+                            WorkerService workerService,
+                            AuthManager authManager) {
         this.sessionManager = sessionManager;
         this.workerService = workerService;
+        this.authManager = authManager;
     }
 
     public static WorkerResource addLinks(WorkerResource resource) {
@@ -85,7 +89,7 @@ public class WorkerController {
         if (!sessionManager.getPermission().atLeast(PermissionLevel.ADMIN))
             throw new ForbiddenException(resourceBundle.getString("error.forbidden.admin"));
 
-        Worker worker = new Worker(workerCreationRequest);
+        Worker worker = new Worker(workerCreationRequest, authManager.encryptPassword(workerCreationRequest.getPassword()));
         workerService.save(worker);
         return ResponseEntity.created(URI.create("/users/" + worker.getUuid()))
                 .body(addLinks(worker.toResource()));
@@ -99,7 +103,8 @@ public class WorkerController {
     @GetMapping("/{uuid}")
     public WorkerResource returnWorker(@PathVariable String uuid, Locale locale) {
         ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
-        if (!sessionManager.getPermission().atLeast(PermissionLevel.ADMIN))
+        if (!sessionManager.getPermission().atLeast(PermissionLevel.ADMIN)
+                && !(sessionManager.isSessionWorker() && Objects.equals(uuid, sessionManager.getWorker().getUuid())))
             throw new ForbiddenException(resourceBundle.getString("error.forbidden.admin"));
 
         return workerService

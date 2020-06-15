@@ -43,12 +43,7 @@ public class HomeController {
             security = {@SecurityRequirement(name = "user", scopes = "admin"), @SecurityRequirement(name = "device")}
     )
     @GetMapping(path = "/rfids/{rfid}/checkin")
-    public RfIdStatus checkin(@PathVariable String rfid, Locale locale) {
-        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
-        if (!sessionManager.getPermission().atLeast(PermissionLevel.ADMIN)
-                && !(sessionManager.isSessionWorker() && Objects.equals(rfid, sessionManager.getWorker().getRfid())))
-            throw new ForbiddenException(resourceBundle.getString("error.forbidden.admin"));
-
+    public RfIdStatus checkin(@PathVariable String rfid) {
         Worker worker = workerService.findByRfid(rfid);
         if (worker == null) return RfIdStatus.unknownRfid();
 
@@ -68,12 +63,7 @@ public class HomeController {
             security = {@SecurityRequirement(name = "user", scopes = "admin"), @SecurityRequirement(name = "device")}
     )
     @GetMapping(path = "/rfids/{rfid}/checkout")
-    public RfIdStatus checkout(@PathVariable String rfid, Locale locale) {
-        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
-        if (!sessionManager.getPermission().atLeast(PermissionLevel.ADMIN)
-                && !(sessionManager.isSessionWorker() && Objects.equals(rfid, sessionManager.getWorker().getRfid())))
-            throw new ForbiddenException(resourceBundle.getString("error.forbidden.admin"));
-
+    public RfIdStatus checkout(@PathVariable String rfid) {
         Worker worker = workerService.findByRfid(rfid);
         if (worker == null) return RfIdStatus.unknownRfid();
         if (worker.checkout(OffsetDateTime.now())) {

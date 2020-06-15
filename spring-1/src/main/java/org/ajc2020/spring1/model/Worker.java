@@ -48,10 +48,10 @@ public class Worker implements User {
     public Worker() {
     }
 
-    public Worker(WorkerCreationRequest workerCreationRequest) {
+    public Worker(WorkerCreationRequest workerCreationRequest, String password) {
         setEmail(workerCreationRequest.getEmail());
         setName(workerCreationRequest.getName());
-        setPassword(workerCreationRequest.getPassword());
+        setPassword(password);
         setRfid(workerCreationRequest.getRfId());
     }
 
