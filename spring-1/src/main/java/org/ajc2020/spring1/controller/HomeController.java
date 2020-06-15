@@ -17,6 +17,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.*;
 
 @Slf4j
@@ -53,7 +55,7 @@ public class HomeController {
         if (!entryLogicService.isWorkerAllowedInside(worker)) {
             return RfIdStatus.fullHouse();
         }
-        if (worker.checkin(new Date())) {
+        if (worker.checkin(OffsetDateTime.now())) {
             workerService.save(worker);
             return RfIdStatus.ok();
         }
@@ -74,7 +76,7 @@ public class HomeController {
 
         Worker worker = workerService.findByRfid(rfid);
         if (worker == null) return RfIdStatus.unknownRfid();
-        if (worker.checkout(new Date())) {
+        if (worker.checkout(OffsetDateTime.now())) {
             workerService.save(worker);
             return RfIdStatus.ok();
         }
@@ -88,7 +90,7 @@ public class HomeController {
     )
     @PutMapping(path = "/users/{uuid}/tickets/{date}")
     public RegistrationStatus register(@PathVariable String uuid,
-                                       @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
+                                       @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
                                        Locale locale) {
         ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
         if (!sessionManager.getPermission().atLeast(PermissionLevel.ADMIN)
@@ -109,7 +111,7 @@ public class HomeController {
     )
     @DeleteMapping("/users/{uuid}/tickets/{date}")
     public RegistrationStatus cancel(@PathVariable String uuid,
-                                     @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
+                                     @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
                                      Locale locale) {
         ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
         if (!sessionManager.getPermission().atLeast(PermissionLevel.ADMIN)

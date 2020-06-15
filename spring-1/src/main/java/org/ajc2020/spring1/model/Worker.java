@@ -2,15 +2,20 @@ package org.ajc2020.spring1.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
-import org.ajc2020.utility.resource.PermissionLevel;
 import org.ajc2020.utility.communication.WorkerCreationRequest;
 import org.ajc2020.utility.communication.WorkerResource;
+import org.ajc2020.utility.resource.PermissionLevel;
 import org.ajc2020.utility.resource.WorkerStatus;
-import org.apache.commons.lang3.time.DateUtils;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.*;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Entity
 @Data
@@ -50,7 +55,7 @@ public class Worker implements User {
         setRfid(workerCreationRequest.getRfId());
     }
 
-    public boolean checkin(Date timestamp) {
+    public boolean checkin(OffsetDateTime timestamp) {
         if (getStatus().equals(WorkerStatus.InOffice)) return false;
         Ticket ticket = getTicketForDay(today());
         if (ticket != null) {
@@ -62,7 +67,7 @@ public class Worker implements User {
         return true;
     }
 
-    public boolean checkout(Date timestamp) {
+    public boolean checkout(OffsetDateTime timestamp) {
         if (!getStatus().equals(WorkerStatus.InOffice)) return false;
         Optional<OfficeHours> login = openLogin();
         if (!login.isPresent()) return false;
@@ -71,8 +76,8 @@ public class Worker implements User {
         return true;
     }
 
-    public Date today() {
-        return truncateDay(new Date());
+    public LocalDate today() {
+        return LocalDate.now();
     }
 
     public boolean hasTicketForToday() {
@@ -112,23 +117,18 @@ public class Worker implements User {
     public double getAverageTimeInOffice() {
         return officeHoursHistory.stream()
                 .filter(x -> x.getLeave() != null)
-                .mapToLong(x -> (x.getLeave().getTime() - x.getArrive().getTime()) * 1000)
+                .mapToLong(x -> ChronoUnit.MICROS.between(x.getArrive(), x.getLeave()))
                 .average().orElse(Double.NaN);
     }
 
-    public static Date truncateDay(Date date) {
-        return DateUtils.truncate(date, 5);
-    }
-
-    public Ticket getTicketForDay(Date targetDay) {
+    public Ticket getTicketForDay(LocalDate targetDay) {
         return tickets.stream()
-                .filter(x -> truncateDay(x.getTargetDay()).equals(truncateDay(targetDay)))
+                .filter(x -> x.getTargetDay().isEqual(targetDay))
                 .findFirst().orElse(null);
     }
 
-    public boolean register(Date targetDay) {
-        targetDay = truncateDay(targetDay);
-        if (targetDay.before(truncateDay(today()))) return false;
+    public boolean register(LocalDate targetDay) {
+        if (targetDay.isBefore(today())) return false;
         if (getTicketForDay(targetDay) != null) {
             return false;
         }
@@ -141,7 +141,7 @@ public class Worker implements User {
         return true;
     }
 
-    public boolean cancel(Date targetDay) {
+    public boolean cancel(LocalDate targetDay) {
         Ticket ticket = getTicketForDay(targetDay);
         if (ticket == null) {
             return false;
@@ -195,15 +195,13 @@ public class Worker implements User {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("Worker{");
-        sb.append("uuid='").append(uuid).append('\'');
-        sb.append(", email='").append(email).append('\'');
-        sb.append(", password='").append(password).append('\'');
-        sb.append(", rfid='").append(rfid).append('\'');
-        sb.append(", name='").append(name).append('\'');
-        sb.append(", averageTime='").append(averageTime).append('\'');
-        sb.append('}');
-        return sb.toString();
+        return "Worker{" + "uuid='" + uuid + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", rfid='" + rfid + '\'' +
+                ", name='" + name + '\'' +
+                ", averageTime='" + averageTime + '\'' +
+                '}';
     }
 
     @Override

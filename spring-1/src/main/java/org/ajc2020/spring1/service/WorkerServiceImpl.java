@@ -8,7 +8,7 @@ import org.ajc2020.utility.resource.WorkerStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -76,12 +76,12 @@ public class WorkerServiceImpl implements WorkerService {
     @Override
     public int getRank(Worker worker) {
         if (!worker.hasTicketForToday()) return Integer.MAX_VALUE;
-        Date today = worker.today();
+        LocalDate today = worker.today();
         return Math.toIntExact(findAll().stream()
                 .filter(Worker::hasTicketForToday)
                 .map(x -> x.getTicketForDay(today))
                 .map(Ticket::getCreationDate)
-                .filter(x -> x.before(worker.getTicketForDay(today).getCreationDate()))
+                .filter(x -> x.isBefore(worker.getTicketForDay(today).getCreationDate()))
                 .count());
     }
 
