@@ -25,6 +25,7 @@
                     <li><a href="/calendar" th:text="#{menu.calendar}">Calendar</a></li>
                     <!--/*@thymesVar id="adminMode" type="boolean"*/-->
                     <li th:if="${adminMode}"><a href="/users" th:text="#{menu.manage.users}">Users</a></li>
+                    <li th:if="${adminMode}"><a href="/building" th:text="#{building.administration}">Building</a></li>
                     <li><a href="/logout" th:text="#{login.logout}">Log out</a></li>
                 </ul>
             </div>
