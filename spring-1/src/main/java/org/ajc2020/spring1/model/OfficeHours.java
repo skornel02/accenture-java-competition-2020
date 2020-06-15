@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 @Data
 @Entity
@@ -20,9 +20,9 @@ public class OfficeHours {
     @JsonBackReference
     private Worker worker;
 
-    private Date arrive;
+    private OffsetDateTime arrive;
 
-    private Date leave;
+    private OffsetDateTime leave;
 
     public boolean isLoggedIn() {
         return getLeave() == null;

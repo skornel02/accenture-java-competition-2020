@@ -5,8 +5,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.Objects;
+import java.time.LocalDate;
 
 @Data
 @Entity
@@ -17,10 +16,10 @@ public class Ticket {
     private long id;
 
     @Accessors(chain = true)
-    private Date targetDay;
+    private LocalDate targetDay;
 
     @Accessors(chain = true)
-    private Date creationDate;
+    private LocalDate creationDate;
 
     @ManyToOne
     @Accessors(chain = true)
