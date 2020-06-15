@@ -14,10 +14,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
-import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @Controller
@@ -57,27 +57,39 @@ public class WebController {
         return "lui";
     }
 
-    @GetMapping("/")
-    public String main(@ModelAttribute("login") UserInfo userInfo, Model model) {
+    private Optional<String> authorize(UserInfo userInfo) {
+        String fullName = "Anonymous";
         try {
             ResponseEntity<MeInformation> response = getRequest(userInfo, "auth-information", MeInformation.class);
+            MeInformation meInformation = response.getBody();
+            if (meInformation != null) {
+                if (meInformation.getWorker() != null) fullName = meInformation.getWorker().getName();
+                if (meInformation.getAdmin() != null) fullName = meInformation.getAdmin().getName();
+            }
         } catch (RestClientException ignored) {
-            return "lui";
+            return Optional.empty();
         }
+        return Optional.of(fullName);
+    }
+
+    @GetMapping("/")
+    public String main(@ModelAttribute("login") UserInfo userInfo, Model model) {
+        Optional<String> fullName = authorize(userInfo);
+        if (!fullName.isPresent()) return "lui";
         model.addAttribute("adminMode", userInfo.isAdmin || userInfo.isSuperAdmin);
+        model.addAttribute("username", fullName.get());
         return "ui";
     }
 
     @GetMapping("/users")
     public String users(@ModelAttribute("login") UserInfo userInfo, Model model) {
-        try {
-            ResponseEntity<MeInformation> response = getRequest(userInfo, "auth-information", MeInformation.class);
-        } catch (RestClientException ignored) {
-            return "lui";
-        }
+        Optional<String> fullName = authorize(userInfo);
+        if (!fullName.isPresent()) return "lui";
+
         model.addAttribute("users", getRequest(userInfo, "users", WorkerResource[].class).getBody());
         model.addAttribute("admins", getRequest(userInfo, "admins", AdminResource[].class).getBody());
         model.addAttribute("adminMode", userInfo.isAdmin || userInfo.isSuperAdmin);
+        model.addAttribute("username", fullName);
         return "usermanagement";
     }
 
@@ -101,7 +113,7 @@ public class WebController {
             if (response.getStatusCode().is2xxSuccessful()) {
                 userInfo.setPassword(password);
                 userInfo.setUserName(username);
-                userInfo.setAdmin(response.getBody().getPermission().atLeast(PermissionLevel.ADMIN));
+                userInfo.setAdmin(Objects.requireNonNull(response.getBody()).getPermission().atLeast(PermissionLevel.ADMIN));
                 userInfo.setSuperAdmin(response.getBody().getPermission().atLeast(PermissionLevel.SUPER_ADMIN));
                 return new RedirectView("/");
             }
@@ -116,5 +128,13 @@ public class WebController {
         userInfo.userName = "";
         userInfo.password = "";
         return new RedirectView("/login");
+    }
+
+    @GetMapping("/calendar")
+    public String calendar(@ModelAttribute("login") UserInfo userInfo) {
+        Optional<String> fullName = authorize(userInfo);
+        //if (!fullName.isPresent()) return "lui";
+        // TODO: create calendar view
+        return "lui";
     }
 }
