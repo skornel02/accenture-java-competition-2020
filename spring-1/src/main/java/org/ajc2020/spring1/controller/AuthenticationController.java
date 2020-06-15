@@ -43,6 +43,14 @@ public class AuthenticationController {
             builder = builder.worker(worker.toResource());
             links.add(linkTo(methodOn(WorkerController.class)
                     .returnWorker(worker.getUuid(), null)).withRel("self"));
+            links.add(linkTo(methodOn(HomeController.class)
+                    .register(worker.getRfid(), null, null)).withRel("manage ticket"));
+            links.add(linkTo(methodOn(WorkerController.class)
+                    .returnOfficeHours(worker.getUuid(), null)).withRel("office hours"));
+            links.add(linkTo(methodOn(WorkerController.class)
+                    .returnTickets(worker.getUuid(), null)).withRel("tickets"));
+            links.add(linkTo(methodOn(HomeController.class)
+                    .calculateRemainingTimeTillEntry(worker.getUuid(), null)).withRel("view estimated time"));
         }
         if (sessionManager.isSessionAdmin()) {
             builder = builder.admin(sessionManager.getAdmin().toResource());

@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
@@ -47,6 +48,15 @@ public class TestOfficeHours {
                 return LocalDate.parse("01/01/2020", DATE);
             } catch (DateTimeParseException ignored) {
                 return LocalDate.now();
+            }
+        }
+
+        @Override
+        public OffsetDateTime now() {
+            try {
+                return LocalDateTime.parse("01/01/2020 00:00:00", DATETIME).atOffset(UTC);
+            } catch (DateTimeParseException ignored) {
+                return OffsetDateTime.now();
             }
         }
     }
