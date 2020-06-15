@@ -44,7 +44,7 @@ public class TestOfficeHours {
         @Override
         public LocalDate today() {
             try {
-                return LocalDateTime.parse("01/01/2020 00:00:00", DATETIME).atOffset(UTC).toLocalDate();
+                return LocalDate.parse("01/01/2020", DATE);
             } catch (DateTimeParseException ignored) {
                 return LocalDate.now();
             }
