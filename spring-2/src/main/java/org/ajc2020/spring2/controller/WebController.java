@@ -2,22 +2,22 @@ package org.ajc2020.spring2.controller;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.ajc2020.utilty.communication.AdminResource;
 import org.ajc2020.utilty.communication.MeInformation;
+import org.ajc2020.utilty.communication.WorkerResource;
 import org.ajc2020.utilty.resource.PermissionLevel;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.ClientHttpRequestExecution;
-import org.springframework.http.client.ClientHttpRequestInterceptor;
-import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
-import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @Controller
@@ -58,13 +58,27 @@ public class WebController {
     }
 
     @GetMapping("/")
-    public String main(@ModelAttribute("login") UserInfo userInfo) {
+    public String main(@ModelAttribute("login") UserInfo userInfo, Model model) {
         try {
             ResponseEntity<MeInformation> response = getRequest(userInfo, "auth-information", MeInformation.class);
         } catch (RestClientException ignored) {
             return "lui";
         }
+        model.addAttribute("adminMode", userInfo.isAdmin || userInfo.isSuperAdmin);
         return "ui";
+    }
+
+    @GetMapping("/users")
+    public String users(@ModelAttribute("login") UserInfo userInfo, Model model) {
+        try {
+            ResponseEntity<MeInformation> response = getRequest(userInfo, "auth-information", MeInformation.class);
+        } catch (RestClientException ignored) {
+            return "lui";
+        }
+        model.addAttribute("users", getRequest(userInfo, "users", WorkerResource[].class).getBody());
+        model.addAttribute("admins", getRequest(userInfo, "admins", AdminResource[].class).getBody());
+        model.addAttribute("adminMode", userInfo.isAdmin || userInfo.isSuperAdmin);
+        return "usermanagement";
     }
 
     private String joinUrlParts(String... parts) {
