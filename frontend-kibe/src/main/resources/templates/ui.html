@@ -11,47 +11,57 @@
     </div>
     <div class="col s12 m12 l12" th:if="${!actingAdmin && adminMode}">
         <h5 th:text="#{dashboard.greet(${username})}">Hello Admin!</h5>
-        <h4>Jelenleg az irodában tartózkodó dolgozók</h4>
+        <h4 th:text="#{dashboard.workers.in.office}">Workers currently in the office</h4>
         <table class="responsive-table striped bordered">
             <thead>
-                <tr>
-                    <td>Név</td>
-                    <td>E-mail</td>
+            <tr>
+                <td th:text="#{editor.name}">Name</td>
+                <td th:text="#{editor.email}">Email</td>
+                <td>
                     <i class="material-icons">swap_horiz</i>
                     <span th:text="#{icons.check.out}">Check out</span>
-                </tr>
+                </td>
+            </tr>
             </thead>
             <tbody>
-                <tr th:each="worker: ${workersIn}">
-                    <td th:text="${worker.getWorker().getName()}">name</td>
-                    <td><a th:href="'mailto:'+${worker.getWorker().getEmail()}" th:text="${worker.getWorker().getEmail()}">email</a> </td>
+            <tr th:each="worker: ${workersIn}">
+                <td th:text="${worker.getWorker().getName()}">name</td>
+                <td><a th:href="'mailto:'+${worker.getWorker().getEmail()}" th:text="${worker.getWorker().getEmail()}">email</a>
+                </td>
+                <td>
                     <a th:href="'/checkout/'+${worker.getWorker().getRfId()}">
                         <i class="material-icons">swap_horiz</i>
                         <span th:text="#{icons.check.out}">Check out</span>
                     </a>
-                </tr>
+                </td>
+            </tr>
             </tbody>
         </table>
-        <h4>Bejutásra várakozó dolgozók</h4>
+        <h4 th:text="#{dashboard.workers.waiting}">Workers waiting</h4>
 
         <table class="responsive-table striped bordered">
             <thead>
             <tr>
-                <td>Név</td>
-                <td>E-mail</td>
-                <i class="material-icons">code</i>
-                <span th:text="#{icons.check.in}">Check in</span>
+                <td th:text="#{editor.name}">Name</td>
+                <td th:text="#{editor.email}">Email</td>
+                <td>
+                    <i class="material-icons">code</i>
+                    <span th:text="#{icons.check.in}">Check in</span>
+                </td>
 
             </tr>
             </thead>
             <tbody>
             <tr th:each="worker: ${workersWaiting}">
-                <td th:text="${worker.getWorker().getName()}"></td>
-                <td><a th:href="'mailto:'+${worker.getWorker().getEmail()}" th:text="${worker.getWorker().getEmail()}"></a> </td>
-                <a th:href="'/checkin/'+${worker.getWorker().getRfId()}">
-                    <i class="material-icons">code</i>
-                    <span th:text="#{icons.check.in}">Check in</span>
-                </a>
+                <td th:text="${worker.getWorker().getName()}">Name</td>
+                <td><a th:href="'mailto:'+${worker.getWorker().getEmail()}"
+                       th:text="${worker.getWorker().getEmail()}">Email</a></td>
+                <td>
+                    <a th:href="'/checkin/'+${worker.getWorker().getRfId()}">
+                        <i class="material-icons">code</i>
+                        <span th:text="#{icons.check.in}">Check in</span>
+                    </a>
+                </td>
             </tr>
 
             </tbody>
@@ -96,9 +106,10 @@
     const calendarPastEntry = /*[[#{calendar.past.entry}]]*/ "You could have entered on {0}";
     const calendarFutureEntry = /*[[#{calendar.future.entry}]]*/ "You can enter on {0}";
     const uuid = /*[[${uuid}]]*/ "0";
+
     /*]]>*/
 
-    function addOneMonth(dateToAddTo){
+    function addOneMonth(dateToAddTo) {
         return new Date((dateToAddTo.getMonth() === 11 ? dateToAddTo.getFullYear() + 1 : dateToAddTo.getFullYear()), (dateToAddTo.getMonth() + 1) % 12, Math.min(dateToAddTo.getDate(), new Date((dateToAddTo.getMonth() === 11 ? dateToAddTo.getFullYear() + 1 : dateToAddTo.getFullYear()), (dateToAddTo.getMonth() + 2) % 12, 0).getDate()));
     }
 
@@ -119,8 +130,8 @@
     }
 
 
-    $(document).ready(function(){
-        M.Modal.defaults.preventScrolling=false;
+    $(document).ready(function () {
+        M.Modal.defaults.preventScrolling = false;
         let picker = document.querySelector('#sched_picker');
         let now = new Date();
         let nextMonth = addOneMonth(now);
@@ -132,7 +143,7 @@
         M.Datepicker.init(picker,
             {
                 format: "yyyy-mm-dd",
-                firstDay : 1,
+                firstDay: 1,
                 minDate: now,
                 maxDate: nextMonth,
                 yearRange: [now.getFullYear(), nextMonth.getFullYear()],
@@ -143,7 +154,7 @@
                         "cancel": ticketCancel
                     },
                 events: calendarEvents,
-                onSelect: function(date) {
+                onSelect: function (date) {
                     if (calendarEvents.indexOf(date.toDateString()) !== -1) {
                         document.querySelector("#doneButton").textContent = ticketDelete;
                     } else {
@@ -160,16 +171,18 @@
         instance.cancelBtn.setAttribute("id", "resetButton");
         instance.cancelBtn.outerHTML = instance.cancelBtn.outerHTML;
         instance.doneBtn.outerHTML = instance.doneBtn.outerHTML;
-        document.querySelector("#resetButton").onclick = function(){instance.gotoDate(now);};
-        document.querySelector("#doneButton").onclick = function(){
-            if(instance.toString().length === 0){
+        document.querySelector("#resetButton").onclick = function () {
+            instance.gotoDate(now);
+        };
+        document.querySelector("#doneButton").onclick = function () {
+            if (instance.toString().length === 0) {
                 M.toast({html: calendarChooseDate});
                 return;
             }
             if (reservations.indexOf(instance.toString()) !== -1) {
-                document.location = "/cancel?rid=" + uuid + "&date="+instance.toString();
+                document.location = "/cancel?rid=" + uuid + "&date=" + instance.toString();
             } else {
-                document.location = "/register?rid=" + uuid + "&date="+instance.toString();
+                document.location = "/register?rid=" + uuid + "&date=" + instance.toString();
             }
         };
     });
@@ -177,39 +190,39 @@
     var runCountdown = true;
     var expectedTimeStamp = 0;
 
-    setInterval(function(){
+    setInterval(function () {
         var now = new Date();
-        if(!runCountdown)
+        if (!runCountdown)
             return;
-        if(expectedTimeStamp === 0){
+        if (expectedTimeStamp === 0) {
             document.getElementById("counter").innerHTML = "&nbsp;";
             return;
         }
         let expected = new Date(now.toISOString().split('T')[0] + "T" + expectedTimeStamp + "Z")
-        if(now.toDateString() === expected.toDateString()){
-            if(now >= expected){
+        if (now.toDateString() === expected.toDateString()) {
+            if (now >= expected) {
                 document.getElementById("counter").innerText = ticketEnter;
-            }else{
+            } else {
                 let remaining = (Date.parse(expected) - Date.parse(now)) / 1000;
                 let hour = (remaining - (remaining % 3600)) / 3600;
                 remaining -= hour * 3600;
                 let min = (remaining - (remaining % 60)) / 60;
                 let sec = remaining % 60;
-                let enterTime =("0" + hour).slice(-2) + ":" + ("0" + min).slice(-2) + ":" + ("0" + sec).slice(-2);
+                let enterTime = ("0" + hour).slice(-2) + ":" + ("0" + min).slice(-2) + ":" + ("0" + sec).slice(-2);
                 document.getElementById("counter").innerText = format(statusEnter, enterTime);
             }
-        }else{
-            if(now > expected){
+        } else {
+            if (now > expected) {
                 document.getElementById("counter").innerText = format(calendarPastEntry, expected.toLocaleDateString("en-US"));
-            }else{
+            } else {
                 document.getElementById("counter").innerText = format(calendarFutureEntry, expected.toLocaleDateString("en-US"));
             }
         }
     }, 1000);
 
-    let requestTime = function(){
+    let requestTime = function () {
         $.ajax({
-            url: "/timeToEnter?rid="+uuid,
+            url: "/timeToEnter?rid=" + uuid,
             success: function (result) {
                 expectedTimeStamp = result.projectedEntryTime;
             }
