@@ -70,7 +70,7 @@ public class AdminController {
     )
     @PostMapping
     public ResponseEntity<AdminResource> createAdmin(@Valid @RequestBody AdminCreationRequest adminCreationRequest, Locale locale) {
-        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", locale);
         if (!sessionManager.getPermission().atLeast(PermissionLevel.SUPER_ADMIN))
             throw new ForbiddenException(resourceBundle.getString("error.forbidden.superadmin"));
 
@@ -87,7 +87,7 @@ public class AdminController {
     )
     @GetMapping(path = "/{uuid}")
     public AdminResource returnAdmin(@PathVariable String uuid, Locale locale) {
-        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", locale);
 
         return adminService.findByUuid(uuid)
                 .map(Admin::toResource)
@@ -102,7 +102,7 @@ public class AdminController {
     )
     @PatchMapping("/{uuid}")
     public AdminResource updateAdmin(@PathVariable String uuid, @RequestBody AdminCreationRequest adminUpdateRequest, Locale locale) {
-        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", locale);
 
         Optional<Admin> admin = adminService.findByUuid(uuid);
         if (!admin.isPresent())
@@ -118,7 +118,7 @@ public class AdminController {
     )
     @DeleteMapping("/{uuid}")
     public ResponseEntity<Void> deleteAdmin(@PathVariable String uuid, Locale locale) {
-        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", locale);
 
         try {
             adminService.deleteByUuid(uuid);

@@ -82,7 +82,7 @@ public class HomeController {
     public RegistrationStatus register(@PathVariable String uuid,
                                        @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
                                        Locale locale) {
-        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", locale);
         if (!sessionManager.getPermission().atLeast(PermissionLevel.ADMIN)
                 && !(sessionManager.isSessionWorker() && Objects.equals(uuid, sessionManager.getWorker().getUuid())))
             throw new ForbiddenException(resourceBundle.getString("error.forbidden.admin"));
@@ -103,7 +103,7 @@ public class HomeController {
     public RegistrationStatus cancel(@PathVariable String uuid,
                                      @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
                                      Locale locale) {
-        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", locale);
         if (!sessionManager.getPermission().atLeast(PermissionLevel.ADMIN)
                 && !(sessionManager.isSessionWorker() && Objects.equals(uuid, sessionManager.getWorker().getUuid())))
             throw new ForbiddenException(resourceBundle.getString("error.forbidden.admin"));
@@ -124,7 +124,7 @@ public class HomeController {
     )
     @GetMapping("/users/{uuid}/entry-time-remaining")
     public ResponseEntity<RemainingTime> calculateRemainingTimeTillEntry(@PathVariable String uuid, Locale locale) {
-        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", locale);
         if (!sessionManager.getPermission().atLeast(PermissionLevel.ADMIN)
                 && !(sessionManager.isSessionWorker() && Objects.equals(uuid, sessionManager.getWorker().getUuid())))
             throw new ForbiddenException(resourceBundle.getString("error.forbidden.admin"));

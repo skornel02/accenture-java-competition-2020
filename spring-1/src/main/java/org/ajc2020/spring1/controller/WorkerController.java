@@ -69,7 +69,7 @@ public class WorkerController {
     )
     @GetMapping
     public List<WorkerResource> returnWorkers(Locale locale) {
-        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", locale);
         if (!sessionManager.getPermission().atLeast(PermissionLevel.ADMIN))
             throw new ForbiddenException(resourceBundle.getString("error.forbidden.admin"));
 
@@ -87,7 +87,7 @@ public class WorkerController {
     )
     @PostMapping
     public ResponseEntity<WorkerResource> createWorker(@Valid @RequestBody WorkerCreationRequest workerCreationRequest, Locale locale) {
-        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", locale);
         if (!sessionManager.getPermission().atLeast(PermissionLevel.ADMIN))
             throw new ForbiddenException(resourceBundle.getString("error.forbidden.admin"));
 
@@ -104,7 +104,7 @@ public class WorkerController {
     )
     @GetMapping("/{uuid}")
     public WorkerResource returnWorker(@PathVariable String uuid, Locale locale) {
-        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", locale);
         if (!sessionManager.getPermission().atLeast(PermissionLevel.ADMIN)
                 && !(sessionManager.isSessionWorker() && Objects.equals(uuid, sessionManager.getWorker().getUuid())))
             throw new ForbiddenException(resourceBundle.getString("error.forbidden.admin"));
@@ -124,7 +124,7 @@ public class WorkerController {
     )
     @PatchMapping("/{uuid}")
     public WorkerResource updateWorker(@PathVariable String uuid, Locale locale, @RequestBody WorkerCreationRequest workerUpdateRequest) throws UserUpdateFailedException {
-        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", locale);
         if (!sessionManager.getPermission().atLeast(PermissionLevel.ADMIN))
             throw new ForbiddenException(resourceBundle.getString("error.forbidden.admin"));
 
@@ -138,7 +138,7 @@ public class WorkerController {
     )
     @PatchMapping("/{uuid}/password")
     public WorkerResource updateWorkerPassword(@PathVariable String uuid, Locale locale, @RequestBody WorkerCreationRequest workerUpdateRequest) throws UserUpdateFailedException {
-        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", locale);
         if (!sessionManager.isSessionWorker() || (!sessionManager.getWorker().getUuid().equals(uuid)))
             throw new ForbiddenException(resourceBundle.getString("error.forbidden.admin"));
 
@@ -171,7 +171,7 @@ public class WorkerController {
     )
     @DeleteMapping("/{uuid}")
     public ResponseEntity<Void> deleteWorker(@PathVariable String uuid, Locale locale) {
-        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", locale);
         if (!sessionManager.getPermission().atLeast(PermissionLevel.ADMIN))
             throw new ForbiddenException(resourceBundle.getString("error.forbidden.admin"));
 
@@ -190,7 +190,7 @@ public class WorkerController {
     )
     @GetMapping("/{uuid}/office-hours")
     public List<OfficeHoursResource> returnOfficeHours(@PathVariable String uuid, Locale locale) {
-        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", locale);
         if (!sessionManager.getPermission().atLeast(PermissionLevel.ADMIN)
                 && !(sessionManager.isSessionWorker() && Objects.equals(uuid, sessionManager.getWorker().getUuid())))
             throw new ForbiddenException(resourceBundle.getString("error.forbidden.admin"));
@@ -212,7 +212,7 @@ public class WorkerController {
     )
     @GetMapping("/{uuid}/tickets")
     public List<TicketResource> returnTickets(@PathVariable String uuid, Locale locale) {
-        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", locale);
         if (!sessionManager.getPermission().atLeast(PermissionLevel.ADMIN)
                 && !(sessionManager.isSessionWorker() && Objects.equals(uuid, sessionManager.getWorker().getUuid())))
             throw new ForbiddenException(resourceBundle.getString("error.forbidden.admin"));
