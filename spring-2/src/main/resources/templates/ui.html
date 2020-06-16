@@ -28,7 +28,7 @@
         </div>
         <div class="row">
             <div class="col s12 center">
-                <h5>Select a date you would like to come in</h5>
+                <h5 th:text="#{calendar.select}"></h5>
             </div>
         </div>
         <div class="row">
@@ -125,7 +125,7 @@
             document.getElementById("counter").innerHTML = "&nbsp;";
             return;
         }
-        let expected = new Date(expectedTimeStamp * 1000);
+        let expected = new Date(now.toISOString().split('T')[0] + "T" + expectedTimeStamp + "Z")
         if(now.toDateString() === expected.toDateString()){
             if(now >= expected){
                 document.getElementById("counter").innerText = ticketEnter;
@@ -147,9 +147,19 @@
         }
     }, 1000);
 
-    setInterval(function(){
+    let requestTime = function(){
         //TODO: request "you are welcome" timestamp, change expectedTimeStamp and runCountdown according to results
-    }, 15000);
+        $.ajax({
+            url: "/timeToEnter",
+            success: function (result) {
+                expectedTimeStamp = result.projectedEntryTime;
+            }
+        });
+    }
+
+    requestTime();
+
+    setInterval(requestTime, 15000);
 </script>
 </body>
 </html>
