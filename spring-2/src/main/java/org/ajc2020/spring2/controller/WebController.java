@@ -59,6 +59,7 @@ public class WebController {
     }
 
     private void setModel(UserInfo userInfo, String fullName, Model model) {
+        model.addAttribute("actingAdmin", false);
         model.addAttribute("adminMode", userInfo.isAdmin() || userInfo.isSuperAdmin());
         model.addAttribute("username", fullName);
         model.addAttribute("uuid", userInfo.getUuid());
@@ -127,15 +128,6 @@ public class WebController {
 
     }
 
-    @GetMapping("/register")
-    public RedirectView register(
-            @ModelAttribute("login") UserInfo userInfo,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date date
-    ) {
-        putRequest(userInfo, "users/" + userInfo.getUuid() + "/tickets/" + new SimpleDateFormat("yyyy-MM-dd").format(date), "");
-        return new RedirectView("/");
-    }
-
     @GetMapping("/building/capacity")
     public RedirectView setCapacity(
             @ModelAttribute("login") UserInfo userInfo,
@@ -167,28 +159,29 @@ public class WebController {
         }
     }
 
-    @GetMapping("/cancel")
-    public RedirectView cancel(
+    @GetMapping("/register")
+    public RedirectView register(
             @ModelAttribute("login") UserInfo userInfo,
+            @RequestParam String rid,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date date
     ) {
-        deleteRequest(userInfo, "users/" + userInfo.getUuid() + "/tickets/" + new SimpleDateFormat("yyyy-MM-dd").format(date));
+        putRequest(userInfo, "users/" + rid + "/tickets/" + new SimpleDateFormat("yyyy-MM-dd").format(date), "");
+        putRequest(userInfo, "users/" + rid + "/tickets/" + new SimpleDateFormat("yyyy-MM-dd").format(date), "");
+        if (userInfo.isAdmin() || userInfo.isSuperAdmin())
+            return new RedirectView("/userview?rid="+rid);
         return new RedirectView("/");
     }
 
-    @GetMapping("/users/{uuid}/reservations")
-    public String reservations(
+    @GetMapping("/cancel")
+    public RedirectView cancel(
             @ModelAttribute("login") UserInfo userInfo,
-            @PathVariable String uuid
+            @RequestParam String rid,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date date
     ) {
-        try {
-            WorkerResource workerResource = getRequest(userInfo, "users/" + uuid, WorkerResource.class).getBody();
-            // TODO: 2.0:  get tickets
-            return "reservations";
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "ui";
+        deleteRequest(userInfo, "users/" + rid + "/tickets/" + new SimpleDateFormat("yyyy-MM-dd").format(date));
+        if (userInfo.isAdmin() || userInfo.isSuperAdmin())
+            return new RedirectView("/userview?rid="+rid);
+        return new RedirectView("/");
     }
 
     @PostMapping("/updateAdmin")
@@ -223,7 +216,7 @@ public class WebController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return new RedirectView("/users");
+        return new RedirectView("/admins");
     }
 
     @PostMapping("/createUser")
@@ -418,8 +411,57 @@ public class WebController {
 
     @GetMapping("/timeToEnter")
     public @ResponseBody
-    RemainingTime getRemainingTime(@ModelAttribute("login") UserInfo userInfo) {
-        return getRequest(userInfo, "users/" + userInfo.getUuid() + "/entry-time-remaining", RemainingTime.class).getBody();
+    RemainingTime getRemainingTime(
+            @ModelAttribute("login") UserInfo userInfo,
+            @RequestParam String rid
+            ) {
+        return getRequest(userInfo, "users/" + rid + "/entry-time-remaining", RemainingTime.class).getBody();
+    }
+
+    @GetMapping("/checkin/{rfid}")
+    public RedirectView checkin(
+            @ModelAttribute("login") UserInfo userInfo,
+            @PathVariable String rfid
+    ) {
+        postRequest(userInfo, "rfids/"+rfid+"/checkin", String.class);
+        return new RedirectView("/users");
+    }
+
+    @GetMapping("/checkout/{rfid}")
+    public RedirectView checkout(
+            @ModelAttribute("login") UserInfo userInfo,
+            @PathVariable String rfid
+    ) {
+        postRequest(userInfo, "rfids/"+rfid+"/checkout", String.class);
+        return new RedirectView("/users");
+    }
+
+    @GetMapping("/userview")
+    public String reservations(
+            @ModelAttribute("login") UserInfo userInfo,
+            @RequestParam String rid,
+            Model model
+    ) {
+        Optional<String> fullName = authorize(userInfo);
+        if (!fullName.isPresent()) return "lui";
+        WorkerResource workerResource = getRequest(userInfo, "users/" + rid, WorkerResource.class).getBody();
+        UserInfo workerInfo = new UserInfo(workerResource.getEmail(), "", workerResource.getId());
+        setModel(workerInfo, fullName.get() + " Effective: " + workerResource.getName(), model);
+        model.addAttribute("actingAdmin", true);
+
+        String[] reservations =
+                Arrays.stream(
+                        Objects.requireNonNull(
+                                getRequest(userInfo, "users/" + rid + "/tickets", TicketResource[].class)
+                                        .getBody()))
+                        .map(TicketResource::getTargetDay)
+                        .map(x -> x.format(DateTimeFormatter.ISO_DATE))
+                        .toArray(String[]::new);
+        model.addAttribute("reservations", reservations);
+
+        model.addAttribute("adminMode", userInfo.isAdmin() || userInfo.isSuperAdmin());
+
+        return "ui";
     }
 
 }

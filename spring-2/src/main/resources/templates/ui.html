@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
-<head th:insert="fragments/main.html :: headerfiles">
+<head th:insert="fragments/main.html :: headerfiles" th:remove="tag">
     <title>KiBe</title>
 </head>
 
@@ -9,10 +9,10 @@
 <div class="row">
     <div class="col s12 m12 l12" th:insert="fragments/main.html :: navigation">
     </div>
-    <div class="col s12 m12 l12" th:if="${adminMode}">
+    <div class="col s12 m12 l12" th:if="${!actingAdmin && adminMode}">
         <h5 th:text="#{dashboard.greet(${username})}">Hello Admin!</h5>
     </div>
-    <div class="col s12 m12 l12" th:if="!${adminMode}">
+    <div class="col s12 m12 l12" th:if="${actingAdmin || !adminMode}">
         <h5 th:text="#{dashboard.greet(${username})}">Hello Worker!</h5>
 
         <input type="text" class="datepicker" id="sched_picker">
@@ -38,7 +38,7 @@
 </div>
 
 <script type="text/javascript" th:src="@{js/materialize.min.js}" src="../static/js/materialize.min.js"></script>
-<script th:inline="javascript">
+<script th:inline="javascript" th:if="${actingAdmin || !adminMode}">
     /*<!<CDATA[*/
     const ticketNew = /*[[#{ticket.new}]]*/ "New ticket";
     const ticketRegister = /*[[#{ticket.register}]]*/ "Register ticket";
@@ -50,6 +50,7 @@
     const calendarChooseDate = /*[[#{calendar.choose.date}]]*/ "Please choose a date!";
     const calendarPastEntry = /*[[#{calendar.past.entry}]]*/ "You could have entered on {0}";
     const calendarFutureEntry = /*[[#{calendar.future.entry}]]*/ "You can enter on {0}";
+    const uuid = /*[[${uuid}]]*/ "0";
     /*]]>*/
 
     function addOneMonth(dateToAddTo){
@@ -121,9 +122,9 @@
                 return;
             }
             if (reservations.indexOf(instance.toString()) !== -1) {
-                document.location = "/cancel?date="+instance.toString();
+                document.location = "/cancel?rid=" + uuid + "&date="+instance.toString();
             } else {
-                document.location = "/register?date="+instance.toString();
+                document.location = "/register?rid=" + uuid + "&date="+instance.toString();
             }
         };
     });
@@ -162,9 +163,8 @@
     }, 1000);
 
     let requestTime = function(){
-        //TODO: request "you are welcome" timestamp, change expectedTimeStamp and runCountdown according to results
         $.ajax({
-            url: "/timeToEnter",
+            url: "/timeToEnter?rid="+uuid,
             success: function (result) {
                 expectedTimeStamp = result.projectedEntryTime;
             }
