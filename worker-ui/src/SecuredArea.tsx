@@ -4,7 +4,7 @@ import {
     AuthenticationInformation,
     AuthenticationType,
     BasicAuthentication,
-    BasicLoginInformation
+    BasicLoginInformation, GoogleAuthentication
 } from "./resource/Resources";
 import StorageManager from "./StorageManager";
 import Login from "./Login";
@@ -37,30 +37,40 @@ const SecuredArea: React.FunctionComponent = props => {
     }, []);
 
     const handleBasicAuth = (auth: BasicLoginInformation) => {
-        const authentication: BasicAuthentication = {
+        const basicAuth: BasicAuthentication = {
             type: AuthenticationType.BASIC,
             username: auth.email,
             password: auth.password
         }
-        Backend.checkBasicAuth(authentication).then(result => {
-            Backend.updateAuthentication(authentication);
-            setAuthInformation(result);
-            setAuthentication(authentication)
-            StorageManager.saveAuthentication(authentication)
-                .then(() => {
-                    if (result.permission !== "WORKER") {
-                        toast(t("login.onlyWorkers"), {type: "error"});
-                        handleLogout();
-                    }
-                })
-        }).catch(() => {
-            toast(t("login.invalidCredentials"), {type: "error"});
-        })
+        Backend.checkBasicAuth(basicAuth).then(authInfo => handleLogin(basicAuth, authInfo))
+            .catch(() => {
+                toast(t("login.invalidCredentials"), {type: "error"});
+            })
     };
 
     const handleGoogleAuth = (auth: string) => {
-        toast("Currently unsupported!", {type: "error"});
+        const googleAuth: GoogleAuthentication = {
+            type: AuthenticationType.GOOGLE,
+            googleToken: auth,
+        }
+        Backend.checkGoogleAuth(googleAuth).then(authInfo => handleLogin(googleAuth, authInfo))
+            .catch(() => {
+                toast(t("login.invalidToken"), {type: "error"});
+            })
     };
+
+    const handleLogin = (auth: Authentication, authInfo: AuthenticationInformation) => {
+        Backend.updateAuthentication(auth);
+        setAuthInformation(authInfo);
+        setAuthentication(auth)
+        StorageManager.saveAuthentication(auth)
+            .then(() => {
+                if (authInfo.permission !== "WORKER") {
+                    toast(t("login.onlyWorkers"), {type: "error"});
+                    handleLogout();
+                }
+            })
+    }
 
     const handleLogout = () => {
         setAuthentication(undefined);

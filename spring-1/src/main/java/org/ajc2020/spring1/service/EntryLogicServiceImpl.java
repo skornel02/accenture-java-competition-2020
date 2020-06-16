@@ -49,6 +49,8 @@ public class EntryLogicServiceImpl implements EntryLogicService {
             if (i < workersInOffice.size()) {
                 timeRequired.add(workersInOffice.get(i).getAverageTime());
             } else {
+                if (i == 0 && workersInOffice.size() == 0)
+                    continue;
                 int k = i - workersInOffice.size();
                 timeRequired.add(timeRequired.get(k) + workersWaiting.get(k).getAverageTime());
             }
