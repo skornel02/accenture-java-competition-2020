@@ -3,7 +3,7 @@ services:
   backend.kibe:
     container_name: backend.kibe
     build:
-      context: spring-1
+      context: backend-kibe
       dockerfile: Dockerfile
     networks:
       - kibe-network
@@ -12,7 +12,7 @@ services:
   frontend.kibe:
     container_name: frontend.kibe
     build:
-      context: spring-2
+      context: frontend-kibe
       dockerfile: Dockerfile
     depends_on:
       - backend.kibe

@@ -23,8 +23,8 @@
 
     <!-- sub modules -->
     <modules>
-        <module>spring-1</module>
-        <module>spring-2</module>
+        <module>backend-kibe</module>
+        <module>frontend-kibe</module>
         <module>utility</module>
     </modules>
 
