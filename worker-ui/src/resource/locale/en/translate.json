@@ -7,7 +7,8 @@
       "emailMissing": "Your email address is missing",
       "passwordMissing": "Your password is missing",
       "onlyWorkers": "This client is for workers only",
-      "invalidCredentials": "Invalid credentials"
+      "invalidCredentials": "Invalid credentials",
+      "invalidToken": "There is no worker with this email address"
     },
     "worker": {
       "currentlyInside": "You are inside",

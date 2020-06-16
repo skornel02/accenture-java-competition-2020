@@ -3,8 +3,11 @@ import {
     Authentication,
     AuthenticationInformation,
     AuthenticationType,
-    BasicAuthentication, OfficeHoursResource,
-    RemainingTime, TicketResource
+    BasicAuthentication,
+    GoogleAuthentication,
+    OfficeHoursResource,
+    RemainingTime,
+    TicketResource
 } from "./Resources";
 import {Base64} from 'js-base64';
 
@@ -47,6 +50,16 @@ class Backend {
                 }
             });
         }
+        if (auth.type === AuthenticationType.GOOGLE) {
+            const googleAuth = auth as GoogleAuthentication;
+            this.axios = axios.create({
+                ...axiosBaseConfig,
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "GoogleToken " + googleAuth.googleToken,
+                }
+            });
+        }
     }
 
     async checkBasicAuth(auth: BasicAuthentication): Promise<AuthenticationInformation> {
@@ -55,6 +68,26 @@ class Backend {
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": "Basic " + Base64.encode(auth.username + ":" + auth.password),
+                }
+            });
+            return result.data;
+        } catch (err) {
+            if (err) {
+                const axiosError = err as AxiosError;
+                if (err.response) {
+                    console.error(axiosError.response);
+                }
+            }
+            throw err;
+        }
+    }
+
+    async checkGoogleAuth(auth: GoogleAuthentication): Promise<AuthenticationInformation> {
+        try {
+            const result = await this.axios.get<AuthenticationInformation>("/auth-information", {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "GoogleToken " + auth.googleToken,
                 }
             });
             return result.data;

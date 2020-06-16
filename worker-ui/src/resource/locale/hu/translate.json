@@ -7,7 +7,8 @@
       "emailMissing": "Email cím nincs kitöltve",
       "passwordMissing": "Jelszó nincs kitöltve",
       "onlyWorkers": "Ez a kliens csak alkalmazottak számára működik",
-      "invalidCredentials": "Nem megfelelő adatok"
+      "invalidCredentials": "Nem megfelelő adatok",
+      "invalidToken": "Nincs fiók rendelve ehhez a címhez"
     },
     "worker": {
       "currentlyInside": "Az épületben vagy",

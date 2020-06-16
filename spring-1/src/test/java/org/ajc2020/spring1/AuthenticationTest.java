@@ -6,6 +6,7 @@ import org.ajc2020.spring1.filter.AuthFilter;
 import org.ajc2020.spring1.manager.AuthManager;
 import org.ajc2020.spring1.manager.SessionManager;
 import org.ajc2020.spring1.model.Admin;
+import org.ajc2020.spring1.service.GoogleTokenServiceImpl;
 import org.ajc2020.utility.resource.PermissionLevel;
 import org.ajc2020.spring1.model.Worker;
 import org.ajc2020.spring1.service.AdminServiceImpl;
@@ -39,6 +40,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class AuthenticationTest {
 
     private static final String PASSWORD = "password";
+    private static final String GOOD_TOKEN = "good";
+    private static final String BAD_TOKEN = "bad";
 
     @Autowired
     private AuthFilter authFilter;
@@ -59,6 +62,9 @@ public class AuthenticationTest {
 
     @MockBean
     AdminServiceImpl adminService;
+
+    @MockBean
+    GoogleTokenServiceImpl googleTokenService;
 
     private Worker worker1;
     private Worker worker2;
@@ -96,6 +102,7 @@ public class AuthenticationTest {
         Mockito.when(workerService.findByEmail(worker2.getEmail())).thenReturn(Optional.of(worker2));
         Mockito.when(adminService.findByEmail(admin1.getEmail())).thenReturn(Optional.of(admin1));
         Mockito.when(adminService.findByEmail(admin2.getEmail())).thenReturn(Optional.of(admin2));
+        Mockito.when(googleTokenService.parseOpenIdToken(GOOD_TOKEN)).thenReturn(Optional.of(worker1.getEmail()));
     }
 
     @RestController
@@ -171,6 +178,9 @@ public class AuthenticationTest {
         mockMvc.perform(get("/worker").header("Authorization", "Basic " + base64User1).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful());
 
+        mockMvc.perform(get("/worker").header("Authorization", config.getGoogle().getAuthorizationType() + " " + GOOD_TOKEN).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is2xxSuccessful());
+
         String base64User2 = baseEncode(worker2.getEmail(), PASSWORD);
         MvcResult resultUser2 = mockMvc.perform(get("/me").header("Authorization", "Basic " + base64User2).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful())
@@ -224,6 +234,9 @@ public class AuthenticationTest {
 
         String base64NoNothing = baseEncode("", "");
         mockMvc.perform(get("/me").header("Authorization", "Basic " + base64NoNothing).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden());
+
+        mockMvc.perform(get("/me").header("Authorization", config.getGoogle().getAuthorizationType() + " " + BAD_TOKEN).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden());
     }
 
