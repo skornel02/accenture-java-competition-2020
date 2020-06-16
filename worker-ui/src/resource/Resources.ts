@@ -70,7 +70,3 @@ export interface TicketResource {
     targetDay: string,
     creationDate: string
 }
-
-export interface SubscriptionRequest {
-    targetDate: string
-}

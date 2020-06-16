@@ -1,13 +1,11 @@
 import React from 'react';
-import './App.css';
 import {I18nextProvider} from "react-i18next";
 import i18n from "./resource/locale/i18n";
 import {ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import SecuredArea, {useAuthInformation} from "./SecuredArea";
-import WorkerArea from "./WorkerArea";
-import AdminArea from "./AdminArea";
-import OfflineToaster from "./OfflineToaster";
+import SecuredArea from "./authentication/SecuredArea";
+import WorkerArea from "./worker/WorkerArea";
+import OfflineToaster from "./general/OfflineToaster";
 
 const App = () => {
     return (
@@ -15,23 +13,11 @@ const App = () => {
             <ToastContainer position={"top-center"}/>
             <OfflineToaster/>
             <SecuredArea>
-                <AreaChooser/>
+                <WorkerArea/>
             </SecuredArea>
         </I18nextProvider>
     );
 }
 
-const AreaChooser = () => {
-    const info = useAuthInformation();
-    switch (info.permission) {
-        case "SUPER_ADMIN":
-        case "ADMIN":
-            return <AdminArea/>;
-        case "WORKER":
-            return <WorkerArea/>;
-        default:
-            return <h1>Not supported!</h1>
-    }
-};
 
 export default App;

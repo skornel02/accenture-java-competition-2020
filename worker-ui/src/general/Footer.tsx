@@ -1,6 +1,6 @@
 import React from "react";
-import style from './resource/style/footer.module.css';
-import logo from './resource/img/logo.png';
+import style from '../resource/style/footer.module.css';
+import logo from '../resource/img/logo.png';
 
 const Footer: React.FunctionComponent<{
     handleLogout: () => void
