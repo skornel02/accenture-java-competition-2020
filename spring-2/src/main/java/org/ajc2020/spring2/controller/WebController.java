@@ -1,9 +1,8 @@
 package org.ajc2020.spring2.controller;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.ajc2020.spring2.communication.PasswordStatus;
+import org.ajc2020.spring2.communication.UserInfo;
 import org.ajc2020.utility.communication.*;
 import org.ajc2020.utility.resource.PermissionLevel;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,8 +16,8 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -26,24 +25,6 @@ import java.util.*;
 @Controller
 @SessionAttributes("login")
 public class WebController {
-
-    @Data
-    private static class UserInfo {
-        public UserInfo() {
-        }
-
-        public UserInfo(String userName, String password, String uuid) {
-            this.userName = userName;
-            this.password = password;
-            this.uuid = uuid;
-        }
-
-        private String uuid = "";
-        private String userName = "";
-        private String password = "";
-        private boolean isAdmin;
-        private boolean isSuperAdmin;
-    }
 
     @ModelAttribute("login")
     private UserInfo userInfo() {
@@ -78,9 +59,9 @@ public class WebController {
     }
 
     private void setModel(UserInfo userInfo, String fullName, Model model) {
-        model.addAttribute("adminMode", userInfo.isAdmin || userInfo.isSuperAdmin);
+        model.addAttribute("adminMode", userInfo.isAdmin() || userInfo.isSuperAdmin());
         model.addAttribute("username", fullName);
-        model.addAttribute("uuid", userInfo.uuid);
+        model.addAttribute("uuid", userInfo.getUuid());
     }
 
     @GetMapping("/")
@@ -95,7 +76,7 @@ public class WebController {
                                     getRequest(userInfo, "users/" + userInfo.getUuid() + "/tickets", TicketResource[].class)
                                             .getBody()))
                             .map(TicketResource::getTargetDay)
-                            .map(x->x.format(DateTimeFormatter.ISO_DATE))
+                            .map(x -> x.format(DateTimeFormatter.ISO_DATE))
                             .toArray(String[]::new);
             model.addAttribute("reservations", reservations);
         }
@@ -151,7 +132,7 @@ public class WebController {
             @ModelAttribute("login") UserInfo userInfo,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date date
     ) {
-        putRequest(userInfo, "users/"+userInfo.getUuid()+"/tickets/"+new SimpleDateFormat("yyyy-MM-dd").format(date), "");
+        putRequest(userInfo, "users/" + userInfo.getUuid() + "/tickets/" + new SimpleDateFormat("yyyy-MM-dd").format(date), "");
         return new RedirectView("/");
     }
 
@@ -181,7 +162,7 @@ public class WebController {
             ResponseEntity<OfficeResource> officeResource = getRequest(userInfo, "office/settings", OfficeResource.class);
             model.addAttribute("building", officeResource.getBody());
             return "building";
-        } catch (Exception ignored)  {
+        } catch (Exception ignored) {
             return "lui";
         }
     }
@@ -191,7 +172,7 @@ public class WebController {
             @ModelAttribute("login") UserInfo userInfo,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date date
     ) {
-        deleteRequest(userInfo, "users/"+userInfo.getUuid()+"/tickets/"+new SimpleDateFormat("yyyy-MM-dd").format(date));
+        deleteRequest(userInfo, "users/" + userInfo.getUuid() + "/tickets/" + new SimpleDateFormat("yyyy-MM-dd").format(date));
         return new RedirectView("/");
     }
 
@@ -201,7 +182,7 @@ public class WebController {
             @PathVariable String uuid
     ) {
         try {
-            WorkerResource workerResource = getRequest(userInfo, "users/"+uuid, WorkerResource.class).getBody();
+            WorkerResource workerResource = getRequest(userInfo, "users/" + uuid, WorkerResource.class).getBody();
             // TODO: 2.0:  get tickets
             return "reservations";
         } catch (Exception e) {
@@ -316,7 +297,7 @@ public class WebController {
         String url = joinUrlParts(restServiceUrl, path);
         log.info("Get for " + url);
         RestTemplate restTemplate = new RestTemplateBuilder()
-                .basicAuthentication(login.userName, login.password)
+                .basicAuthentication(login.getUserName(), login.getPassword())
                 .build();
         return restTemplate.getForEntity(url, t);
     }
@@ -325,7 +306,7 @@ public class WebController {
         String url = joinUrlParts(restServiceUrl, path);
         log.info("Patch for " + url);
         RestTemplate restTemplate = new RestTemplateBuilder()
-                .basicAuthentication(login.userName, login.password)
+                .basicAuthentication(login.getUserName(), login.getPassword())
                 .build();
         restTemplate.patchForObject(url, input, String.class);
     }
@@ -334,7 +315,7 @@ public class WebController {
         String url = joinUrlParts(restServiceUrl, path);
         log.info("Post for " + url);
         RestTemplate restTemplate = new RestTemplateBuilder()
-                .basicAuthentication(login.userName, login.password)
+                .basicAuthentication(login.getUserName(), login.getPassword())
                 .build();
         restTemplate.postForObject(url, input, String.class);
     }
@@ -343,7 +324,7 @@ public class WebController {
         String url = joinUrlParts(restServiceUrl, path);
         log.info("Put for " + url);
         RestTemplate restTemplate = new RestTemplateBuilder()
-                .basicAuthentication(login.userName, login.password)
+                .basicAuthentication(login.getUserName(), login.getPassword())
                 .build();
         restTemplate.put(url, input, String.class);
     }
@@ -352,7 +333,7 @@ public class WebController {
         String url = joinUrlParts(restServiceUrl, path);
         log.info("Delete for " + url);
         RestTemplate restTemplate = new RestTemplateBuilder()
-                .basicAuthentication(login.userName, login.password)
+                .basicAuthentication(login.getUserName(), login.getPassword())
                 .build();
         restTemplate.delete(url);
     }
@@ -377,9 +358,9 @@ public class WebController {
 
     @GetMapping("/logout")
     public RedirectView handleLogout(@ModelAttribute("login") UserInfo userInfo) {
-        userInfo.userName = "";
-        userInfo.password = "";
-        userInfo.uuid = "";
+        userInfo.setUserName("");
+        userInfo.setPassword("");
+        userInfo.setUuid("");
         return new RedirectView("/login");
     }
 
@@ -393,51 +374,52 @@ public class WebController {
         return "userprofile";
     }
 
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    private static class PasswordStatus {
+    final int PASSWORD_LENGTH_MIN = 8;
 
-        private String status;
-        private String reason;
-    }
-
-    private PasswordStatus validatePassword(UserInfo userInfo, String oldPassword, String newPassword) {
+    private PasswordStatus validatePassword(UserInfo userInfo, String oldPassword, String newPassword, Locale locale) {
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", locale);
         if (oldPassword.equals(newPassword))
-            return new PasswordStatus("Error", "Old and new password must be different!");
+            return new PasswordStatus("Error", resourceBundle.getString("profile.passwords.same"));
 
-        if (!userInfo.getPassword().equals(oldPassword)) return new PasswordStatus("Error", "Old password is not correct!");
-        if (newPassword.length() < 8) {
-            return new PasswordStatus("Error", "Password must be at least 8 characters long!");
+        if (!userInfo.getPassword().equals(oldPassword))
+            return new PasswordStatus("Error", resourceBundle.getString("profile.old.password.incorrect"));
+
+        if (newPassword.length() < PASSWORD_LENGTH_MIN) {
+            return new PasswordStatus("Error", MessageFormat.format(resourceBundle.getString("profile.password.length"), PASSWORD_LENGTH_MIN));
         }
+
         return new PasswordStatus("OK", "");
     }
 
     @PostMapping("/checkPassword")
-    public @ResponseBody PasswordStatus getPasswordStatus(
+    public @ResponseBody
+    PasswordStatus getPasswordStatus(
             @ModelAttribute("login") UserInfo userInfo,
-            @RequestParam(defaultValue = "") String password,
-            @RequestParam(defaultValue = "") String newPassword
+            @RequestParam(defaultValue = "") String oldPassword,
+            @RequestParam(defaultValue = "") String newPassword,
+            Locale locale
     ) {
-        return validatePassword(userInfo, password, newPassword);
+        return validatePassword(userInfo, oldPassword, newPassword, locale);
     }
 
     @PostMapping("/updateProfile")
     public RedirectView updateProfile(
             @ModelAttribute("login") UserInfo userInfo,
             @RequestParam(name = "edit.user.password.current") String currentPassword,
-            @RequestParam(name = "edit.user.password") String newPassword
+            @RequestParam(name = "edit.user.password") String newPassword,
+            Locale locale
     ) {
-        PasswordStatus passwordStatus = validatePassword(userInfo, currentPassword, newPassword);
-        if (!passwordStatus.status.equals("OK")) return new RedirectView("/");
+        PasswordStatus passwordStatus = validatePassword(userInfo, currentPassword, newPassword, locale);
+        if (!passwordStatus.getStatus().equals("OK")) return new RedirectView("/");
         patchRequest(userInfo, "users/" + userInfo.getUuid() + "/password", WorkerCreationRequest.builder().password(newPassword).build());
         userInfo.setPassword(newPassword);
         return new RedirectView("/");
     }
 
     @GetMapping("/timeToEnter")
-    public @ResponseBody RemainingTime getRemainingTime(@ModelAttribute("login") UserInfo userInfo) {
-        return getRequest(userInfo, "users/"+userInfo.getUuid()+"/entry-time-remaining", RemainingTime.class).getBody();
+    public @ResponseBody
+    RemainingTime getRemainingTime(@ModelAttribute("login") UserInfo userInfo) {
+        return getRequest(userInfo, "users/" + userInfo.getUuid() + "/entry-time-remaining", RemainingTime.class).getBody();
     }
 
 }

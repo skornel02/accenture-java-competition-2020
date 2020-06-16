@@ -59,7 +59,7 @@ public class OfficeController {
     )
     @PatchMapping("/settings")
     public ResponseEntity<OfficeResource> updateOfficeSettings(@Valid @RequestBody OfficeResource newValues, Locale locale) {
-        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", locale);
         if (!sessionManager.getPermission().atLeast(PermissionLevel.ADMIN))
             throw new ForbiddenException(resourceBundle.getString("error.forbidden.admin"));
         OfficeSettings currentSettings = officeService.getOfficeSetting();
@@ -75,7 +75,7 @@ public class OfficeController {
     )
     @GetMapping("/inside")
     public List<InsideResource> returnInsideResource(Locale locale) {
-        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", locale);
         if (!sessionManager.getPermission().atLeast(PermissionLevel.ADMIN))
             throw new ForbiddenException(resourceBundle.getString("error.forbidden.admin"));
 
@@ -101,7 +101,7 @@ public class OfficeController {
     )
     @GetMapping("/waiting")
     public List<WaitingResource> returnWaitingResource(Locale locale) {
-        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", locale);
         if (!sessionManager.getPermission().atLeast(PermissionLevel.ADMIN))
             throw new ForbiddenException(resourceBundle.getString("error.forbidden.admin"));
 
@@ -124,7 +124,7 @@ public class OfficeController {
     )
     @GetMapping("/been-inside")
     public List<BeenInsideResource> returnBeenInsideResources(Locale locale) {
-        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", locale);
         if (!sessionManager.getPermission().atLeast(PermissionLevel.ADMIN))
             throw new ForbiddenException(resourceBundle.getString("error.forbidden.admin"));
 

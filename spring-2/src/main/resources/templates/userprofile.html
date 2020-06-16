@@ -42,17 +42,20 @@
 
 <script type="text/javascript" th:src="@{js/materialize.min.js}" src="../static/js/materialize.min.js"></script>
 <script th:inline="javascript">
+    /*<!<CDATA[*/
+    const profilePasswordsDontMatch = /*[[#{profile.passwords.dont.match}]]*/ "Passwords don't match";
+    /*]]>*/
 
     function validate() {
         let currentPassword =$('#edit\\.user\\.password\\.current').val();
         let newPassword =$('#edit\\.user\\.password').val();
         let confirmPassword =$('#edit\\.user\\.password\\.confirm').val();
         if (newPassword !== confirmPassword) {
-            M.toast({html: "Passwords do not match!"});
+            M.toast({html: profilePasswordsDontMatch});
             return false;
         }
         $.post("/checkPassword", {
-            password: currentPassword,
+            oldPassword: currentPassword,
             newPassword: newPassword,
             _csrf: $('#edit\\.csrf').val()
             }, function (result) {
