@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
-<head th:insert="fragments/main.html :: headerfiles">
+<head th:insert="fragments/main.html :: headerfiles" th:remove="tag">
     <title>KiBe</title>
 </head>
 
@@ -46,15 +46,18 @@
                 </td>
 
                 <td th:switch="${user.getStatus()}">
-                    <a th:case="InOffice" href="#"><i
-                            class="material-icons" th:title="#{icons.check.out}">swap_horiz</i><span
-                            th:text="#{icons.check.out}">Check out</span></a>
-                    <a th:case="*" href="#"><i class="material-icons" th:title="#{icons.check.in}">code</i><span
-                            th:text="#{icons.check.in}">Check in</span></a>
+                    <a th:case="${T(org.ajc2020.utility.resource.WorkerStatus).InOffice}" th:href="'/checkout/'+${user.getRfId()}">
+                        <i class="material-icons">swap_horiz</i>
+                        <span th:text="#{icons.check.out}">Check out</span>
+                    </a>
+                    <a th:case="*" th:href="'/checkin/'+${user.getRfId()}">
+                        <i class="material-icons">code</i>
+                        <span th:text="#{icons.check.in}">Check in</span>
+                    </a>
                 </td>
 
-                <td><a href="#"><i class="material-icons" th:title="#{icons.reservations}">verified_user</i><span
-                        th:text="#{icons.reservations}">reservations</span></a>
+                <td><a th:href="'/userview?rid='+${user.getId()}"><i class="material-icons" th:title="#{icons.reservations}">verified_user</i>
+                    <span th:text="#{icons.reservations}">reservations</span></a>
                 </td>
                 <td><a th:href="${'/deleteUser/'+user.getId()}"><i class="material-icons" th:title="#{icons.delete}">delete_forever</i><span
                         th:text="#{users.delete}">Delete</span></a></td>
@@ -93,7 +96,8 @@
                     <td><input id="edit.user.password" type="password" name="edit.user.password"></td>
                 </tr>
                 <tr id="edit.user.password.confirm.row">
-                    <td><label for="edit.user.password.confirm" th:text="#{editor.password.confirm}">Password:</label></td>
+                    <td><label for="edit.user.password.confirm" th:text="#{editor.password.confirm}">Password:</label>
+                    </td>
                     <td><input id="edit.user.password.confirm" type="password" name="edit.user.password.confirm"></td>
                 </tr>
 
@@ -131,7 +135,8 @@
                     <td><input id="create.user.password" type="password" name="create.user.password"></td>
                 </tr>
                 <tr>
-                    <td><label for="create.user.password.confirm" th:text="#{editor.password.confirm}">Password:</label></td>
+                    <td><label for="create.user.password.confirm" th:text="#{editor.password.confirm}">Password:</label>
+                    </td>
                     <td><input id="create.user.password.confirm" type="password" name="create.user.password.confirm">
                     </td>
                 </tr>
