@@ -78,6 +78,11 @@
         let picker = document.querySelector('#sched_picker');
         let now = new Date();
         let nextMonth = addOneMonth(now);
+        let calendarEvents = [];
+        for (let i = 0; i < reservations.length; i++) {
+            calendarEvents.push(new Date(reservations[i]).toDateString());
+        }
+        console.log(calendarEvents);
         M.Datepicker.init(picker,
             {
                 format: "yyyy-mm-dd",
@@ -91,13 +96,18 @@
                         "done": ticketRegister,
                         "cancel": ticketCancel
                     },
-                disableDayFn: function(date){
-                    date.setDate(date.getDate() + 1);
-                    return reservations.indexOf(date.toISOString().split('T')[0]) > -1;
+                events: calendarEvents,
+                onSelect: function(date) {
+                    if (calendarEvents.indexOf(date.toDateString()) !== -1) {
+                        document.querySelector("#doneButton").textContent = ticketDelete;
+                    } else {
+                        document.querySelector("#doneButton").textContent = ticketRegister;
+                    }
+                    console.log(date);
                 }
             }
         );
-        var instance = M.Datepicker.getInstance(picker);
+        let instance = M.Datepicker.getInstance(picker);
         instance.open();
         instance.modal.$overlay.remove();
         instance.doneBtn.setAttribute("id", "doneButton");
@@ -110,7 +120,11 @@
                 M.toast({html: calendarChooseDate});
                 return;
             }
-            document.location = "/register?date="+instance.toString();
+            if (reservations.indexOf(instance.toString()) !== -1) {
+                document.location = "/cancel?date="+instance.toString();
+            } else {
+                document.location = "/register?date="+instance.toString();
+            }
         };
     });
 
