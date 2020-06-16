@@ -1,11 +1,3 @@
-.custom-non-hover-anim {
-    color: rgba(0, 0, 0, 0.6);
-}
-
-.custom-non-hover-anim:hover {
-    color: rgba(0, 0, 0, 1);
-}
-
 body {
     background-color: #f2f2f2;
 }
@@ -17,23 +9,6 @@ body {
 
 .progress {
     margin: 0;
-}
-
-.tabs .indicator {
-    background-color: #536dfe;
-}
-
-.tabs .tab a.active, .tabs .tab a:hover, .tabs .tab a:focus, .tabs .tab a {
-    background-color: #FFF !important;
-    color: #3d5afe;
-}
-
-.tabs .indicator {
-    background-color: #536dfe;
-}
-
-.abcRioButton.abcRioButtonLightBlue {
-    width: fit-content !important;
 }
 
 table.striped > tbody > tr:hover:nth-child(odd) {
