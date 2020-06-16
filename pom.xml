@@ -26,6 +26,7 @@
         <module>backend-kibe</module>
         <module>frontend-kibe</module>
         <module>utility</module>
+        <module>end-to-end</module>
     </modules>
 
     <build>

@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/accenture-java-competition-2020.iml" filepath="$PROJECT_DIR$/accenture-java-competition-2020.iml" />
       <module fileurl="file://$PROJECT_DIR$/backend-kibe/backend-kibe.iml" filepath="$PROJECT_DIR$/backend-kibe/backend-kibe.iml" />
+      <module fileurl="file://$PROJECT_DIR$/end-to-end/end-to-end.iml" filepath="$PROJECT_DIR$/end-to-end/end-to-end.iml" />
       <module fileurl="file://$PROJECT_DIR$/frontend-kibe/frontend-kibe.iml" filepath="$PROJECT_DIR$/frontend-kibe/frontend-kibe.iml" />
       <module fileurl="file://$PROJECT_DIR$/utility/utility.iml" filepath="$PROJECT_DIR$/utility/utility.iml" />
       <module fileurl="file://$PROJECT_DIR$/worker-ui/worker-ui.iml" filepath="$PROJECT_DIR$/worker-ui/worker-ui.iml" />

@@ -10,11 +10,13 @@
         <module name="utility" />
         <module name="backend-kibe" />
         <module name="frontend-kibe" />
+        <module name="end-to-end" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="accenture-java-competition-2020" target="1.8" />
       <module name="backend-kibe" target="1.8" />
+      <module name="end-to-end" target="1.8" />
       <module name="frontend-kibe" target="1.8" />
       <module name="utility" target="1.8" />
     </bytecodeTargetLevel>
