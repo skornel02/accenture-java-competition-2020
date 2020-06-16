@@ -11,6 +11,51 @@
     </div>
     <div class="col s12 m12 l12" th:if="${!actingAdmin && adminMode}">
         <h5 th:text="#{dashboard.greet(${username})}">Hello Admin!</h5>
+        <h4>Jelenleg az irodában tartózkodó dolgozók</h4>
+        <table class="responsive-table striped bordered">
+            <thead>
+                <tr>
+                    <td>Név</td>
+                    <td>E-mail</td>
+                    <i class="material-icons">swap_horiz</i>
+                    <span th:text="#{icons.check.out}">Check out</span>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="worker: ${workersIn}">
+                    <td th:text="${worker.getWorker().getName()}">name</td>
+                    <td><a th:href="'mailto:'+${worker.getWorker().getEmail()}" th:text="${worker.getWorker().getEmail()}">email</a> </td>
+                    <a th:href="'/checkout/'+${worker.getWorker().getRfId()}">
+                        <i class="material-icons">swap_horiz</i>
+                        <span th:text="#{icons.check.out}">Check out</span>
+                    </a>
+                </tr>
+            </tbody>
+        </table>
+        <h4>Bejutásra várakozó dolgozók</h4>
+
+        <table class="responsive-table striped bordered">
+            <thead>
+            <tr>
+                <td>Név</td>
+                <td>E-mail</td>
+                <i class="material-icons">code</i>
+                <span th:text="#{icons.check.in}">Check in</span>
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="worker: ${workersWaiting}">
+                <td th:text="${worker.getWorker().getName()}"></td>
+                <td><a th:href="'mailto:'+${worker.getWorker().getEmail()}" th:text="${worker.getWorker().getEmail()}"></a> </td>
+                <a th:href="'/checkin/'+${worker.getWorker().getRfId()}">
+                    <i class="material-icons">code</i>
+                    <span th:text="#{icons.check.in}">Check in</span>
+                </a>
+            </tr>
+
+            </tbody>
+        </table>
     </div>
     <div class="col s12 m12 l12" th:if="${actingAdmin || !adminMode}">
         <h5 th:text="#{dashboard.greet(${username})}">Hello Worker!</h5>
