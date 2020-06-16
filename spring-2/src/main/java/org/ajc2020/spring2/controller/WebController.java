@@ -95,10 +95,6 @@ public class WebController {
                             .map(TicketResource::getTargetDay)
                             .map(x->x.format(DateTimeFormatter.ISO_DATE))
                             .toArray(String[]::new);
-            log.info("Dumping " + reservations.length + " items");
-            for( String s : reservations) {
-                log.info(s);
-            }
             model.addAttribute("reservations", reservations);
         }
         return "ui";
@@ -391,6 +387,11 @@ public class WebController {
         //if (!fullName.isPresent()) return "lui";
         // TODO: create calendar view
         return "lui";
+    }
+
+    @GetMapping("/timeToEnter")
+    public @ResponseBody RemainingTime getRemainingTime(@ModelAttribute("login") UserInfo userInfo) {
+        return getRequest(userInfo, "users/"+userInfo.getUuid()+"/entry-time-remaining", RemainingTime.class).getBody();
     }
 
 }

@@ -64,3 +64,7 @@ table.striped > tbody > tr:nth-child(even) {
 #errorMessage{
     color: red;
 }
+
+.has-event{
+    background-color: #7581bf;
+}
