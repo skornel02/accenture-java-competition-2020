@@ -17,4 +17,7 @@ public class KIBeConfig {
     @NestedConfigurationProperty
     DeviceConfiguration device = new DeviceConfiguration();
 
+    @NestedConfigurationProperty
+    GoogleConfig google = new GoogleConfig();
+
 }

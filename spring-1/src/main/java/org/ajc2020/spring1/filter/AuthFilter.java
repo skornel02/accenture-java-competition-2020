@@ -71,6 +71,19 @@ public final class AuthFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
+        if (auth.startsWith(config.getGoogle().getAuthorizationType())) {
+            String token = auth.replaceFirst(config.getGoogle().getAuthorizationType(), "").trim();
+            Optional<User> userOptional = authManager.findValidUserGoogle(token);
+            if (userOptional.isPresent()) {
+                User user = userOptional.get();
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user,
+                        token,
+                        Collections.singleton(new SimpleGrantedAuthority(user.getPermissionLevel().getAuthority())));
+
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+        }
         chain.doFilter(request, response);
     }
 }
