@@ -1,5 +1,8 @@
 {
   "translations": {
+    "footer": {
+      "logout": "Kijelentkezés"
+    },
     "login": {
       "password": "Jelszó",
       "loginText": "Bejelentkezés",

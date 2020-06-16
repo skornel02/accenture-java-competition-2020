@@ -85,7 +85,8 @@ const WorkerCalendar: React.FunctionComponent<{
         )
     } else {
         const ticketsToday = tickets?.filter(ticket => ticketFilter(ticket, selectedDate)) ?? [];
-        if (!isSameDate(new Date(), selectedDate) && props.remainingTime.status === "InOffice") {
+        console.log(ticketsToday);
+        if (!(isSameDate(new Date(), selectedDate) && props.remainingTime.status === "InOffice")) {
             items = (
                 <div>
                     <h1 className={workerStyle.BigText}>

@@ -1,0 +1,40 @@
+# KIBe 
+
+A KIBe projekt törekszik ebben a szituációban mindenkinek a problémáját a lehető legjobb módon megoldani. 
+
+## Alkalmazott
+
+[funkciók]
+
+### PWA
+
+[google belépés]
+[Egyszerűsített multiplatform kliens]
+
+### Adminisztratív
+
+[Fő weboldal thymeleaffel]
+
+## Adminisztrátor
+
+[Miket lehet a felhasználókkal csinálni]
+
+## Kihasználtság tervező
+
+[API ami mindent odaad]
+
+## Telepítő
+
+[Docker és docker compose]
+[Skálázhatóság microservice backend végett]
+
+## Szoftver fejlesztő
+
+[HATEoas ellátott]
+[Részletes swagger dokumentáció]
+[Postman gyűjtemény]
+
+## Szoftver fenntartó 
+
+[Öndokumentáló kód best practiceket követve]
+[Unit tesztek]
