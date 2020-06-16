@@ -35,3 +35,32 @@ body {
 .abcRioButton.abcRioButtonLightBlue {
     width: fit-content !important;
 }
+
+table.striped > tbody > tr:hover:nth-child(odd) {
+    background-color: rgba(98, 163, 194, 0.5);
+}
+
+table.striped > tbody > tr:hover:nth-child(even) {
+    background-color: rgba(116, 200, 226, 0.5);
+}
+
+table.striped > tbody > tr:nth-child(odd) {
+    background-color: rgba(199, 199, 199, 0.5);
+}
+
+table.striped > tbody > tr:nth-child(even) {
+    background-color: rgba(220, 220, 220, 0.5);
+}
+
+#sched_picker{
+    display: none;
+}
+.datepicker-modal{
+    width: 100% !important;
+    position: initial !important;
+    box-shadow: initial !important;
+    -webkit-box-shadown: initial !important;
+}
+#errorMessage{
+    color: red;
+}

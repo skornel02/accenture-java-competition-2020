@@ -1,8 +1,6 @@
 package org.ajc2020.utility.communication;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.constraints.NotNull;
@@ -12,11 +10,13 @@ import java.time.OffsetDateTime;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class TicketResource extends RepresentationModel<TicketResource> {
 
-    @NotNull
+//    @NotNull
     private LocalDate targetDay;
-    @NotNull
+//    @NotNull
     private OffsetDateTime creationDate;
 
 }

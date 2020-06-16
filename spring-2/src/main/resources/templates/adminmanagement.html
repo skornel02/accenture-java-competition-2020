@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<head th:insert="fragments/main.html :: headerfiles">
+    <title>KiBe</title>
+</head>
+
+<body class="container">
+
+<div class="row">
+    <div class="col s12 m12 l12" th:insert="fragments/main.html :: navigation">
+    </div>
+    <div class="col s12 m12 l12">
+        <h5 th:text="#{users.admins}">Admins</h5>
+        <table class="responsive-table striped bordered">
+            <thead>
+            <tr>
+                <td th:text="#{users.uuid}">uuid</td>
+                <td th:text="#{users.name}">name</td>
+                <td th:text="#{users.email}">email</td>
+                <td th:text="#{users.password}">password</td>
+                <td class="center"><i class="material-icons">check_circle_outline</i><br/><span
+                        th:text="#{users.super.admin}">super admin</span></td>
+                <td class="center"><i class="material-icons" th:title="#{icons.delete}">delete_forever</i><br/><span
+                        th:text="#{users.delete}">delete</span>
+                </td>
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="admin : ${admins}">
+                <td th:text="${admin.getUuid()}">uuid</td>
+                <td><a href="#" th:text="${admin.getName()}"
+                       th:onclick="editAdminName([[${admin.getUuid()}]], [[${admin.getName()}]])">John Doe</a></td>
+                <td><a href="#" th:text="${admin.getEmail()}"
+                       th:onclick="editAdminEmail([[${admin.getUuid()}]], [[${admin.getEmail()}]])">john.doe@kibe</a>
+                </td>
+                <td><a href="#" th:text="#{users.change.password}"
+                       th:onclick="editAdminPassword([[${admin.getUuid()}]])">Change password</a>
+                </td>
+                <td><a href="#"><i class="material-icons" th:text="check_circle_outline">check_circle_outline</i></a>
+                </td>
+                <td><a th:href="${'/deleteAdmin/'+admin.getUuid()}"><i class="material-icons"
+                                                                       th:title="#{icons.delete}">delete_forever</i><span
+                        th:text="#{users.delete}">Delete</span></a></td>
+
+            </tr>
+            </tbody>
+        </table>
+        <button data-target="create-admin-modal" class="btn modal-trigger"
+                th:text="#{users.new.admin}"></button>
+    </div>
+</div>
+<div class="col s12 m3 modal" id="edit-admin-modal">
+    <div class="card-panel modal-content">
+        <form action="/updateAdmin" method="post">
+            <input type="hidden" id="edit.admin.uuid" name="edit.admin.uuid">
+            <input type="hidden"
+                   th:name="${_csrf.parameterName}"
+                   th:value="${_csrf.token}"/>
+            <h5 class="center" th:text="#{edit.admin}">Edit Admin</h5>
+            <table>
+                <tr id="edit.admin.name.row">
+                    <td><label for="edit.admin.name" th:text="#{editor.name}">Name:</label></td>
+                    <td><input id="edit.admin.name" name="edit.admin.name"></td>
+                </tr>
+                <tr id="edit.admin.email.row">
+                    <td><label for="edit.admin.email" th:text="#{editor.email}">Email:</label></td>
+                    <td><input id="edit.admin.email" name="edit.admin.email"></td>
+                </tr>
+                <tr id="edit.admin.password.row">
+                    <td><label for="edit.admin.password" th:text="#{editor.password}">New password:</label></td>
+                    <td><input id="edit.admin.password" type="password" name="edit.admin.password"></td>
+                </tr>
+                <tr id="edit.admin.password.confirm.row">
+                    <td><label for="edit.admin.password.confirm" th:text="#{editor.password.confirm}">Confirm password:</label></td>
+                    <td><input id="edit.admin.password.confirm" type="password" name="edit.admin.password.confirm"></td>
+                </tr>
+                <tr>
+                    <td><input type="submit" value="Submit" th:value="#{editor.save}" class="btn-flat"></td>
+                    <td>
+                        <button type="submit" class="modal-close waves-effect waves-green btn-flat"
+                                data-target="edit-admin-modal" onclick="return false;" th:text="#{editor.cancel}">Cancel
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+<div class="col s12 m3 modal" id="create-admin-modal">
+    <div class="card-panel modal-content">
+        <form action="/createAdmin" method="post">
+            <input type="hidden"
+                   th:name="${_csrf.parameterName}"
+                   th:value="${_csrf.token}"/>
+            <h5 class="center" th:text="#{create.admin}">Create Admin</h5>
+            <table>
+                <tr>
+                    <td><label for="create.admin.name" th:text="#{editor.name}">Name:</label></td>
+                    <td><input id="create.admin.name" name="create.admin.name"></td>
+                </tr>
+                <tr>
+                    <td><label for="create.admin.email" th:text="#{editor.email}">Email:</label></td>
+                    <td><input id="create.admin.email" name="create.admin.email"></td>
+                </tr>
+                <tr>
+                    <td><label for="create.admin.password" th:text="#{editor.password}">New password:</label></td>
+                    <td><input id="create.admin.password" type="password" name="create.admin.password"></td>
+                </tr>
+                <tr>
+                    <td><label for="create.admin.password.confirm" th:text="#{editor.password.confirm}">Confirm password:</label></td>
+                    <td><input id="create.admin.password.confirm" type="password" name="create.admin.password.confirm">
+                    </td>
+                </tr>
+                <tr>
+                    <td><input type="submit" value="Submit" th:value="#{editor.create}" class="btn-flat"></td>
+                    <td>
+                        <button type="submit" class="modal-close waves-effect waves-green btn-flat"
+                                data-target="edit-admin-modal" onclick="return false;" th:text="#{editor.cancel}">Cancel
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript" th:src="@{js/materialize.min.js}" src="../static/js/materialize.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.modal').modal();
+    });
+
+    function clearAdminForm() {
+        $('#edit\\.admin\\.uuid').val("");
+
+        $('#edit\\.admin\\.name').val("");
+        $('#edit\\.admin\\.name\\.row').hide();
+
+        $('#edit\\.admin\\.email').val("");
+        $('#edit\\.admin\\.email\\.row').hide();
+
+        $('#edit\\.admin\\.password').val("");
+        $('#edit\\.admin\\.password\\.row').hide();
+
+        $('#edit\\.admin\\.password\\.confirm').val("");
+        $('#edit\\.admin\\.password\\.confirm\\.row').hide();
+    }
+
+    function editAdminName(uuid, oldName) {
+        clearAdminForm();
+        let modal = $('#edit-admin-modal');
+        $('#edit\\.admin\\.name').val(oldName);
+        $('#edit\\.admin\\.name\\.row').show();
+        $('#edit\\.admin\\.uuid').val(uuid);
+        modal.modal();
+        modal.modal('open');
+    }
+
+    function editAdminEmail(uuid, oldName) {
+        clearAdminForm();
+        let modal = $('#edit-admin-modal');
+        $('#edit\\.admin\\.email').val(oldName);
+        $('#edit\\.admin\\.email\\.row').show();
+        $('#edit\\.admin\\.uuid').val(uuid);
+        modal.modal();
+        modal.modal('open');
+    }
+
+    function editAdminPassword(uuid) {
+        clearAdminForm();
+        let modal = $('#edit-admin-modal');
+        $('#edit\\.admin\\.password').val("");
+        $('#edit\\.admin\\.password\\.row').show();
+        $('#edit\\.admin\\.password\\.row').val("");
+        $('#edit\\.admin\\.password\\.confirm\\.row').show();
+        $('#edit\\.admin\\.uuid').val(uuid);
+        modal.modal();
+        modal.modal('open');
+    }
+</script>
+</body>
+</html>
