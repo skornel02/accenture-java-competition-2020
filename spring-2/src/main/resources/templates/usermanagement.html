@@ -98,7 +98,7 @@
                 </tr>
 
                 <tr>
-                    <td><input type="submit" th:value="#{editor.create}" value="Submit" class="btn-flat"></td>
+                    <td><input type="submit" th:value="#{editor.save}" value="Submit" class="btn-flat"></td>
                     <td>
                         <button type="submit" class="modal-close waves-effect waves-green btn-flat"
                                 data-target="edit-user-modal" onclick="return false;" th:text="#{editor.cancel}">Cancel
@@ -127,10 +127,6 @@
                     <td><input id="create.user.email" name="create.user.email"></td>
                 </tr>
                 <tr>
-                    <td><label for="create.user.rfid" th:text="#{editor.rfid}">RFID:</label></td>
-                    <td><input id="create.user.rfid" name="create.user.rfid"></td>
-                </tr>
-                <tr>
                     <td><label for="create.user.password" th:text="#{editor.password}">Password:</label></td>
                     <td><input id="create.user.password" type="password" name="create.user.password"></td>
                 </tr>
@@ -140,7 +136,11 @@
                     </td>
                 </tr>
                 <tr>
-                    <td><input type="submit" value="Submit" th:value="#{editor.save}" class="btn-flat"></td>
+                    <td><label for="create.user.rfid" th:text="#{editor.rfid}">RFID:</label></td>
+                    <td><input id="create.user.rfid" name="create.user.rfid"></td>
+                </tr>
+                <tr>
+                    <td><input type="submit" value="Submit" th:value="#{editor.create}" class="btn-flat"></td>
                     <td>
                         <button type="submit" class="modal-close waves-effect waves-green btn-flat"
                                 data-target="edit-user-modal" onclick="return false;" th:text="#{editor.cancel}">Cancel

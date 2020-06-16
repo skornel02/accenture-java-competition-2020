@@ -29,6 +29,7 @@
                     <li th:if="${adminMode}"><a href="/users" class="tooltipped" data-position="bottom" th:data-tooltip="#{menu.manage.users}"><i class="material-icons">person</i></a></li>
                     <li th:if="${adminMode}"><a href="/admins" class="tooltipped" data-position="bottom" th:data-tooltip="#{menu.manage.admins}"><i class="material-icons">admin_panel_settings</i></a></li>
                     <li th:if="${adminMode}"><a href="/building" class="tooltipped" data-position="bottom" th:data-tooltip="#{building.administration}"><i class="material-icons">settings</i></a></li>
+                    <li th:if="${!adminMode}"><a href="/profile" class="tooltipped" data-position="bottom" th:data-tooltip="#{menu.profile}"><i class="material-icons">account_box</i></a></li>
                     <li><a href="/logout" class="tooltipped" data-position="bottom" th:data-tooltip="#{login.logout}"><i class="material-icons">outlet</i></a></li>
                 </ul>
             </div>
@@ -40,6 +41,7 @@
             <li th:if="${adminMode}"><a href="/users"><i class="material-icons">person</i><span th:text="#{menu.manage.users}" th:remove="tag">Users</span></a></li>
             <li th:if="${adminMode}"><a href="/admins"><i class="material-icons">admin_panel_settings</i><span th:text="#{menu.manage.admins}" th:remove="tag">Admins</span></a></li>
             <li th:if="${adminMode}"><a href="/building"><i class="material-icons">settings</i><span th:text="#{building.administration}" th:remove="tag">Building</span></a></li>
+            <li th:if="${!adminMode}"><a href="/profile"><i class="material-icons">account_box</i><span data-position="bottom" th:data-tooltip="#{menu.profile}">Profile</span></a></li>
             <li><a href="/logout"><i class="material-icons">outlet</i><span th:text="#{login.logout}" th:remove="tag">Log out</span></a></li>
         </ul>
         <script>
