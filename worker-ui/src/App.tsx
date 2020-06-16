@@ -7,11 +7,13 @@ import 'react-toastify/dist/ReactToastify.css';
 import SecuredArea, {useAuthInformation} from "./SecuredArea";
 import WorkerArea from "./WorkerArea";
 import AdminArea from "./AdminArea";
+import OfflineToaster from "./OfflineToaster";
 
 const App = () => {
     return (
         <I18nextProvider i18n={i18n}>
             <ToastContainer position={"top-center"}/>
+            <OfflineToaster/>
             <SecuredArea>
                 <AreaChooser/>
             </SecuredArea>

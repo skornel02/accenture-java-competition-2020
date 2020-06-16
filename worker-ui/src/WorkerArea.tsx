@@ -9,6 +9,8 @@ import Calendar from 'react-calendar';
 import {firstDayInPreviousMonth, firstDayInTwoMonths, yesterday} from "./DateUtils";
 import 'react-calendar/dist/Calendar.css';
 import moment from "moment";
+// @ts-ignore
+import {Online} from 'react-detect-offline'
 
 const WorkerArea: React.FunctionComponent = props => {
     const info = useAuthInformation();
@@ -164,9 +166,11 @@ const WorkerCalendar: React.FunctionComponent<{
                                     {t("worker.yesTickets")}
                                 </h3>
                                 <div className={workerStyle.ButtonWrapper}>
-                                    <button className={workerStyle.DeleteButton} onClick={removeTicket}>
-                                        {t("worker.cancel")}
-                                    </button>
+                                    <Online>
+                                        <button className={workerStyle.DeleteButton} onClick={removeTicket}>
+                                            {t("worker.cancel")}
+                                        </button>
+                                    </Online>
                                 </div>
                             </>
                         )
@@ -176,9 +180,11 @@ const WorkerCalendar: React.FunctionComponent<{
                                     {t("worker.noTickets")}
                                 </h3>
                                 <div className={workerStyle.ButtonWrapper}>
-                                    <button className={workerStyle.CreateButton} onClick={createTicket}>
-                                        {t("worker.create")}
-                                    </button>
+                                    <Online>
+                                        <button className={workerStyle.CreateButton} onClick={createTicket}>
+                                            {t("worker.create")}
+                                        </button>
+                                    </Online>
                                 </div>
                             </>
                         )}

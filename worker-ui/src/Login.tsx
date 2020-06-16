@@ -6,6 +6,8 @@ import GoogleLogin, {GoogleLoginResponse, GoogleLoginResponseOffline} from "reac
 import {useTranslation} from "react-i18next";
 import {toast} from "react-toastify";
 import {BasicLoginInformation} from "./resource/Resources";
+// @ts-ignore
+import {Online} from 'react-detect-offline'
 
 const Login: React.FunctionComponent<{
     handleBasicAuth: (data: BasicLoginInformation) => void,
@@ -55,13 +57,15 @@ const Login: React.FunctionComponent<{
                        name="password"
                        ref={register({required: true})}/>
 
-                <input type="submit" className={loginStyles.SignInButton} value={buttonText}/>
-                <hr/>
-                <div style={{margin: "0 auto", width: 180}}>
-                    <GoogleLogin onSuccess={responseGoogle}
-                                 onFailure={e => toast("Google authentication failed...", {type: "error"})}
-                                 clientId={"765993534694-p6c39vh4u187ld6v6gq11v5gnqal74b4.apps.googleusercontent.com"}/>
-                </div>
+                <Online>
+                    <input type="submit" className={loginStyles.SignInButton} value={buttonText}/>
+                    <hr/>
+                    <div style={{margin: "0 auto", width: 180}}>
+                        <GoogleLogin onSuccess={responseGoogle}
+                                     onFailure={e => toast("Google authentication failed...", {type: "error"})}
+                                     clientId={"765993534694-p6c39vh4u187ld6v6gq11v5gnqal74b4.apps.googleusercontent.com"}/>
+                    </div>
+                </Online>
             </form>
         </main>
     );
