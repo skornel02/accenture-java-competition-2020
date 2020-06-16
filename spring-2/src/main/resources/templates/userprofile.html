@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<head th:insert="fragments/main.html :: headerfiles">
+    <title>KiBe</title>
+</head>
+
+<body class="container">
+
+<div class="row">
+    <div class="col s12 m12 l12" th:insert="fragments/main.html :: navigation">
+    </div>
+</div>
+<div class="col s12 m3" id="edit-user">
+        <form action="/updateProfile" method="post" id="update.profile">
+            <input type="hidden" id="edit.user.uuid" name="edit.user.uuid">
+            <input type="hidden" id="edit.csrf"
+                   th:name="${_csrf.parameterName}"
+                   th:value="${_csrf.token}"/>
+
+            <h5 class="center" th:text="#{edit.profile}">Edit Profile</h5>
+            <table>
+                <tr id="edit.user.password.current.row">
+                    <td><label for="edit.user.password.current" th:text="#{editor.password.current}">Password:</label></td>
+                    <td><input id="edit.user.password.current" type="password" name="edit.user.password.current"></td>
+                </tr>
+                <tr id="edit.user.password.row">
+                    <td><label for="edit.user.password" th:text="#{editor.password.new}">Password:</label></td>
+                    <td><input id="edit.user.password" type="password" name="edit.user.password"></td>
+                </tr>
+                <tr id="edit.user.password.confirm.row">
+                    <td><label for="edit.user.password.confirm" th:text="#{editor.password.confirm}">Password:</label></td>
+                    <td><input id="edit.user.password.confirm" type="password" name="edit.user.password.confirm"></td>
+                </tr>
+
+                <tr>
+                    <td><input type="button" th:value="#{editor.save}" value="Submit" class="btn-flat" onclick="return validate();"></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript" th:src="@{js/materialize.min.js}" src="../static/js/materialize.min.js"></script>
+<script th:inline="javascript">
+
+    function validate() {
+        let currentPassword =$('#edit\\.user\\.password\\.current').val();
+        let newPassword =$('#edit\\.user\\.password').val();
+        let confirmPassword =$('#edit\\.user\\.password\\.confirm').val();
+        if (newPassword !== confirmPassword) {
+            M.toast({html: "Passwords do not match!"});
+            return false;
+        }
+        $.post("/checkPassword", {
+            password: currentPassword,
+            newPassword: newPassword,
+            _csrf: $('#edit\\.csrf').val()
+            }, function (result) {
+            if (result.status === "OK") {
+                $('#update\\.profile').submit();
+            } else {
+                M.toast({html: result.reason});
+            }
+        });
+        return false;
+    }
+
+</script>
+</body>
+</html>

@@ -1,6 +1,8 @@
 package org.ajc2020.spring2.controller;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.ajc2020.utility.communication.*;
 import org.ajc2020.utility.resource.PermissionLevel;
@@ -381,12 +383,56 @@ public class WebController {
         return new RedirectView("/login");
     }
 
-    @GetMapping("/calendar")
-    public String calendar(@ModelAttribute("login") UserInfo userInfo) {
+    @GetMapping("/profile")
+    public String profile(@ModelAttribute("login") UserInfo userInfo, Model model) {
         Optional<String> fullName = authorize(userInfo);
-        //if (!fullName.isPresent()) return "lui";
-        // TODO: create calendar view
-        return "lui";
+        if (!fullName.isPresent()) {
+            return "lui";
+        }
+        setModel(userInfo, fullName.get(), model);
+        return "userprofile";
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    private static class PasswordStatus {
+
+        private String status;
+        private String reason;
+    }
+
+    private PasswordStatus validatePassword(UserInfo userInfo, String oldPassword, String newPassword) {
+        if (oldPassword.equals(newPassword))
+            return new PasswordStatus("Error", "Old and new password must be different!");
+
+        if (!userInfo.getPassword().equals(oldPassword)) return new PasswordStatus("Error", "Old password is not correct!");
+        if (newPassword.length() < 8) {
+            return new PasswordStatus("Error", "Password must be at least 8 characters long!");
+        }
+        return new PasswordStatus("OK", "");
+    }
+
+    @PostMapping("/checkPassword")
+    public @ResponseBody PasswordStatus getPasswordStatus(
+            @ModelAttribute("login") UserInfo userInfo,
+            @RequestParam(defaultValue = "") String password,
+            @RequestParam(defaultValue = "") String newPassword
+    ) {
+        return validatePassword(userInfo, password, newPassword);
+    }
+
+    @PostMapping("/updateProfile")
+    public RedirectView updateProfile(
+            @ModelAttribute("login") UserInfo userInfo,
+            @RequestParam(name = "edit.user.password.current") String currentPassword,
+            @RequestParam(name = "edit.user.password") String newPassword
+    ) {
+        PasswordStatus passwordStatus = validatePassword(userInfo, currentPassword, newPassword);
+        if (!passwordStatus.status.equals("OK")) return new RedirectView("/");
+        patchRequest(userInfo, "users/" + userInfo.getUuid() + "/password", WorkerCreationRequest.builder().password(newPassword).build());
+        userInfo.setPassword(newPassword);
+        return new RedirectView("/");
     }
 
     @GetMapping("/timeToEnter")

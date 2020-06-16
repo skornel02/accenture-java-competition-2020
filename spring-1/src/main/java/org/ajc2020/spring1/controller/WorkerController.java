@@ -2,6 +2,7 @@ package org.ajc2020.spring1.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import lombok.extern.slf4j.Slf4j;
 import org.ajc2020.spring1.manager.AuthManager;
 import org.ajc2020.spring1.manager.SessionManager;
 import org.ajc2020.spring1.model.OfficeHours;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+@Slf4j
 @RestController
 @RequestMapping("users")
 public class WorkerController {
@@ -126,12 +128,36 @@ public class WorkerController {
         if (!sessionManager.getPermission().atLeast(PermissionLevel.ADMIN))
             throw new ForbiddenException(resourceBundle.getString("error.forbidden.admin"));
 
+        return updateWorkerResource(uuid, workerUpdateRequest, resourceBundle);
+    }
+
+    @Operation(
+            description = "Updates Worker password for non-admins",
+            tags = "Workers",
+            security = {@SecurityRequirement(name = "user")}
+    )
+    @PatchMapping("/{uuid}/password")
+    public WorkerResource updateWorkerPassword(@PathVariable String uuid, Locale locale, @RequestBody WorkerCreationRequest workerUpdateRequest) throws UserUpdateFailedException {
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.forLanguageTag(locale.getDisplayLanguage()));
+        if (!sessionManager.isSessionWorker() || (!sessionManager.getWorker().getUuid().equals(uuid)))
+            throw new ForbiddenException(resourceBundle.getString("error.forbidden.admin"));
+
+        return updateWorkerResource(uuid, workerUpdateRequest, resourceBundle);
+    }
+
+    private WorkerResource updateWorkerResource(String uuid, WorkerCreationRequest workerUpdateRequest, ResourceBundle resourceBundle) {
+        log.info("Update for " + uuid);
         Optional<Worker> worker = workerService.findByUuid(uuid);
         if (!worker.isPresent()) {
+            log.info("Worker not found");
             throw new UserNotFoundException( resourceBundle.getString("error.user.not.found"));
         }
         try {
+            if (!workerUpdateRequest.getPassword().isEmpty()) {
+                workerUpdateRequest.setPassword(authManager.encryptPassword(workerUpdateRequest.getPassword()));
+            }
             workerService.save(worker.get().updateWith(workerUpdateRequest));
+
             return addLinks(worker.get().toResource());
         } catch (DataIntegrityViolationException e) {
             throw new UserUpdateFailedException( resourceBundle.getString("error.user.unable.to.update") + " - " + e.getMessage());

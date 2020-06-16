@@ -68,3 +68,7 @@ table.striped > tbody > tr:nth-child(even) {
 .has-event{
     background-color: #7581bf;
 }
+
+.brand-logo img {
+    vertical-align: sub;
+}

@@ -6,6 +6,7 @@ import org.ajc2020.spring1.model.Worker;
 import org.ajc2020.spring1.repository.WorkerRepository;
 import org.ajc2020.utility.resource.WorkerStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
