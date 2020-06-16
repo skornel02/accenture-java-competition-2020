@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/spring-1/spring-1.iml" filepath="$PROJECT_DIR$/spring-1/spring-1.iml" />
       <module fileurl="file://$PROJECT_DIR$/spring-2/spring-2.iml" filepath="$PROJECT_DIR$/spring-2/spring-2.iml" />
       <module fileurl="file://$PROJECT_DIR$/utility/utility.iml" filepath="$PROJECT_DIR$/utility/utility.iml" />
+      <module fileurl="file://$PROJECT_DIR$/worker-ui/worker-ui.iml" filepath="$PROJECT_DIR$/worker-ui/worker-ui.iml" />
     </modules>
   </component>
 </project>

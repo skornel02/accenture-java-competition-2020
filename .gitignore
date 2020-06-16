@@ -6,3 +6,5 @@ workspace.xml
 tasks.xml
 *.iws
 *.ipr
+
+worker-ui/node_modules
