@@ -5,7 +5,25 @@
       "loginText": "Login",
       "button": "Submit",
       "emailMissing": "Your email address is missing",
-      "passwordMissing": "Your password is missing"
+      "passwordMissing": "Your password is missing",
+      "onlyWorkers": "This client is for workers only",
+      "invalidCredentials": "Invalid credentials"
+    },
+    "worker": {
+      "currentlyInside": "You are inside",
+      "currentlyWaiting": "You are waiting",
+      "currentlyNotWaiting": "You are not in line",
+      "estimatedTimeToEntry": "Your estimated time to entry: ",
+      "entryMightChange": "create ticket now",
+      "instantly": "Instantly",
+      "tickets": "Tickets",
+      "noTickets": "You have no tickets for this day",
+      "yesTickets": "You have a ticket for this day",
+      "officeHours": "Office hours",
+      "noOfficeHours": "You haven't been in the office this day",
+      "yesOfficeHours": "You have been in the office this day",
+      "cancel": "Cancel ticket",
+      "create": "Create ticket"
     }
   }
 }

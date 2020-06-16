@@ -2,7 +2,6 @@ package org.ajc2020.spring1.config;
 
 import org.ajc2020.spring1.filter.AuthFilter;
 import org.ajc2020.spring1.filter.CustomCorsFilter;
-import org.ajc2020.utility.resource.PermissionLevel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -28,9 +27,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .csrf().disable()
-                .cors()
+                .cors().disable()
 
-                .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
                 .and()

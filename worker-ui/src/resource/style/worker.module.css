@@ -1,0 +1,39 @@
+.BigText {
+    text-align: center;
+    margin-bottom: 0;
+    font-size: 2rem;
+}
+
+.SmallText {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 1rem;
+}
+
+.TimeText {
+    text-align: center;
+    color: var(--Rendarch-4);
+    font-size: 2rem;
+    margin-top: 0.2em;
+    margin-bottom: 0.4em;
+}
+
+.HintText {
+    vertical-align: super;
+    font-size: 0.5rem;
+}
+
+.ButtonWrapper {
+    text-align: center;
+}
+
+.CreateButton {
+    font-size: 1.5rem;
+    background-color: limegreen;
+}
+
+.DeleteButton {
+    font-size: 1.5rem;
+    background-color: red;
+}

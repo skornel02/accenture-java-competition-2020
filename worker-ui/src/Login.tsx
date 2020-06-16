@@ -41,7 +41,7 @@ const Login: React.FunctionComponent<{
     return (
         <main className={loginStyles.LoginPage}>
             <form className={loginStyles.SignInForm}
-                  onSubmit={handleSubmit(data => console.log(data))}>
+                  onSubmit={handleSubmit(props.handleBasicAuth)}>
                 <img className={loginStyles.SignInLogo} src={logo} alt="logo"/>
                 <h1 style={{marginTop: "0", textAlign: "center"}}>{t("login.loginText")}</h1>
                 <input className={loginStyles.SignInInput}
@@ -59,8 +59,7 @@ const Login: React.FunctionComponent<{
                 <hr/>
                 <div style={{margin: "0 auto", width: 180}}>
                     <GoogleLogin onSuccess={responseGoogle}
-                                 onFailure={e => console.error(e)}
-                                 isSignedIn={true}
+                                 onFailure={e => toast("Google authentication failed...", {type: "error"})}
                                  clientId={"765993534694-p6c39vh4u187ld6v6gq11v5gnqal74b4.apps.googleusercontent.com"}/>
                 </div>
             </form>
