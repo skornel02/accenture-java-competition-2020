@@ -1,0 +1,11 @@
+{
+  "translations": {
+    "login": {
+      "password": "Jelszó",
+      "loginText": "Bejelentkezés",
+      "button": "Tovább",
+      "emailMissing": "Email cím nincs kitöltve",
+      "passwordMissing": "Jelszó nincs kitöltve"
+    }
+  }
+}

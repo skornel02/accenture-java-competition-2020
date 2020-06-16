@@ -1,0 +1,11 @@
+{
+  "translations": {
+    "login": {
+      "password": "Password",
+      "loginText": "Login",
+      "button": "Submit",
+      "emailMissing": "Your email address is missing",
+      "passwordMissing": "Your password is missing"
+    }
+  }
+}
