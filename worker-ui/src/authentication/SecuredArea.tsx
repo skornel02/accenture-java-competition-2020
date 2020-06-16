@@ -5,12 +5,12 @@ import {
     AuthenticationType,
     BasicAuthentication,
     BasicLoginInformation, GoogleAuthentication
-} from "./resource/Resources";
-import StorageManager from "./StorageManager";
+} from "../resource/Resources";
+import StorageManager from "../resource/StorageManager";
 import Login from "./Login";
 import {toast} from "react-toastify";
-import Backend from "./resource/Backend";
-import Footer from "./Footer";
+import Backend from "../resource/Backend";
+import Footer from "../general/Footer";
 import {useTranslation} from "react-i18next";
 
 const AuthContext = React.createContext<AuthenticationInformation>({

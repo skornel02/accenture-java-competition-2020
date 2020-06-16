@@ -1,5 +1,5 @@
 import React from 'react';
-import loadingGif from './resource/img/loading-compressed.gif';
+import loadingGif from '../resource/img/loading-compressed.gif';
 
 const Loading: React.FunctionComponent = () => {
     return (<div style={{

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
 import App from "./App";
-import Loading from "./Loading";
+import Loading from "./general/Loading";
 
 ReactDOM.render(
   <React.StrictMode>

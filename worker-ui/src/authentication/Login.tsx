@@ -1,11 +1,11 @@
 import React from 'react';
-import loginStyles from './resource/style/login.module.css';
+import loginStyles from '../resource/style/login.module.css';
 import {useForm} from "react-hook-form";
-import logo from './resource/img/logo.png'
+import logo from '../resource/img/logo.png'
 import GoogleLogin, {GoogleLoginResponse, GoogleLoginResponseOffline} from "react-google-login";
 import {useTranslation} from "react-i18next";
 import {toast} from "react-toastify";
-import {BasicLoginInformation} from "./resource/Resources";
+import {BasicLoginInformation} from "../resource/Resources";
 // @ts-ignore
 import {Online} from 'react-detect-offline'
 
@@ -62,7 +62,7 @@ const Login: React.FunctionComponent<{
                     <hr/>
                     <div style={{margin: "0 auto", width: 180}}>
                         <GoogleLogin onSuccess={responseGoogle}
-                                     onFailure={e => toast("Google authentication failed...", {type: "error"})}
+                                     onFailure={() => toast("Google authentication failed!", {type: "error"})}
                                      clientId={"765993534694-p6c39vh4u187ld6v6gq11v5gnqal74b4.apps.googleusercontent.com"}/>
                     </div>
                 </Online>

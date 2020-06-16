@@ -1,4 +1,4 @@
-import {Authentication} from "./resource/Resources";
+import {Authentication} from "./Resources";
 import localForage from 'localforage';
 
 class StorageManager {

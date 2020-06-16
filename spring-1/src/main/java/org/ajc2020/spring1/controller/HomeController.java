@@ -42,7 +42,7 @@ public class HomeController {
             tags = "Entry management",
             security = {@SecurityRequirement(name = "user", scopes = "admin"), @SecurityRequirement(name = "device")}
     )
-    @GetMapping(path = "/rfids/{rfid}/checkin")
+    @PostMapping(path = "/rfids/{rfid}/checkin")
     public RfIdStatus checkin(@PathVariable String rfid) {
         Worker worker = workerService.findByRfid(rfid);
         if (worker == null) return RfIdStatus.unknownRfid();
@@ -62,7 +62,7 @@ public class HomeController {
             tags = "Entry management",
             security = {@SecurityRequirement(name = "user", scopes = "admin"), @SecurityRequirement(name = "device")}
     )
-    @GetMapping(path = "/rfids/{rfid}/checkout")
+    @PostMapping(path = "/rfids/{rfid}/checkout")
     public RfIdStatus checkout(@PathVariable String rfid) {
         Worker worker = workerService.findByRfid(rfid);
         if (worker == null) return RfIdStatus.unknownRfid();

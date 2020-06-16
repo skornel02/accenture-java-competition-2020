@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Detector} from 'react-detect-offline'
 import {toast} from "react-toastify";
 
-const OfflineToaster = props => {
+const OfflineToaster = () => {
     const [online, setOnline] = useState(true);
 
     useEffect(() => {
