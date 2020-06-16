@@ -34,18 +34,6 @@
         <div class="row">
             <div class="col s12" id="toRenderDatepickerIn"></div>
         </div>
-<!--        <h6 th:text="#{ticket.new}">New ticket</h6>-->
-<!--        <form action="/register" method="get" >-->
-<!--            <input type="date" name="date">-->
-<!--            <input type="hidden" name="uuid" th:value="${uuid}">-->
-<!--            <input type="submit" value="Register" th:value="#{ticket.register}">-->
-<!--        </form>-->
-<!--        <h6 th:text="#{ticket.delete}">Delete ticket</h6>-->
-<!--        <form action="/cancel" method="get" >-->
-<!--            <input type="date" name="date">-->
-<!--            <input type="hidden" name="uuid" th:value="${uuid}">-->
-<!--            <input type="submit" value="Cancel" th:value="#{ticket.cancel}">-->
-<!--        </form>-->
     </div>
 </div>
 
@@ -57,11 +45,34 @@
     const ticketCancel = /*[[#{ticket.reset}]]*/ "Reset";
     const ticketDelete = /*[[#{ticket.delete}]]*/ "Delete ticket";
     const reservations = /*[[${reservations}]]*/ [];
+    const ticketEnter = /*[[#{ticket.enter}]]*/ "";
+    const statusEnter = /*[[#{status.enter}]]*/ "Enter in {0}";
+    const calendarChooseDate = /*[[#{calendar.choose.date}]]*/ "Please choose a date!";
+    const calendarPastEntry = /*[[#{calendar.past.entry}]]*/ "You could have entered on {0}";
+    const calendarFutureEntry = /*[[#{calendar.future.entry}]]*/ "You can enter on {0}";
     /*]]>*/
 
     function addOneMonth(dateToAddTo){
         return new Date((dateToAddTo.getMonth() === 11 ? dateToAddTo.getFullYear() + 1 : dateToAddTo.getFullYear()), (dateToAddTo.getMonth() + 1) % 12, Math.min(dateToAddTo.getDate(), new Date((dateToAddTo.getMonth() === 11 ? dateToAddTo.getFullYear() + 1 : dateToAddTo.getFullYear()), (dateToAddTo.getMonth() + 2) % 12, 0).getDate()));
     }
+
+    function format(fmt, ...args) {
+        if (!fmt.match(/^(?:(?:(?:[^{}]|(?:\{\{)|(?:\}\}))+)|(?:\{[0-9]+\}))+$/)) {
+            throw new Error('invalid format string.');
+        }
+        return fmt.replace(/((?:[^{}]|(?:\{\{)|(?:\}\}))+)|(?:\{([0-9]+)\})/g, (m, str, index) => {
+            if (str) {
+                return str.replace(/(?:{{)|(?:}})/g, m => m[0]);
+            } else {
+                if (index >= args.length) {
+                    throw new Error('argument index is out of range in format');
+                }
+                return args[index];
+            }
+        });
+    }
+
+
     $(document).ready(function(){
         M.Modal.defaults.preventScrolling=false;
         let picker = document.querySelector('#sched_picker');
@@ -96,12 +107,10 @@
         document.querySelector("#resetButton").onclick = function(){instance.gotoDate(now);};
         document.querySelector("#doneButton").onclick = function(){
             if(instance.toString().length === 0){
-                M.toast({html: 'Please choose a date!'});
+                M.toast({html: calendarChooseDate});
                 return;
             }
             document.location = "/register?date="+instance.toString();
-            console.log(instance.toString());
-            //TODO: reserve date instance.toString()
         };
     });
 
@@ -119,20 +128,21 @@
         let expected = new Date(expectedTimeStamp * 1000);
         if(now.toDateString() === expected.toDateString()){
             if(now >= expected){
-                document.getElementById("counter").innerText = "You can enter now";
+                document.getElementById("counter").innerText = ticketEnter;
             }else{
                 let remaining = (Date.parse(expected) - Date.parse(now)) / 1000;
                 let hour = (remaining - (remaining % 3600)) / 3600;
                 remaining -= hour * 3600;
                 let min = (remaining - (remaining % 60)) / 60;
                 let sec = remaining % 60;
-                document.getElementById("counter").innerText = "You can enter in " + ("0" + hour).slice(-2) + ":" + ("0" + min).slice(-2) + ":" + ("0" + sec).slice(-2);
+                let enterTime =("0" + hour).slice(-2) + ":" + ("0" + min).slice(-2) + ":" + ("0" + sec).slice(-2);
+                document.getElementById("counter").innerText = format(statusEnter, enterTime);
             }
         }else{
             if(now > expected){
-                document.getElementById("counter").innerText = "You could have entered on " + expected.toLocaleDateString("en-US");
+                document.getElementById("counter").innerText = format(calendarPastEntry, expected.toLocaleDateString("en-US"));
             }else{
-                document.getElementById("counter").innerText = "You can enter on " + expected.toLocaleDateString("en-US");
+                document.getElementById("counter").innerText = format(calendarFutureEntry, expected.toLocaleDateString("en-US"));
             }
         }
     }, 1000);
