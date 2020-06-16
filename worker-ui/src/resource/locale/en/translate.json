@@ -1,5 +1,8 @@
 {
   "translations": {
+    "footer": {
+      "logout": "Logout"
+    },
     "login": {
       "password": "Password",
       "loginText": "Login",
