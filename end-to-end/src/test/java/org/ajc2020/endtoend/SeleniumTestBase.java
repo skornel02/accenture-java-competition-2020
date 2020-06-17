@@ -12,20 +12,37 @@ import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Properties;
 
 public class SeleniumTestBase {
+    private final String propertiesPath = System.getProperty("selenium.test.kibe");
+    final Properties properties;
+
     public String baseUrl = "";
 
     public WebDriver webDriver;
 
-    protected String getenv(String key, String defaultValue) {
-        if (System.getenv().containsKey(key))
-            return System.getenv(key);
-        return defaultValue;
+    public SeleniumTestBase() {
+        properties = new Properties();
+        try {
+            InputStream resourceInputStream;
+            if (propertiesPath == null) {
+                resourceInputStream = getClass().getClassLoader().getResourceAsStream("selenium.test.kibe.local.properties");
+            } else {
+                resourceInputStream = new FileInputStream(propertiesPath);
+            }
+            properties.load(resourceInputStream);
+            resourceInputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-
 
     protected void sleep(long millisec) {
         try {
@@ -35,42 +52,48 @@ public class SeleniumTestBase {
         }
     }
 
-
     @Before
     public void setup() throws MalformedURLException {
-        DesiredCapabilities desiredCapabilities = DesiredCapabilities.firefox();
 
-        if (System.getProperty("browser", "").equals("chrome")) {
-            desiredCapabilities = DesiredCapabilities.chrome();
-        }
+        baseUrl = properties.getProperty("selenium.sut.host");
+        String driverSelector = properties.getProperty("selenium.driver.type");
 
-        String seleniumHubHost = getenv("seleniumHubHost", "localhost");
-        baseUrl = getenv("seleniumSUTHost", "http://frontend.kibe:8080");
-
-        String driverSelector = getenv("seleniumDriverType", "RemoteWebDriver");
-        System.setProperty("webdriver.gecko.driver", getenv("webdriver.gecko.driver", ""));
-        System.setProperty("webdriver.chrome.driver", getenv("webdriver.chrome.driver", ""));
 
         switch (driverSelector) {
             case "RemoteWebDriver":
+                DesiredCapabilities desiredCapabilities = DesiredCapabilities.firefox();
+
+                if (properties.getProperty("selenium.hub.driver").equals("chrome")) {
+                    desiredCapabilities = DesiredCapabilities.chrome();
+                }
+
+                String seleniumHubHost = properties.getProperty("selenium.hub.host");
+
                 webDriver = new RemoteWebDriver(new URL("http://" + seleniumHubHost + ":4444/wd/hub"), desiredCapabilities);
                 break;
             case "LocalFirefoxDriver":
+                System.setProperty("webdriver.gecko.driver", properties.getProperty("webdriver.gecko.driver"));
                 webDriver = new FirefoxDriver(new FirefoxOptions());
                 break;
             case "LocalChromeDriver":
+                System.setProperty("webdriver.chrome.driver", properties.getProperty("webdriver.chrome.driver"));
                 webDriver = new ChromeDriver(new ChromeOptions());
+                break;
+            default:
+                Assert.fail();
                 break;
         }
 
-        if (webDriver == null) Assert.fail();
 
     }
 
     @After
     public void tearDown() {
-        logout();
-        webDriver.quit();
+        try {
+            logout();
+        } finally {
+            webDriver.quit();
+        }
     }
 
     protected void logout() {
