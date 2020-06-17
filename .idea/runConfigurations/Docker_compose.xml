@@ -7,7 +7,6 @@
           <list>
             <option value="frontend.kibe" />
             <option value="backend.kibe" />
-            <option value="test.kibe" />
             <option value="selenium-hub" />
             <option value="firefox" />
             <option value="chrome" />
