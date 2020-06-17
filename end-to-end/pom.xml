@@ -33,6 +33,12 @@
             <version>4.13</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.ajc2020</groupId>
+            <artifactId>utility</artifactId>
+            <version>1.0</version>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
     <build>

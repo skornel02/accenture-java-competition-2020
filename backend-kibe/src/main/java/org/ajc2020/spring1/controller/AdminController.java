@@ -107,6 +107,9 @@ public class AdminController {
         Optional<Admin> admin = adminService.findByUuid(uuid);
         if (!admin.isPresent())
             throw new UserNotFoundException(resourceBundle.getString("error.user.not.found"));
+        if (!adminUpdateRequest.getPassword().isEmpty()) {
+            adminUpdateRequest.setPassword(authManager.encryptPassword(adminUpdateRequest.getPassword()));
+        }
         adminService.save(admin.get().updateWith(adminUpdateRequest));
         return addLinks(admin.get().toResource());
     }
