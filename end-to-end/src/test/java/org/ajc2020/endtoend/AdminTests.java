@@ -1,33 +1,41 @@
 package org.ajc2020.endtoend;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+
+import org.junit.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 public class AdminTests {
 
-    public String baseUrl = "http://localhost:8081";
-    public String driverPath = "D:/prog/geckodriver.exe";
+    public String baseUrl = "http://frontend.kibe:8080";
 
     public WebDriver webDriver;
 
     @Before
-    public void setup() {
-        System.setProperty("webdriver.gecko.driver", driverPath);
-        webDriver = new FirefoxDriver();
+    public void setup() throws MalformedURLException {
+        DesiredCapabilities desiredCapabilities = DesiredCapabilities.firefox();
+
+        if (System.getProperty("browser", "").equals("chrome")) {
+            desiredCapabilities = DesiredCapabilities.chrome();
+        }
+
+        String host = System.getProperty("seleniumHubHost", "localhost");
+
+        webDriver = new RemoteWebDriver(new URL("http://" + host + ":4444/wd/hub"), desiredCapabilities);
         webDriver.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
     }
 
     @After
     public void tearDown() {
         logout();
-        webDriver.close();
+        webDriver.quit();
     }
 
     private void logout() {
@@ -83,7 +91,7 @@ public class AdminTests {
         logout();
 
         // TODO: update needs more time. We don't know why.
-        sleep(200);
+        sleep(1000);
 
         Assert.assertTrue(loginWith("mike.test@kibe", "secret"));
 
@@ -94,7 +102,7 @@ public class AdminTests {
         WebElement adminCell = webDriver.findElement(By.xpath("//*[contains(text(), 'mike.test@kibe')]"));
         System.out.println(adminCell.getAttribute("onclick"));
         String uuid = adminCell.getAttribute("onclick").split("\"")[1];
-        webDriver.findElement(By.xpath("//a[contains(@href, '/deleteAdmin/"+uuid+"')]")).click();
+        webDriver.findElement(By.xpath("//a[contains(@href, '/deleteAdmin/" + uuid + "')]")).click();
 
         logout();
         Assert.assertFalse(loginWith("mike.test@kibe", "secret"));
