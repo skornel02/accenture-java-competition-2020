@@ -3,102 +3,10 @@ package org.ajc2020.endtoend;
 import org.ajc2020.utility.communication.AdminCreationRequest;
 import org.junit.*;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 
-public class AdminTests {
-
-    public String baseUrl = "";
-
-    public WebDriver webDriver;
-
-    private String getenv(String key, String defaultValue) {
-        if (System.getenv().containsKey(key))
-            return System.getenv(key);
-        return defaultValue;
-    }
-
-    @Before
-    public void setup() throws MalformedURLException {
-        DesiredCapabilities desiredCapabilities = DesiredCapabilities.firefox();
-
-        if (System.getProperty("browser", "").equals("chrome")) {
-            desiredCapabilities = DesiredCapabilities.chrome();
-        }
-
-        String seleniumHubHost = getenv("seleniumHubHost", "localhost");
-        baseUrl = getenv("seleniumSUTHost", "http://frontend.kibe:8080");
-
-        String driverSelector = getenv("seleniumDriverType", "RemoteWebDriver");
-        System.setProperty("webdriver.gecko.driver",getenv("webdriver.gecko.driver", ""));
-        System.setProperty("webdriver.chrome.driver",getenv("webdriver.chrome.driver", ""));
-
-        switch (driverSelector) {
-            case "RemoteWebDriver":
-                webDriver = new RemoteWebDriver(new URL("http://" + seleniumHubHost + ":4444/wd/hub"), desiredCapabilities);
-                break;
-            case "LocalFirefoxDriver":
-                webDriver = new FirefoxDriver(new FirefoxOptions());
-                break;
-            case "LocalChromeDriver":
-                webDriver = new ChromeDriver(new ChromeOptions());
-                break;
-        }
-
-        if (webDriver == null) Assert.fail();
-
-    }
-
-    @After
-    public void tearDown() {
-        logout();
-        webDriver.quit();
-    }
-
-    private void logout() {
-        webDriver.get(baseUrl + "/logout");
-    }
-
-    private boolean loginWith(String username, String password) {
-        webDriver.get(baseUrl + "/login");
-        webDriver.findElement(By.id("username")).sendKeys(username);
-        webDriver.findElement(By.id("password")).sendKeys(password);
-        webDriver.findElement(By.tagName("button")).click();
-
-        return webDriver.findElement(By.tagName("body")).getAttribute("class").equals("container");
-    }
-
-    private boolean loginWithSuperAdmin() {
-        return loginWith("admin@kibe", "nimda");
-    }
-
-    private void sleep(long millisec) {
-        try {
-            Thread.sleep(millisec);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    public void testInvalidCredentials() {
-        Assert.assertFalse(loginWith("nouser@example.com", "password"));
-    }
-
-    @Test
-    public void testAdminLogin() {
-        Assert.assertTrue(loginWithSuperAdmin());
-        Assert.assertNotNull(webDriver.findElement(By.xpath("//*[contains(text(), 'admin!')]")));
-    }
+public class AdminTests extends SeleniumTestBase {
 
     private void createAdmin(String name, String email, String password) {
         webDriver.navigate().to(baseUrl + "/admins");
@@ -108,7 +16,6 @@ public class AdminTests {
         webDriver.findElement(By.id("create.admin.password")).sendKeys(password);
         webDriver.findElement(By.id("create.admin.password.confirm")).sendKeys(password);
         webDriver.findElement(By.cssSelector("form[action='/createAdmin']")).submit();
-
     }
 
     private void createAdmin(AdminCreationRequest admin) {
@@ -128,10 +35,6 @@ public class AdminTests {
             .name("Mike Test")
             .email("mike.test@kibe")
             .password("secret").build();
-
-    private WebElement getRowFromEmail(String email) {
-        return webDriver.findElement(By.xpath("//a[contains(text(), '" + email + "')]/../.."));
-    }
 
     private WebElement getRowElement(String email, String role) {
         return webDriver.findElement(By.xpath("//a[contains(text(), '" + email + "')]/../..//*[@data-role='" + role + "']"));
@@ -160,6 +63,18 @@ public class AdminTests {
         webDriver.findElement(By.id("edit.admin.name")).sendKeys(newAccount.getName());
         webDriver.findElement(By.cssSelector("form[action='/updateAdmin']")).submit();
     }
+
+    @Test
+    public void testInvalidCredentials() {
+        Assert.assertFalse(loginWith("nouser@example.com", "password"));
+    }
+
+    @Test
+    public void testAdminLogin() {
+        Assert.assertTrue(loginWithSuperAdmin());
+        Assert.assertNotNull(webDriver.findElement(By.xpath("//*[contains(text(), 'admin!')]")));
+    }
+
 
     @Test
     public void testAdminPasswordChange() {
@@ -250,7 +165,7 @@ public class AdminTests {
 
         sleep(1000);
 
-        webDriver.navigate().to(baseUrl+"/admins");
+        webDriver.navigate().to(baseUrl + "/admins");
         Assert.assertEquals(1, webDriver.findElements(By.xpath("//a[contains(text(), '" + mike.getName() + "')]")).size());
         Assert.assertEquals(0, webDriver.findElements(By.xpath("//a[contains(text(), '" + mikeNewName.getName() + "')]")).size());
 
@@ -259,7 +174,7 @@ public class AdminTests {
 
         sleep(1000);
 
-        webDriver.navigate().to(baseUrl+"/admins");
+        webDriver.navigate().to(baseUrl + "/admins");
         Assert.assertEquals(0, webDriver.findElements(By.xpath("//a[contains(text(), '" + mike.getName() + "')]")).size());
         Assert.assertEquals(1, webDriver.findElements(By.xpath("//a[contains(text(), '" + mikeNewName.getName() + "')]")).size());
 
@@ -267,7 +182,7 @@ public class AdminTests {
 
         sleep(1000);
 
-        webDriver.navigate().to(baseUrl+"/admins");
+        webDriver.navigate().to(baseUrl + "/admins");
         Assert.assertEquals(1, webDriver.findElements(By.xpath("//a[contains(text(), '" + mike.getName() + "')]")).size());
         Assert.assertEquals(0, webDriver.findElements(By.xpath("//a[contains(text(), '" + mikeNewName.getName() + "')]")).size());
 
@@ -279,7 +194,7 @@ public class AdminTests {
     public void testAdminCreation() {
         Assert.assertTrue(loginWithSuperAdmin());
 
-        webDriver.navigate().to(baseUrl+"/admins");
+        webDriver.navigate().to(baseUrl + "/admins");
         Assert.assertEquals(0, webDriver.findElements(By.xpath("//a[contains(text(), '" + mike.getEmail() + "')]")).size());
         Assert.assertEquals(0, webDriver.findElements(By.xpath("//a[contains(text(), '" + mike.getName() + "')]")).size());
 
@@ -287,7 +202,7 @@ public class AdminTests {
 
         sleep(1000);
 
-        webDriver.navigate().to(baseUrl+"/admins");
+        webDriver.navigate().to(baseUrl + "/admins");
         Assert.assertEquals(1, webDriver.findElements(By.xpath("//a[contains(text(), '" + mike.getEmail() + "')]")).size());
         Assert.assertEquals(1, webDriver.findElements(By.xpath("//a[contains(text(), '" + mike.getName() + "')]")).size());
 
