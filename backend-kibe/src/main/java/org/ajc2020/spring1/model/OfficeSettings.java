@@ -8,7 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.Size;
 
 @Entity
 @Data
@@ -24,6 +23,9 @@ public class OfficeSettings {
     @Max(1)
     private double operationPercentage;
 
+    @Min(0)
+    private double centimetersBetweenEmployeeStations;
+
     public int getEffectiveCapacity() {
         return (int) Math.floor(capacity * operationPercentage);
     }
@@ -31,12 +33,14 @@ public class OfficeSettings {
     public void fromResource(OfficeResource newValues) {
         setCapacity(newValues.getCapacity());
         setOperationPercentage(newValues.getPercentage());
+        setCentimetersBetweenEmployeeStations(newValues.getCentimetersBetweenEmployeeStations());
     }
 
     public OfficeResource toResource() {
         return OfficeResource.builder()
                 .capacity(capacity)
                 .percentage(operationPercentage)
+                .centimetersBetweenEmployeeStations(centimetersBetweenEmployeeStations)
                 .build();
     }
 

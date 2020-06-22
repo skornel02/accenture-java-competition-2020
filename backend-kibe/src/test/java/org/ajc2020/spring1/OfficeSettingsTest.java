@@ -55,6 +55,11 @@ public class OfficeSettingsTest {
             settings.setOperationPercentage(-3.14);
             officeService.updateOfficeSettings(settings);
         });
+        assertThrows(IllegalArgumentException.class, () -> {
+            OfficeSettings settings = officeService.getOfficeSetting();
+            settings.setCentimetersBetweenEmployeeStations(-42);
+            officeService.updateOfficeSettings(settings);
+        });
     }
 
 }

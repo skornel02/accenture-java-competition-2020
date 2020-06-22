@@ -32,6 +32,8 @@ public class OfficeServiceImpl implements OfficeService {
             throw new IllegalArgumentException("Capacity must be a non-zero positive integer.");
         if (settings.getOperationPercentage() < 0 || settings.getOperationPercentage() > 1)
             throw new IllegalArgumentException("Operation percentage must be or between 0-1");
+        if (settings.getCentimetersBetweenEmployeeStations() < 0)
+            throw new IllegalArgumentException("Centimeters between employee stations must be a non-zero positive integer.");
         settingRepository.save(settings);
     }
 }

@@ -2,6 +2,7 @@ package org.ajc2020.spring1.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.ajc2020.utility.communication.WorkerCreationRequest;
 import org.ajc2020.utility.communication.WorkerResource;
 import org.ajc2020.utility.resource.PermissionLevel;
@@ -19,6 +20,7 @@ import java.util.Optional;
 
 @Entity
 @Data
+@NoArgsConstructor
 public class Worker implements User {
 
     @Id
@@ -45,8 +47,7 @@ public class Worker implements User {
     @JsonManagedReference
     private final List<Ticket> tickets = new ArrayList<>();
 
-    public Worker() {
-    }
+    private boolean exceptional;
 
     public Worker(WorkerCreationRequest workerCreationRequest, String password) {
         setEmail(workerCreationRequest.getEmail());

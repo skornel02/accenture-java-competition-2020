@@ -5,8 +5,6 @@ import org.ajc2020.spring1.model.Ticket;
 import org.ajc2020.spring1.model.Worker;
 import org.ajc2020.spring1.repository.WorkerRepository;
 import org.ajc2020.utility.resource.WorkerStatus;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -18,8 +16,11 @@ import java.util.stream.Collectors;
 @Service
 public class WorkerServiceImpl implements WorkerService {
 
-    @Autowired
-    private WorkerRepository workerRepository;
+    private final WorkerRepository workerRepository;
+
+    public WorkerServiceImpl(WorkerRepository workerRepository) {
+        this.workerRepository = workerRepository;
+    }
 
     @Override
     public void save(Worker worker) {
