@@ -1,10 +1,13 @@
 package org.ajc2020.spring2.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.io.Resources;
 import lombok.extern.slf4j.Slf4j;
 import org.ajc2020.spring2.communication.PasswordStatus;
 import org.ajc2020.spring2.communication.UserInfo;
 import org.ajc2020.utility.communication.*;
 import org.ajc2020.utility.resource.PermissionLevel;
+import org.apache.commons.codec.Charsets;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -16,6 +19,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
@@ -470,4 +474,20 @@ public class WebController {
         return "ui";
     }
 
+
+    @GetMapping("/plan")
+    public String buildingPlan(
+            Model model
+    ) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        SeatResource[] places = objectMapper.readValue(Resources.toString(Resources.getResource("default-seating.json"), Charsets.UTF_8) ,SeatResource[].class);
+/*        SeatResource[] places = {
+                SeatResource.builder().id("L1R1C1").rotation(0).x(-10.123013f).y(-0.10022586f).build(),
+                SeatResource.builder().id("L1R1C2").rotation(0).x(-5.0675366f).y(-0.10022586f).build(),
+                SeatResource.builder().id("L1R1C3").rotation(0).x(-0.01206024f).y(-0.10022586f).build(),
+                SeatResource.builder().id("L1R2C3").rotation(2).x(40.290007f).y(73.591824f).build()
+        };*/
+        model.addAttribute("places", places);
+        return "plan";
+    }
 }
