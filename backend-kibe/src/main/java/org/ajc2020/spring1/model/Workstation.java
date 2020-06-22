@@ -1,6 +1,7 @@
 package org.ajc2020.spring1.model;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.ajc2020.utility.communication.WorkStationCreationRequest;
 import org.ajc2020.utility.communication.WorkStationResource;
 import org.ajc2020.utility.resource.DeskOrientation;
@@ -12,6 +13,7 @@ import java.util.Objects;
 
 @Entity
 @Data
+@NoArgsConstructor
 public class Workstation {
 
     @Id
