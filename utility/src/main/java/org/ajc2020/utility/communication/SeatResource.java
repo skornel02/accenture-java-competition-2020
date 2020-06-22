@@ -20,11 +20,12 @@ public class SeatResource {
     private int rotation;
 
     public String getTransform() {
+        final float MULTIPLIER=1;
         switch (rotation) {
-            case 0: return String.format(Locale.ROOT, "matrix(%.7f, %d, %d, %d, %.7f, %.7f)",  1.0000089f,0,0, 1,x,y);
-            case 2: return String.format(Locale.ROOT, "matrix(%.7f, %d, %d, %d, %.7f, %.7f)", -1.0000089f,0,0,-1,x,y);
-            case 1: return String.format(Locale.ROOT, "matrix(%d, %.7f, %d, %d, %.7f, %.7f)", 0,-1.0000089,1,0,x,y);
-            case 3: return String.format(Locale.ROOT, "matrix(%d, %.7f, %d, %d, %.7f, %.7f)", 0,1.0000089,-1,0,x,y);
+            case 0: return String.format(Locale.ROOT, "matrix(%d, %d, %d, %d, %.7f, %.7f)",  1, 0, 0, 1,x * MULTIPLIER,y * MULTIPLIER);
+            case 2: return String.format(Locale.ROOT, "matrix(%d, %d, %d, %d, %.7f, %.7f)", -1, 0, 0,-1,x * MULTIPLIER,y * MULTIPLIER);
+            case 1: return String.format(Locale.ROOT, "matrix(%d, %d, %d, %d, %.7f, %.7f)",  0,-1, 1, 0,x * MULTIPLIER,y * MULTIPLIER);
+            case 3: return String.format(Locale.ROOT, "matrix(%d, %d, %d, %d, %.7f, %.7f)",  0, 1,-1, 0,x * MULTIPLIER,y * MULTIPLIER);
         }
         return "";
     }
