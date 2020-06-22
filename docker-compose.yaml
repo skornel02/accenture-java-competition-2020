@@ -33,5 +33,34 @@ services:
     ports:
     - 5000:5000
 
+  selenium-hub:
+    image: selenium/hub
+    container_name: selenium-hub
+    ports:
+      - "4444:4444"
+    networks:
+      - kibe-network
+
+
+  chrome:
+    image: selenium/node-chrome
+    depends_on:
+      - selenium-hub
+    environment:
+      - HUB_PORT_4444_TCP_ADDR=selenium-hub
+      - HUB_PORT_4444_TCP_PORT=4444
+    networks:
+      - kibe-network
+
+  firefox:
+    image: selenium/node-firefox
+    depends_on:
+      - selenium-hub
+    environment:
+      - HUB_PORT_4444_TCP_ADDR=selenium-hub
+      - HUB_PORT_4444_TCP_PORT=4444
+    networks:
+      - kibe-network
+
 networks:
   kibe-network:

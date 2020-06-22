@@ -7,6 +7,9 @@
           <list>
             <option value="frontend.kibe" />
             <option value="backend.kibe" />
+            <option value="selenium-hub" />
+            <option value="firefox" />
+            <option value="chrome" />
           </list>
         </option>
         <option name="sourceFilePath" value="docker-compose.yaml" />

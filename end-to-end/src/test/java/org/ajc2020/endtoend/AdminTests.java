@@ -1,60 +1,67 @@
 package org.ajc2020.endtoend;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+
+import org.ajc2020.utility.communication.AdminCreationRequest;
+import org.junit.*;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxDriver;
 
-import java.util.concurrent.TimeUnit;
 
-public class AdminTests {
+public class AdminTests extends SeleniumTestBase {
 
-    public String baseUrl = "http://localhost:8081";
-    public String driverPath = "D:/prog/geckodriver.exe";
-
-    public WebDriver webDriver;
-
-    @Before
-    public void setup() {
-        System.setProperty("webdriver.gecko.driver", driverPath);
-        webDriver = new FirefoxDriver();
-        webDriver.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
+    private void createAdmin(String name, String email, String password) {
+        webDriver.navigate().to(baseUrl + "/admins");
+        webDriver.findElement(By.cssSelector("[data-target='create-admin-modal']")).click();
+        webDriver.findElement(By.id("create.admin.name")).sendKeys(name);
+        webDriver.findElement(By.id("create.admin.email")).sendKeys(email);
+        webDriver.findElement(By.id("create.admin.password")).sendKeys(password);
+        webDriver.findElement(By.id("create.admin.password.confirm")).sendKeys(password);
+        webDriver.findElement(By.cssSelector("form[action='/createAdmin']")).submit();
     }
 
-    @After
-    public void tearDown() {
-        logout();
-        webDriver.close();
+    private void createAdmin(AdminCreationRequest admin) {
+        createAdmin(admin.getName(), admin.getEmail(), admin.getPassword());
     }
 
-    private void logout() {
-        webDriver.get(baseUrl + "/logout");
+    private boolean loginWith(AdminCreationRequest admin) {
+        return loginWith(admin.getEmail(), admin.getPassword());
     }
 
-    private boolean loginWith(String username, String password) {
-        webDriver.get(baseUrl + "/login");
-        webDriver.findElement(By.id("username")).sendKeys(username);
-        webDriver.findElement(By.id("password")).sendKeys(password);
-        webDriver.findElement(By.tagName("button")).click();
-
-        System.out.println(webDriver.getTitle());
-
-        return webDriver.findElement(By.tagName("body")).getAttribute("class").equals("container");
+    private void deleteAdmin(AdminCreationRequest admin) {
+        webDriver.navigate().to(baseUrl + "/admins");
+        getRowElement(admin.getEmail(), "delete").click();
     }
 
-    private boolean loginWithSuperAdmin() {
-        return loginWith("admin@kibe", "nimda");
+    private final AdminCreationRequest mike = AdminCreationRequest.builder()
+            .name("Mike Test")
+            .email("mike.test@kibe")
+            .password("secret").build();
+
+    private WebElement getRowElement(String email, String role) {
+        return webDriver.findElement(By.xpath("//a[contains(text(), '" + email + "')]/../..//*[@data-role='" + role + "']"));
     }
 
-    private void sleep(long millisec) {
-        try {
-            Thread.sleep(millisec);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    private void changePassword(AdminCreationRequest newCredentials) {
+        webDriver.navigate().to(baseUrl + "/admins");
+        getRowElement(newCredentials.getEmail(), "password").click();
+        webDriver.findElement(By.id("edit.admin.password")).sendKeys(newCredentials.getPassword());
+        webDriver.findElement(By.id("edit.admin.password.confirm")).sendKeys(newCredentials.getPassword());
+        webDriver.findElement(By.cssSelector("form[action='/updateAdmin']")).submit();
+    }
+
+    private void changeEmail(AdminCreationRequest oldAccount, AdminCreationRequest newAccount) {
+        webDriver.navigate().to(baseUrl + "/admins");
+        getRowElement(oldAccount.getEmail(), "email").click();
+        webDriver.findElement(By.id("edit.admin.email")).clear();
+        webDriver.findElement(By.id("edit.admin.email")).sendKeys(newAccount.getEmail());
+        webDriver.findElement(By.cssSelector("form[action='/updateAdmin']")).submit();
+    }
+
+    private void changeName(AdminCreationRequest newAccount) {
+        webDriver.navigate().to(baseUrl + "/admins");
+        getRowElement(newAccount.getEmail(), "name").click();
+        webDriver.findElement(By.id("edit.admin.name")).clear();
+        webDriver.findElement(By.id("edit.admin.name")).sendKeys(newAccount.getName());
+        webDriver.findElement(By.cssSelector("form[action='/updateAdmin']")).submit();
     }
 
     @Test
@@ -68,35 +75,147 @@ public class AdminTests {
         Assert.assertNotNull(webDriver.findElement(By.xpath("//*[contains(text(), 'admin!')]")));
     }
 
+
+    @Test
+    public void testAdminPasswordChange() {
+        Assert.assertTrue(loginWithSuperAdmin());
+        createAdmin(mike);
+
+        AdminCreationRequest mikeNewPassword = AdminCreationRequest.builder()
+                .email(mike.getEmail())
+                .name(mike.getName())
+                .password("terces")
+                .build();
+
+        sleep(1000);
+
+        changePassword(mikeNewPassword);
+        logout();
+
+
+        sleep(1000);
+
+        Assert.assertFalse(loginWith(mike));
+        Assert.assertTrue(loginWith(mikeNewPassword));
+        logout();
+
+        Assert.assertTrue(loginWithSuperAdmin());
+        changePassword(mike);
+        logout();
+
+        sleep(1000);
+
+        Assert.assertFalse(loginWith(mikeNewPassword));
+        Assert.assertTrue(loginWith(mike));
+        logout();
+
+        Assert.assertTrue(loginWithSuperAdmin());
+        deleteAdmin(mike);
+
+    }
+
+    @Test
+    public void testAdminEmailChange() {
+        Assert.assertTrue(loginWithSuperAdmin());
+        createAdmin(mike);
+
+        AdminCreationRequest mikeNewEmail = AdminCreationRequest.builder()
+                .email("mrmike@kibe")
+                .name(mike.getName())
+                .password(mike.getPassword())
+                .build();
+
+        sleep(1000);
+
+        changeEmail(mike, mikeNewEmail);
+        logout();
+
+
+        sleep(1000);
+
+        Assert.assertFalse(loginWith(mike));
+        Assert.assertTrue(loginWith(mikeNewEmail));
+        logout();
+
+        Assert.assertTrue(loginWithSuperAdmin());
+        changeEmail(mikeNewEmail, mike);
+        logout();
+
+        sleep(1000);
+
+        Assert.assertFalse(loginWith(mikeNewEmail));
+        Assert.assertTrue(loginWith(mike));
+        logout();
+
+        Assert.assertTrue(loginWithSuperAdmin());
+        deleteAdmin(mike);
+
+    }
+
+    @Test
+    public void testAdminNameChange() {
+        Assert.assertTrue(loginWithSuperAdmin());
+        createAdmin(mike);
+
+        AdminCreationRequest mikeNewName = AdminCreationRequest.builder()
+                .email(mike.getEmail())
+                .name("Mike A Test")
+                .password(mike.getPassword())
+                .build();
+
+        sleep(1000);
+
+        webDriver.navigate().to(baseUrl + "/admins");
+        Assert.assertEquals(1, webDriver.findElements(By.xpath("//a[contains(text(), '" + mike.getName() + "')]")).size());
+        Assert.assertEquals(0, webDriver.findElements(By.xpath("//a[contains(text(), '" + mikeNewName.getName() + "')]")).size());
+
+
+        changeName(mikeNewName);
+
+        sleep(1000);
+
+        webDriver.navigate().to(baseUrl + "/admins");
+        Assert.assertEquals(0, webDriver.findElements(By.xpath("//a[contains(text(), '" + mike.getName() + "')]")).size());
+        Assert.assertEquals(1, webDriver.findElements(By.xpath("//a[contains(text(), '" + mikeNewName.getName() + "')]")).size());
+
+        changeName(mike);
+
+        sleep(1000);
+
+        webDriver.navigate().to(baseUrl + "/admins");
+        Assert.assertEquals(1, webDriver.findElements(By.xpath("//a[contains(text(), '" + mike.getName() + "')]")).size());
+        Assert.assertEquals(0, webDriver.findElements(By.xpath("//a[contains(text(), '" + mikeNewName.getName() + "')]")).size());
+
+        deleteAdmin(mike);
+
+    }
+
     @Test
     public void testAdminCreation() {
         Assert.assertTrue(loginWithSuperAdmin());
-        webDriver.navigate().to(baseUrl + "/admins");
-        webDriver.findElement(By.cssSelector("[data-target='create-admin-modal']")).click();
-        webDriver.findElement(By.id("create.admin.name")).sendKeys("Mike Test");
-        webDriver.findElement(By.id("create.admin.email")).sendKeys("mike.test@kibe");
-        webDriver.findElement(By.id("create.admin.password")).sendKeys("secret");
-        webDriver.findElement(By.id("create.admin.password.confirm")).sendKeys("secret");
-        webDriver.findElement(By.cssSelector("form[action='/createAdmin']")).submit();
 
+        webDriver.navigate().to(baseUrl + "/admins");
+        Assert.assertEquals(0, webDriver.findElements(By.xpath("//a[contains(text(), '" + mike.getEmail() + "')]")).size());
+        Assert.assertEquals(0, webDriver.findElements(By.xpath("//a[contains(text(), '" + mike.getName() + "')]")).size());
+
+        createAdmin(mike);
+
+        sleep(1000);
+
+        webDriver.navigate().to(baseUrl + "/admins");
+        Assert.assertEquals(1, webDriver.findElements(By.xpath("//a[contains(text(), '" + mike.getEmail() + "')]")).size());
+        Assert.assertEquals(1, webDriver.findElements(By.xpath("//a[contains(text(), '" + mike.getName() + "')]")).size());
 
         logout();
 
-        // TODO: update needs more time. We don't know why.
-        sleep(200);
-
-        Assert.assertTrue(loginWith("mike.test@kibe", "secret"));
-
+        Assert.assertTrue(loginWith(mike));
         logout();
 
         Assert.assertTrue(loginWithSuperAdmin());
-        webDriver.navigate().to(baseUrl + "/admins");
-        WebElement adminCell = webDriver.findElement(By.xpath("//*[contains(text(), 'mike.test@kibe')]"));
-        System.out.println(adminCell.getAttribute("onclick"));
-        String uuid = adminCell.getAttribute("onclick").split("\"")[1];
-        webDriver.findElement(By.xpath("//a[contains(@href, '/deleteAdmin/"+uuid+"')]")).click();
-
+        deleteAdmin(mike);
         logout();
+
         Assert.assertFalse(loginWith("mike.test@kibe", "secret"));
     }
+
 }
