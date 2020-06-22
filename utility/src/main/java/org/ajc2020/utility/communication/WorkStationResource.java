@@ -1,11 +1,13 @@
 package org.ajc2020.utility.communication;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import org.ajc2020.utility.resource.DeskOrientation;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.util.Locale;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Builder

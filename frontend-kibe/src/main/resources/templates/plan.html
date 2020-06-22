@@ -9,26 +9,26 @@
     </div>
 </div>
 <div class="row">
-    <div class="col s12 m3">
-        <h1>Sitting</h1>
+    <div class="col s12 m3 card">
+        <h4 th:text="#{building.workstation}">Sitting</h4>
         <div class="row">
-            <div class="col s12 m6">
+            <div class="col s12 m6" th:text="#{building.workstation.id}">
                 Id:
             </div>
             <div class="col s12 m6" id="sitting-id">
-                asd
+
             </div>
         </div>
         <div class="row">
-            <div class="col s12 m6">
+            <div class="col s12 m6" th:text="#{building.workstation.reserved.by}">
                 Reserved by:
             </div>
-            <div class="col s12 m6" id="sitting-claimed">
+            <div class="col s12 m6" id="sitting-claimed" th:text="#{nobody}">
                 &lt;Nobody&gt;
             </div>
         </div>
         <div class="row">
-            <div class="col s12 m6">
+            <div class="col s12 m6" th:text="#{building.workstation.state}">
                 State:
             </div>
             <div class="col s12 m6" id="sitting-state">
@@ -36,87 +36,40 @@
             </div>
         </div>
         <div class="row">
-            <div class="col s12 m6">
+            <div class="col s12 m6" th:text="#{building.workstation.actions}">
                 Actions:
             </div>
             <div class="col s12 m6">
-                <a href="#" class="btn" id="sitting-action-forbid">Forbid</a>
-                <a href="#" class="btn" id="sitting-action-permit">Permit</a>
-                <a href="#" class="btn" id="sitting-action-kick">Kick</a>
+                <a href="#" class="btn" id="sitting-action-forbid" th:text="#{building.workstation.actions.forbid}">Forbid</a>
+                <a href="#" class="btn" id="sitting-action-permit" th:text="#{building.workstation.actions.permit}">Permit</a>
+                <a href="#" class="btn" id="sitting-action-kick" th:text="#{building.workstation.actions.kick}">Kick</a>
             </div>
         </div>
 
     </div>
     <div class="col s12 m9 center">
-        <h1>Plan</h1>
+        <h4 th:text="#{building.plan}">Plan</h4>
         <svg
                 xmlns="http://www.w3.org/2000/svg"
                 id="svg8"
                 viewBox="0 0 210 297"
                 height="297mm"
-                width="210mm"
-                usemap="planMap">
+                width="210mm">
             <g id="layer1">
                 <path
                         id="path2789"
                         d="m 6.1471992,27.52876 49.5784978,0.133636 0.133633,95.281584 h 46.5049 l -0.13364,-95.147951 h 49.84577 l 0.13363,95.281591 45.56946,0.4009 -0.26727,76.43908 -45.16855,0 v 70.96006 l -51.04848,1.20272 0.13363,-72.02914 H 6.1471992 Z"
                         style="fill:none;stroke:#000000;stroke-width:1.565;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"/>
-                <ellipse
-                        cx="26.103981"
-                        cy="44.317707"
-                        rx="1"
-                        ry="1"
-                        id="path2793"
-                        style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.4;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"/>
-                <ellipse
-                        style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.4;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-                        id="path2793-9"
-                        ry="1"
-                        rx="1"
-                        cy="73.185638"
-                        cx="26.03311"/>
-                <ellipse
-                        style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.4;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-                        id="path2793-6"
-                        ry="1"
-                        rx="1"
-                        cy="102.10082"
-                        cx="26.080357"/>
-                <ellipse
-                        style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.4;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-                        id="path2793-8"
-                        ry="1"
-                        rx="1"
-                        cy="130.87425"
-                        cx="26.127604"/>
-                <ellipse
-                        style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.4;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-                        id="path2793-4"
-                        ry="1"
-                        rx="1"
-                        cy="102.05357"
-                        cx="122.51153"/>
-                <ellipse
-                        style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.4;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-                        id="path2793-82"
-                        ry="1"
-                        rx="1"
-                        cy="123.7792"
-                        cx="122.44286"/>
-                <ellipse
-                        style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.4;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-                        id="path2793-5"
-                        ry="1"
-                        rx="1"
-                        cy="198.343"
-                        cx="122.51154"/>
-                <ellipse
-                        style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.4;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-                        id="path2793-81"
-                        ry="1"
-                        rx="1"
-                        cy="222.39175"
-                        cx="122.51154"/>
+                <ellipse cx="26.103981" cy="44.317707" rx="1" ry="1" id="path2793" class="column" />
+                <ellipse id="path2793-9" ry="1" rx="1" cy="73.185638" cx="26.03311" class="column"/>
+                <ellipse id="path2793-6" ry="1" rx="1" cy="102.10082" cx="26.080357" class="column"/>
+                <ellipse id="path2793-8" ry="1" rx="1" cy="130.87425" cx="26.127604" class="column"/>
+                <ellipse id="path2793-4" ry="1" rx="1" cy="102.05357" cx="122.51153" class="column"/>
+                <ellipse id="path2793-82" ry="1" rx="1" cy="123.7792" cx="122.44286" class="column"/>
+                <ellipse id="path2793-5" ry="1" rx="1" cy="198.343" cx="122.51154" class="column"/>
+                <ellipse id="path2793-81" ry="1" rx="1" cy="222.39175" cx="122.51154" class="column"/>
+
+                <!--/*@thymesVar id="places" type="org.ajc2020.utility.communication.WorkStationResource[]"*/-->
                 <g th:each="place : ${places}" transform="scale(0.25, 0.25)">
                     <!--/*@thymesVar id="place" type="org.ajc2020.utility.communication.WorkStationResource"*/-->
                     <g
@@ -137,138 +90,67 @@
                     </g>
 
                 </g>
-                <rect
-                        y="29.055113"
-                        x="35.041462"
-                        height="11.503038"
-                        width="19.347887"
-                        id="rect4488"
-                        style="fill:#ff8c00;fill-opacity:0.34538203;stroke:#000000;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"/>
-                <rect
-                        style="fill:#ff8c00;fill-opacity:0.345382;stroke:#000000;stroke-width:0.094818;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-                        id="rect4490"
-                        width="18.281523"
-                        height="10.944996"
-                        x="7.4989252"
-                        y="70.543571"/>
-                <rect
-                        style="fill:#ff8c00;fill-opacity:0.345382;stroke:#000000;stroke-width:0.107266;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-                        id="rect4492"
-                        width="17.781469"
-                        height="14.401464"
-                        x="132.88309"
-                        y="29.04755"/>
-                <rect
-                        y="124.0565"
-                        x="132.23834"
-                        height="17.984049"
-                        width="21.831776"
-                        id="rect4494"
-                        style="fill:#ff8c00;fill-opacity:0.345382;stroke:#000000;stroke-width:0.13282;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"/>
-                <rect
-                        style="fill:#ff8c00;fill-opacity:0.345382;stroke:#000000;stroke-width:0.237452;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-                        id="rect4496"
-                        width="24.564068"
-                        height="51.085953"
-                        x="7.2851453"
-                        y="147.73283"/>
-                <rect
-                        y="124.27596"
-                        x="31.555872"
-                        height="14.370269"
-                        width="15.629634"
-                        id="rect4498"
-                        style="fill:#ff8c00;fill-opacity:0.345382;stroke:#000000;stroke-width:0.100457;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"/>
-                <rect
-                        style="fill:#ff8c00;fill-opacity:0.345382;stroke:#000000;stroke-width:0.25843;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-                        id="rect4500"
-                        width="60.639816"
-                        height="24.512148"
-                        x="31.9282"
-                        y="147.81181"/>
-                <rect
-                        y="147.84087"
-                        x="100.46545"
-                        height="24.454029"
-                        width="91.197769"
-                        id="rect4502"
-                        style="fill:#ff8c00;fill-opacity:0.345382;stroke:#000000;stroke-width:0.316549;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"/>
-                <rect
-                        style="fill:#ff8c00;fill-opacity:0.345382;stroke:#000000;stroke-width:0.086453;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-                        id="rect4504"
-                        width="11.672786"
-                        height="14.250654"
-                        x="139.19159"
-                        y="177.81427"/>
-                <rect
-                        y="192.06493"
-                        x="130.05791"
-                        height="15.656054"
-                        width="20.806471"
-                        id="rect4506"
-                        style="fill:#ff8c00;fill-opacity:0.345382;stroke:#000000;stroke-width:0.12098;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"/>
-                <rect
-                        style="fill:#ff8c00;fill-opacity:0.345382;stroke:#000000;stroke-width:0.08255;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-                        id="rect4508"
-                        width="11.833088"
-                        height="12.816936"
-                        x="69.216408"
-                        y="185.70984"/>
-                <rect
-                        y="186.01071"
-                        x="31.858076"
-                        height="12.799209"
-                        width="17.485004"
-                        id="rect4510"
-                        style="fill:#ff8c00;fill-opacity:0.345382;stroke:#000000;stroke-width:0.100277;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"/>
-                <rect
-                        style="fill:#ff8c00;fill-opacity:0.345382;stroke:#000000;stroke-width:0.100656;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-                        id="rect4512"
-                        width="18.84013"
-                        height="11.968594"
-                        x="103.67917"
-                        y="71.528969"/>
-                <rect
-                        y="124.27596"
-                        x="47.185505"
-                        height="17.221645"
-                        width="69.833839"
-                        id="rect4514"
-                        style="fill:#ff8c00;fill-opacity:0.345382;stroke:#000000;stroke-width:0.232459;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"/>
+                <rect y="29.055113" x="35.041462" height="11.503038" width="19.347887" id="rect4488" class="restricted"/>
+                <rect id="rect4490" width="18.281523" height="10.944996" x="7.4989252" y="70.543571" class="restricted"/>
+                <rect id="rect4492" width="17.781469" height="14.401464" x="132.88309" y="29.04755" class="restricted"/>
+                <rect y="124.0565" x="132.23834" height="17.984049" width="21.831776" id="rect4494" class="restricted"/>
+                <rect id="rect4496" width="24.564068" height="51.085953" x="7.2851453" y="147.73283" class="restricted"/>
+                <rect y="124.27596" x="31.555872" height="14.370269" width="15.629634" id="rect4498" class="restricted"/>
+                <rect id="rect4500" width="60.639816" height="24.512148" x="31.9282" y="147.81181" class="restricted"/>
+                <rect y="147.84087" x="100.46545" height="24.454029" width="91.197769" id="rect4502" class="restricted"/>
+                <rect id="rect4504" width="11.672786" height="14.250654" x="139.19159" y="177.81427" class="restricted"/>
+                <rect y="192.06493" x="130.05791" height="15.656054" width="20.806471" id="rect4506" class="restricted"/>
+                <rect id="rect4508" width="11.833088" height="12.816936" x="69.216408" y="185.70984" class="restricted"/>
+                <rect y="186.01071" x="31.858076" height="12.799209" width="17.485004" id="rect4510" class="restricted"/>
+                <rect id="rect4512" width="18.84013" height="11.968594" x="103.67917" y="71.528969" class="restricted"/>
+                <rect y="124.27596" x="47.185505" height="17.221645" width="69.833839" id="rect4514" class="restricted"/>
             </g>
         </svg>
     </div>
 </div>
 <script th:inline="javascript">
+    /*<!<CDATA[*/
+    const notAvailable = /*[[#{not.available}]]*/ "Not available";
+    const notClaimed = /*[[#{nobody}]]*/ "Not claimed";
+    const claimed = /*[[#{claimed}]]*/ "Claimed";
+    const free = /*[[#{free}]]*/ "Free";
+    const forbidden = /*[[#{forbidden}]]*/ "Forbidden";
+    /*]]>*/
 
     var lastSelected = null;
     $(document).ready(function () {
         $("#sitting-action-forbid").hide().click(function () {
-            let id=$(lastSelected).parent().attr('id');
+            let id = $(lastSelected).parent().attr('id');
             let selection = lastSelected;
-            $.ajax({url: "/plan/update/"+id+"/forbid", success: function(result) {
+            $.ajax({
+                url: "/plan/update/" + id + "/forbid", success: function (result) {
                     if (result.status === "OK") {
                         $(selection).removeClass("fill-green").addClass("fill-red").click();
                     }
-                }})
+                }
+            })
         });
         $("#sitting-action-permit").hide().click(function () {
-            let id=$(lastSelected).parent().attr('id');
+            let id = $(lastSelected).parent().attr('id');
             let selection = lastSelected;
-            $.ajax({url: "/plan/update/"+id+"/permit", success: function(result) {
+            $.ajax({
+                url: "/plan/update/" + id + "/permit", success: function (result) {
                     if (result.status === "OK") {
                         $(selection).removeClass("fill-red").addClass("fill-green").click();
                     }
-                }})
+                }
+            })
         });
         $("#sitting-action-kick").hide().click(function () {
-            let id=$(lastSelected).parent().attr('id');
+            let id = $(lastSelected).parent().attr('id');
             let selection = lastSelected;
-            $.ajax({url: "/plan/update/"+id+"/kick", success: function(result) {
+            $.ajax({
+                url: "/plan/update/" + id + "/kick", success: function (result) {
                     if (result.status === "OK") {
                         $(selection).removeClass("fill-yellow").addClass("fill-green").click();
                     }
-                }})
+                }
+            })
         });
         $(".workplace").click(function () {
             let id = $(this).parent().attr('id');
@@ -277,21 +159,22 @@
             $(this).addClass("selected")
             $("#sitting-id").text(id);
             if ($(this).hasClass("fill-red")) {
-                $("#sitting-state").text("Forbidden");
-                $("#sitting-claimed").text("<Not available>");
+                $("#sitting-state").text(forbidden);
+                $("#sitting-claimed").text(notAvailable);
                 $("#sitting-action-forbid").hide();
                 $("#sitting-action-kick").hide();
                 $("#sitting-action-permit").show();
             }
             if ($(this).hasClass("fill-green")) {
-                $("#sitting-state").text("Free");
-                $("#sitting-claimed").text("<Not claimed>");
+                $("#sitting-state").text(free);
+                $("#sitting-claimed").text(notClaimed);
                 $("#sitting-action-forbid").show();
                 $("#sitting-action-kick").hide();
                 $("#sitting-action-permit").hide();
             }
             if ($(this).hasClass("fill-yellow")) {
-                $("#sitting-state").text("Claimed");
+                $("#sitting-state").text(claimed);
+                // TODO: get user name
                 $("#sitting-claimed").text("John Doe");
                 $("#sitting-action-forbid").hide();
                 $("#sitting-action-kick").show();

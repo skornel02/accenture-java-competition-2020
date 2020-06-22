@@ -1,5 +1,7 @@
 package org.ajc2020.spring2.controller;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.ajc2020.spring2.communication.PasswordStatus;
 import org.ajc2020.spring2.communication.UserInfo;
@@ -301,13 +303,13 @@ public class WebController {
         return restTemplate.getForEntity(url, t);
     }
 
-    private <T> void patchRequest(UserInfo login, String path, T input) {
+    private <T> String patchRequest(UserInfo login, String path, T input) {
         String url = joinUrlParts(restServiceUrl, path);
         log.info("Patch for " + url);
         RestTemplate restTemplate = new RestTemplateBuilder()
                 .basicAuthentication(login.getUserName(), login.getPassword())
                 .build();
-        restTemplate.patchForObject(url, input, String.class);
+        return restTemplate.patchForObject(url, input, String.class);
     }
 
     private <T> void postRequest(UserInfo login, String path, T input) {
@@ -498,7 +500,29 @@ public class WebController {
 
         if (!fullName.isPresent()) return new PasswordStatus("Error", "Unauthorized");
 
-        // TODO: send update request to backend
-        return new PasswordStatus("OK", "Updated");
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        String result ="";
+        try {
+            if (operation.equals("permit")) {
+                result = patchRequest(userInfo, "workstations/" + planId + "/enable", "");
+                WorkStationResource r = objectMapper.readValue(result, WorkStationResource.class);
+                if (r.isEnabled()) return new PasswordStatus("OK", "Updated");
+            }
+            if (operation.equals("forbid")) {
+                result = patchRequest(userInfo, "workstations/" + planId + "/disable", "");
+                WorkStationResource r = objectMapper.readValue(result, WorkStationResource.class);
+                if (!r.isEnabled()) return new PasswordStatus("OK", "Updated");
+            }
+            if (operation.equals("kick")) {
+                result = patchRequest(userInfo, "workstations/" + planId + "/kick", "");
+                WorkStationResource r = objectMapper.readValue(result, WorkStationResource.class);
+                if (r.getOccupier() == null) return new PasswordStatus("OK", "Updated");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new PasswordStatus("Error", "Unkown result");
+        }
+        return new PasswordStatus("Error", "Unknown method");
     }
 }

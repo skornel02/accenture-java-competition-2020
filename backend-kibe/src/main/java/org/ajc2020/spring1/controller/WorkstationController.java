@@ -73,4 +73,42 @@ public class WorkstationController {
         return ResponseEntity.noContent().build();
     }
 
+    @PatchMapping("/{id}/kick")
+    public ResponseEntity<WorkStationResource> kickWorker(@PathVariable String id, Locale locale) {
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", locale);
+        Workstation workStation = workstationService.findById(id)
+                .orElseThrow(() -> new WorkstationNotFound(resourceBundle.getString("error.workstation.not.found")));
+        workStation.setOccupier(null);
+        workstationService.save(workStation);
+        return ResponseEntity.ok(workStation.toResource());
+    }
+
+    // TODO: fix naming and mapping
+    @PatchMapping("/{id}/enable")
+    public ResponseEntity<WorkStationResource> enableWorkstation(@PathVariable String id, Locale locale) {
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", locale);
+        Workstation workStation = workstationService.findById(id)
+                .orElseThrow(() -> new WorkstationNotFound(resourceBundle.getString("error.workstation.not.found")));
+        if (workStation.isEnabled()) {
+            return ResponseEntity.badRequest().body(workStation.toResource());
+        }
+        workStation.setEnabled(true);
+        workstationService.save(workStation);
+        return ResponseEntity.ok(workStation.toResource());
+    }
+
+    // FIXME: maybe this needs to be put in one request
+    @PatchMapping("/{id}/disable")
+    public ResponseEntity<WorkStationResource> disableWorkstation(@PathVariable String id, Locale locale) {
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", locale);
+        Workstation workStation = workstationService.findById(id)
+                .orElseThrow(() -> new WorkstationNotFound(resourceBundle.getString("error.workstation.not.found")));
+        if (!workStation.isEnabled()) {
+            return ResponseEntity.badRequest().body(workStation.toResource());
+        }
+        workStation.setEnabled(false);
+        workstationService.save(workStation);
+        return ResponseEntity.ok(workStation.toResource());
+    }
+
 }
