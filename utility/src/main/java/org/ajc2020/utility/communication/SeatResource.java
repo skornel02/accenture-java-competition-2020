@@ -18,6 +18,7 @@ public class SeatResource {
     private float x;
     private float y;
     private int rotation;
+    private String color = "#008c00";
 
     public String getTransform() {
         final float MULTIPLIER=1;
@@ -28,5 +29,11 @@ public class SeatResource {
             case 3: return String.format(Locale.ROOT, "matrix(%d, %d, %d, %d, %.7f, %.7f)",  0, 1,-1, 0,x * MULTIPLIER,y * MULTIPLIER);
         }
         return "";
+    }
+
+    public String getCoordinates() {
+        final float WIDTH = 20;
+        final float HEIGHT = 20;
+        return String.format("%d, %d, %d, %d", (int)(x - WIDTH), (int)(y - HEIGHT), (int)(x + WIDTH), (int)(y + HEIGHT));
     }
 }

@@ -477,16 +477,21 @@ public class WebController {
 
     @GetMapping("/plan")
     public String buildingPlan(
+            @ModelAttribute("login") UserInfo userInfo,
             Model model
     ) throws IOException {
+        Optional<String> fullName = authorize(userInfo);
+
+        if (!fullName.isPresent())  fullName = Optional.of("nobody");// return "lui";
+        setModel(userInfo, fullName.get(), model);
         ObjectMapper objectMapper = new ObjectMapper();
         SeatResource[] places = objectMapper.readValue(Resources.toString(Resources.getResource("default-seating.json"), Charsets.UTF_8) ,SeatResource[].class);
-/*        SeatResource[] places = {
-                SeatResource.builder().id("L1R1C1").rotation(0).x(-10.123013f).y(-0.10022586f).build(),
-                SeatResource.builder().id("L1R1C2").rotation(0).x(-5.0675366f).y(-0.10022586f).build(),
-                SeatResource.builder().id("L1R1C3").rotation(0).x(-0.01206024f).y(-0.10022586f).build(),
-                SeatResource.builder().id("L1R2C3").rotation(2).x(40.290007f).y(73.591824f).build()
-        };*/
+
+        Random random = new Random();
+        String[] colors={"fill-red", "fill-green", "fill-yellow"};
+        for (int i = 0; i < places.length; i++) {
+            places[i].setColor(colors[random.nextInt(colors.length)]);
+        }
         model.addAttribute("places", places);
         return "plan";
     }

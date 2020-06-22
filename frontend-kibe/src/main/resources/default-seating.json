@@ -293,10 +293,10 @@
   {"id": "L11R1C1", "rotation": 1,"x":508, "y":1032},
   {"id": "L11R1C2", "rotation": 3,"x":542, "y":1032},
   {"id": "L11R1C3", "rotation": 1,"x":558, "y":1032},
-  {"id": "L11R1C3", "rotation": 3,"x":592, "y":1032},
+  {"id": "L11R1C4", "rotation": 3,"x":592, "y":1032},
 
   {"id": "L11R2C1", "rotation": 1,"x":508, "y":1052},
   {"id": "L11R2C2", "rotation": 3,"x":542, "y":1052},
   {"id": "L11R2C3", "rotation": 1,"x":558, "y":1052},
-  {"id": "L11R2C3", "rotation": 3,"x":592, "y":1052}
+  {"id": "L11R2C4", "rotation": 3,"x":592, "y":1052}
 ]
