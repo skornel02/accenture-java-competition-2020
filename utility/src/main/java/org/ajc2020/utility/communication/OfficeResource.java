@@ -23,4 +23,10 @@ public class OfficeResource {
     @Min(0)
     @Max(1)
     private double percentage;
+
+
+    @NotNull
+    @Min(0)
+    private double centimetersBetweenEmployeeStations;
+
 }
