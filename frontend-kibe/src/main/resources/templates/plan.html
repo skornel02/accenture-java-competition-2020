@@ -40,9 +40,9 @@
                 Actions:
             </div>
             <div class="col s12 m6">
-                <a href="#" class="btn">Forbid</a>
-                <a href="#" class="btn">Permit</a>
-                <a href="#" class="btn">Kick</a>
+                <a href="#" class="btn" id="sitting-action-forbid">Forbid</a>
+                <a href="#" class="btn" id="sitting-action-permit">Permit</a>
+                <a href="#" class="btn" id="sitting-action-kick">Kick</a>
             </div>
         </div>
 
@@ -242,17 +242,63 @@
 <script th:inline="javascript">
 
     var lastSelected = null;
-    $(".workplace").click(function (e) {
-        let id = $(this).parent().attr('id');
-        console.log(id);
-        if (lastSelected !== null) $(lastSelected).removeClass("selected");
-        lastSelected = $(this);
-        $(this).addClass("selected")
-        $("#sitting-id").text(id);
-        $("#sitting-claimed").text("changed");
-        if ($(this).hasClass("fill-red")) $("#sitting-state").text("Forbidden");
-        if ($(this).hasClass("fill-green")) $("#sitting-state").text("Free");
-        if ($(this).hasClass("fill-yellow")) $("#sitting-state").text("Claimed");
+    $(document).ready(function () {
+        $("#sitting-action-forbid").hide().click(function () {
+            let id=$(lastSelected).parent().attr('id');
+            let selection = lastSelected;
+            $.ajax({url: "/plan/update/"+id+"/forbid", success: function(result) {
+                    if (result.status === "OK") {
+                        $(selection).removeClass("fill-green").addClass("fill-red").click();
+                    }
+                }})
+        });
+        $("#sitting-action-permit").hide().click(function () {
+            let id=$(lastSelected).parent().attr('id');
+            let selection = lastSelected;
+            $.ajax({url: "/plan/update/"+id+"/permit", success: function(result) {
+                    if (result.status === "OK") {
+                        $(selection).removeClass("fill-red").addClass("fill-green").click();
+                    }
+                }})
+        });
+        $("#sitting-action-kick").hide().click(function () {
+            let id=$(lastSelected).parent().attr('id');
+            let selection = lastSelected;
+            $.ajax({url: "/plan/update/"+id+"/kick", success: function(result) {
+                    if (result.status === "OK") {
+                        $(selection).removeClass("fill-yellow").addClass("fill-green").click();
+                    }
+                }})
+        });
+        $(".workplace").click(function (e) {
+            let id = $(this).parent().attr('id');
+            if (lastSelected !== null) $(lastSelected).removeClass("selected");
+            lastSelected = $(this);
+            $(this).addClass("selected")
+            $("#sitting-id").text(id);
+            if ($(this).hasClass("fill-red")) {
+                $("#sitting-state").text("Forbidden");
+                $("#sitting-claimed").text("<Not available>");
+                $("#sitting-action-forbid").hide();
+                $("#sitting-action-kick").hide();
+                $("#sitting-action-permit").show();
+            }
+            if ($(this).hasClass("fill-green")) {
+                $("#sitting-state").text("Free");
+                $("#sitting-claimed").text("<Not claimed>");
+                $("#sitting-action-forbid").show();
+                $("#sitting-action-kick").hide();
+                $("#sitting-action-permit").hide();
+            }
+            if ($(this).hasClass("fill-yellow")) {
+                $("#sitting-state").text("Claimed");
+                $("#sitting-claimed").text("John Doe");
+                $("#sitting-action-forbid").hide();
+                $("#sitting-action-kick").show();
+                $("#sitting-action-permit").hide();
+            }
+
+        });
     });
 </script>
 </body>

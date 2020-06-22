@@ -482,8 +482,11 @@ public class WebController {
     ) throws IOException {
         Optional<String> fullName = authorize(userInfo);
 
+        // TODO: authorize request
         if (!fullName.isPresent())  fullName = Optional.of("nobody");// return "lui";
         setModel(userInfo, fullName.get(), model);
+
+        // TODO: get items from backend
         ObjectMapper objectMapper = new ObjectMapper();
         SeatResource[] places = objectMapper.readValue(Resources.toString(Resources.getResource("default-seating.json"), Charsets.UTF_8) ,SeatResource[].class);
 
@@ -494,5 +497,18 @@ public class WebController {
         }
         model.addAttribute("places", places);
         return "plan";
+    }
+
+    @GetMapping("/plan/update/{id}/{operation}")
+    public @ResponseBody PasswordStatus updatePlan(
+            @ModelAttribute("login") UserInfo userInfo,
+            @PathVariable String id,
+            @PathVariable String operation
+            ) {
+        Optional<String> fullName = authorize(userInfo);
+
+        if (!fullName.isPresent())  fullName = Optional.of("nobody"); //return new PasswordStatus("Error", "Unauthorized");
+        // TODO: send update request to backend
+        return new PasswordStatus("OK", "Updated");
     }
 }
