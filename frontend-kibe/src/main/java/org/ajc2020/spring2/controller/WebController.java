@@ -1,13 +1,10 @@
 package org.ajc2020.spring2.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.io.Resources;
 import lombok.extern.slf4j.Slf4j;
 import org.ajc2020.spring2.communication.PasswordStatus;
 import org.ajc2020.spring2.communication.UserInfo;
 import org.ajc2020.utility.communication.*;
 import org.ajc2020.utility.resource.PermissionLevel;
-import org.apache.commons.codec.Charsets;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -19,7 +16,6 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.view.RedirectView;
 
-import java.io.IOException;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
@@ -178,7 +174,7 @@ public class WebController {
         putRequest(userInfo, "users/" + rid + "/tickets/" + new SimpleDateFormat("yyyy-MM-dd").format(date), "");
         putRequest(userInfo, "users/" + rid + "/tickets/" + new SimpleDateFormat("yyyy-MM-dd").format(date), "");
         if (userInfo.isAdmin() || userInfo.isSuperAdmin())
-            return new RedirectView("/userview?rid="+rid);
+            return new RedirectView("/userview?rid=" + rid);
         return new RedirectView("/");
     }
 
@@ -190,7 +186,7 @@ public class WebController {
     ) {
         deleteRequest(userInfo, "users/" + rid + "/tickets/" + new SimpleDateFormat("yyyy-MM-dd").format(date));
         if (userInfo.isAdmin() || userInfo.isSuperAdmin())
-            return new RedirectView("/userview?rid="+rid);
+            return new RedirectView("/userview?rid=" + rid);
         return new RedirectView("/");
     }
 
@@ -424,7 +420,7 @@ public class WebController {
     RemainingTime getRemainingTime(
             @ModelAttribute("login") UserInfo userInfo,
             @RequestParam String rid
-            ) {
+    ) {
         return getRequest(userInfo, "users/" + rid + "/entry-time-remaining", RemainingTime.class).getBody();
     }
 
@@ -433,7 +429,7 @@ public class WebController {
             @ModelAttribute("login") UserInfo userInfo,
             @PathVariable String rfid
     ) {
-        postRequest(userInfo, "rfids/"+rfid+"/checkin", String.class);
+        postRequest(userInfo, "rfids/" + rfid + "/checkin", String.class);
         return new RedirectView("/users");
     }
 
@@ -442,7 +438,7 @@ public class WebController {
             @ModelAttribute("login") UserInfo userInfo,
             @PathVariable String rfid
     ) {
-        postRequest(userInfo, "rfids/"+rfid+"/checkout", String.class);
+        postRequest(userInfo, "rfids/" + rfid + "/checkout", String.class);
         return new RedirectView("/users");
     }
 
@@ -455,7 +451,7 @@ public class WebController {
         Optional<String> fullName = authorize(userInfo);
         if (!fullName.isPresent()) return "lui";
         WorkerResource workerResource = getRequest(userInfo, "users/" + rid, WorkerResource.class).getBody();
-        UserInfo workerInfo = new UserInfo(workerResource.getEmail(), "", workerResource.getId());
+        UserInfo workerInfo = new UserInfo(Objects.requireNonNull(workerResource).getEmail(), "", workerResource.getId());
         setModel(workerInfo, fullName.get() + " Effective: " + workerResource.getName(), model);
         model.addAttribute("actingAdmin", true);
 
@@ -479,35 +475,29 @@ public class WebController {
     public String buildingPlan(
             @ModelAttribute("login") UserInfo userInfo,
             Model model
-    ) throws IOException {
+    ) {
         Optional<String> fullName = authorize(userInfo);
 
-        // TODO: authorize request
-        if (!fullName.isPresent())  fullName = Optional.of("nobody");// return "lui";
+        if (!fullName.isPresent()) return "lui";
         setModel(userInfo, fullName.get(), model);
 
-        // TODO: get items from backend
-        ObjectMapper objectMapper = new ObjectMapper();
-        SeatResource[] places = objectMapper.readValue(Resources.toString(Resources.getResource("default-seating.json"), Charsets.UTF_8) ,SeatResource[].class);
-
-        Random random = new Random();
-        String[] colors={"fill-red", "fill-green", "fill-yellow"};
-        for (int i = 0; i < places.length; i++) {
-            places[i].setColor(colors[random.nextInt(colors.length)]);
-        }
-        model.addAttribute("places", places);
+        model.addAttribute("places",
+                getRequest(userInfo, "workstations", WorkStationResource[].class)
+                        .getBody());
         return "plan";
     }
 
-    @GetMapping("/plan/update/{id}/{operation}")
-    public @ResponseBody PasswordStatus updatePlan(
+    @GetMapping("/plan/update/{planId}/{operation}")
+    public @ResponseBody
+    PasswordStatus updatePlan(
             @ModelAttribute("login") UserInfo userInfo,
-            @PathVariable String id,
+            @PathVariable String planId,
             @PathVariable String operation
-            ) {
+    ) {
         Optional<String> fullName = authorize(userInfo);
 
-        if (!fullName.isPresent())  fullName = Optional.of("nobody"); //return new PasswordStatus("Error", "Unauthorized");
+        if (!fullName.isPresent()) return new PasswordStatus("Error", "Unauthorized");
+
         // TODO: send update request to backend
         return new PasswordStatus("OK", "Updated");
     }

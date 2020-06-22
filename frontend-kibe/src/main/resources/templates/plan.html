@@ -118,7 +118,7 @@
                         cy="222.39175"
                         cx="122.51154"/>
                 <g th:each="place : ${places}" transform="scale(0.25, 0.25)">
-                    <!--/*@thymesVar id="place" type="org.ajc2020.utility.communication.SeatResource"*/-->
+                    <!--/*@thymesVar id="place" type="org.ajc2020.utility.communication.WorkStationResource"*/-->
                     <g
                             th:transform="${place.getTransform()}"
                             th:id="${place.id}">
@@ -126,7 +126,7 @@
                                 width="20"
                                 height="12"
                                 class="workplace"
-                                th:classappend="${place.color}"
+                                th:classappend="${place.getColor()}"
                                 th:id="${place.id} + 'rect'"
                                 x="-10"
                                 y="5"/>
@@ -270,7 +270,7 @@
                     }
                 }})
         });
-        $(".workplace").click(function (e) {
+        $(".workplace").click(function () {
             let id = $(this).parent().attr('id');
             if (lastSelected !== null) $(lastSelected).removeClass("selected");
             lastSelected = $(this);

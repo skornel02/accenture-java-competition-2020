@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static java.time.ZoneOffset.UTC;
 
@@ -126,4 +128,10 @@ public class TestOfficeHours {
 
     }
 
+    @Test
+    public void testRegex() {
+        Pattern pattern = Pattern.compile("L([\\d]*)R([\\d]*)C([\\d]*)");
+        Matcher matcher = pattern.matcher("L1R1C1");
+        Assert.assertTrue(matcher.matches());
+    }
 }
