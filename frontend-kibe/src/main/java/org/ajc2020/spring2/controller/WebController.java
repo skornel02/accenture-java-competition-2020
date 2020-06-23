@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.view.RedirectView;
@@ -41,13 +42,13 @@ public class WebController {
     }
 
     @GetMapping("/login")
-    public String login() {
-
-        return "lui";
+    public String login(@ModelAttribute("login") UserInfo userInfo, Model model) {
+        return requireLogin(userInfo, model);
     }
 
     private Optional<String> authorize(UserInfo userInfo) {
         String fullName = "Anonymous";
+        userInfo.setBackendReady(true);
         try {
             ResponseEntity<MeInformation> response = getRequest(userInfo, "auth-information", MeInformation.class);
             MeInformation meInformation = response.getBody();
@@ -55,7 +56,11 @@ public class WebController {
                 if (meInformation.getWorker() != null) fullName = meInformation.getWorker().getName();
                 if (meInformation.getAdmin() != null) fullName = meInformation.getAdmin().getName();
             }
-        } catch (RestClientException ignored) {
+        } catch (HttpClientErrorException.Forbidden e) {
+
+            return Optional.empty();
+        } catch (RestClientException e) {
+            userInfo.setBackendReady(false);
             return Optional.empty();
         }
         return Optional.of(fullName);
@@ -63,15 +68,21 @@ public class WebController {
 
     private void setModel(UserInfo userInfo, String fullName, Model model) {
         model.addAttribute("actingAdmin", false);
+        model.addAttribute("backendReady", userInfo.isBackendReady());
         model.addAttribute("adminMode", userInfo.isAdmin() || userInfo.isSuperAdmin());
         model.addAttribute("username", fullName);
         model.addAttribute("uuid", userInfo.getUuid());
     }
 
+    private String requireLogin(UserInfo userInfo, Model model) {
+        setModel(userInfo, "", model);
+        return "lui";
+    }
+
     @GetMapping("/")
     public String main(@ModelAttribute("login") UserInfo userInfo, Model model) {
         Optional<String> fullName = authorize(userInfo);
-        if (!fullName.isPresent()) return "lui";
+        if (!fullName.isPresent()) return requireLogin(userInfo, model);
         setModel(userInfo, fullName.get(), model);
         if (!userInfo.isAdmin() && !userInfo.isSuperAdmin()) {
             String[] reservations =
@@ -96,7 +107,7 @@ public class WebController {
     @GetMapping("/users")
     public String users(@ModelAttribute("login") UserInfo userInfo, Model model) {
         Optional<String> fullName = authorize(userInfo);
-        if (!fullName.isPresent()) return "lui";
+        if (!fullName.isPresent()) return requireLogin(userInfo, model);
         setModel(userInfo, fullName.get(), model);
 
         model.addAttribute("users", getRequest(userInfo, "users", WorkerResource[].class).getBody());
@@ -106,7 +117,7 @@ public class WebController {
     @GetMapping("/admins")
     public String admions(@ModelAttribute("login") UserInfo userInfo, Model model) {
         Optional<String> fullName = authorize(userInfo);
-        if (!fullName.isPresent()) return "lui";
+        if (!fullName.isPresent()) return requireLogin(userInfo, model);
         setModel(userInfo, fullName.get(), model);
 
         if (userInfo.isSuperAdmin()) {
@@ -157,14 +168,14 @@ public class WebController {
             Model model
     ) {
         Optional<String> fullName = authorize(userInfo);
-        if (!fullName.isPresent()) return "lui";
+        if (!fullName.isPresent()) return requireLogin(userInfo, model);
         setModel(userInfo, fullName.get(), model);
         try {
             ResponseEntity<OfficeResource> officeResource = getRequest(userInfo, "office/settings", OfficeResource.class);
             model.addAttribute("building", officeResource.getBody());
             return "building";
         } catch (Exception ignored) {
-            return "lui";
+            return requireLogin(userInfo, model);
         }
     }
 
@@ -268,7 +279,6 @@ public class WebController {
                 .rfId(rfid)
                 .build();
         try {
-            log.info(workerCreationRequest.toString());
             patchRequest(userInfo, "users/" + uuid, workerCreationRequest);
         } catch (Exception e) {
             e.printStackTrace();
@@ -370,7 +380,7 @@ public class WebController {
     public String profile(@ModelAttribute("login") UserInfo userInfo, Model model) {
         Optional<String> fullName = authorize(userInfo);
         if (!fullName.isPresent()) {
-            return "lui";
+            return requireLogin(userInfo, model);
         }
         setModel(userInfo, fullName.get(), model);
         return "userprofile";
@@ -452,7 +462,7 @@ public class WebController {
             Model model
     ) {
         Optional<String> fullName = authorize(userInfo);
-        if (!fullName.isPresent()) return "lui";
+        if (!fullName.isPresent()) return requireLogin(userInfo, model);
         WorkerResource workerResource = getRequest(userInfo, "users/" + rid, WorkerResource.class).getBody();
         UserInfo workerInfo = new UserInfo(Objects.requireNonNull(workerResource).getEmail(), "", workerResource.getId());
         setModel(workerInfo, fullName.get() + " Effective: " + workerResource.getName(), model);
@@ -481,7 +491,7 @@ public class WebController {
     ) {
         Optional<String> fullName = authorize(userInfo);
 
-        if (!fullName.isPresent()) return "lui";
+        if (!fullName.isPresent()) return requireLogin(userInfo, model);
         setModel(userInfo, fullName.get(), model);
 
         model.addAttribute("places",
