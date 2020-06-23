@@ -10,6 +10,7 @@ import org.ajc2020.utility.resource.PermissionLevel;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -312,13 +313,13 @@ public class WebController {
         return restTemplate.patchForObject(url, input, String.class);
     }
 
-    private <T> void postRequest(UserInfo login, String path, T input) {
+    private <T> String postRequest(UserInfo login, String path, T input) {
         String url = joinUrlParts(restServiceUrl, path);
         log.info("Post for " + url);
         RestTemplate restTemplate = new RestTemplateBuilder()
                 .basicAuthentication(login.getUserName(), login.getPassword())
                 .build();
-        restTemplate.postForObject(url, input, String.class);
+        return restTemplate.postForObject(url, input, String.class);
     }
 
     private <T> void putRequest(UserInfo login, String path, T input) {
@@ -330,13 +331,13 @@ public class WebController {
         restTemplate.put(url, input, String.class);
     }
 
-    private void deleteRequest(UserInfo login, String path) {
+    private String deleteRequest(UserInfo login, String path) {
         String url = joinUrlParts(restServiceUrl, path);
         log.info("Delete for " + url);
         RestTemplate restTemplate = new RestTemplateBuilder()
                 .basicAuthentication(login.getUserName(), login.getPassword())
                 .build();
-        restTemplate.delete(url);
+        return restTemplate.exchange(url, HttpMethod.DELETE, null, String.class).getBody();
     }
 
     @PostMapping("/login")
@@ -505,17 +506,17 @@ public class WebController {
         String result ="";
         try {
             if (operation.equals("permit")) {
-                result = patchRequest(userInfo, "workstations/" + planId + "/enable", "");
+                result = postRequest(userInfo, "workstations/" + planId + "/enabled", "");
                 WorkStationResource r = objectMapper.readValue(result, WorkStationResource.class);
                 if (r.isEnabled()) return new PasswordStatus("OK", "Updated");
             }
             if (operation.equals("forbid")) {
-                result = patchRequest(userInfo, "workstations/" + planId + "/disable", "");
+                result = deleteRequest(userInfo, "workstations/" + planId + "/enabled");
                 WorkStationResource r = objectMapper.readValue(result, WorkStationResource.class);
                 if (!r.isEnabled()) return new PasswordStatus("OK", "Updated");
             }
             if (operation.equals("kick")) {
-                result = patchRequest(userInfo, "workstations/" + planId + "/kick", "");
+                result = deleteRequest(userInfo, "workstations/" + planId + "/occupier");
                 WorkStationResource r = objectMapper.readValue(result, WorkStationResource.class);
                 if (r.getOccupier() == null) return new PasswordStatus("OK", "Updated");
             }
