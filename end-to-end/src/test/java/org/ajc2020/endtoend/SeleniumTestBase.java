@@ -117,7 +117,12 @@ public class SeleniumTestBase {
     }
 
     protected boolean loginWithSuperAdmin() {
-        return loginWith("admin@kibe", "nimda");
+        for (int i = 0; i < 3; i++) {
+            boolean success = loginWith("admin@kibe", "nimda");
+            log.info("Superadmin login failed. Retrying...{}", i);
+            if (success) return true;
+        }
+        return false;
     }
 
 }
