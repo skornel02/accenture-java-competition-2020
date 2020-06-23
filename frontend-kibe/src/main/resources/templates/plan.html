@@ -73,6 +73,7 @@
                 <g th:each="place : ${places}" transform="scale(0.25, 0.25)">
                     <!--/*@thymesVar id="place" type="org.ajc2020.utility.communication.WorkStationResource"*/-->
                     <g
+                            class="workstation"
                             th:transform="${place.getTransform()}"
                             th:id="${place.id}">
                         <rect
