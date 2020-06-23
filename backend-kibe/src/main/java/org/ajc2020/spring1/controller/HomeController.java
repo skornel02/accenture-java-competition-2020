@@ -153,7 +153,9 @@ public class HomeController {
                 RemainingTime.builder()
                         .projectedEntryTime(entryLogicService.getEstimatedTimeRemainingForWorker(worker))
                         .status(worker.getStatus())
-                        .workstation(worker.getStation() != null ? worker.getStation().toResource() : null)
+                        .workstation(worker.getStation() != null
+                                ? WorkstationController.addLinks(worker.getStation().toResource()).setOccupier(null)
+                                : null)
                         .build()
         );
     }

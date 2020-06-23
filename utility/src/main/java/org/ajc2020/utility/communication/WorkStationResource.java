@@ -2,6 +2,7 @@ package org.ajc2020.utility.communication;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
+import lombok.experimental.Accessors;
 import org.ajc2020.utility.resource.DeskOrientation;
 import org.springframework.hateoas.RepresentationModel;
 
@@ -20,6 +21,7 @@ public class WorkStationResource extends RepresentationModel<WorkStationResource
     private double x;
     private double y;
     private int zone;
+    @Accessors(chain = true)
     private WorkerResource occupier;
     private boolean enabled;
 

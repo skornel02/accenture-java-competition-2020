@@ -63,7 +63,7 @@ public class WorkstationRunner implements CommandLineRunner {
 
                     workstationService.save(workstation);
                 } else {
-                    log.warn(seatResource.getId() + " from default seating cannot be added!");
+                    log.warn("{} from default seating cannot be added!", seatResource.getId());
                 }
             }
         }

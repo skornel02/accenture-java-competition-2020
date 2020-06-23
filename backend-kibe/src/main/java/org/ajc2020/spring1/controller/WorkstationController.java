@@ -34,7 +34,7 @@ public class WorkstationController {
         station.add(linkTo(methodOn(WorkstationController.class).returnWorkstation(station.getId(), null)).withRel("self"));
         if (station.getOccupier() != null) {
             station.add(linkTo(methodOn(WorkerController.class)
-                    .returnWorker(station.getOccupier().getId(), null)).withRel("view"));
+                    .returnWorker(station.getOccupier().getId(), null)).withRel("occupier"));
         }
         return station;
     }
