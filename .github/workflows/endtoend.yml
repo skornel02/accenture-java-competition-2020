@@ -21,4 +21,4 @@ jobs:
       with:
         java-version: 1.8
     - name: Run End to End tests on docker
-      run: mvn -B package -Dmaven.test.skip=true --file pom.xml &&  docker-compose up -d --build backend.kibe frontend.kibe selenium-hub chrome firefox &&  mvn test -pl :end-to-end -am
+      run: mvn -B package -Dmaven.test.skip=true --file pom.xml &&  docker-compose up -d --build backend.kibe frontend.kibe selenium-hub chrome firefox &&  mvn test -pl :end-to-end -am -Dtest=* -DfailIfNoTests=false
