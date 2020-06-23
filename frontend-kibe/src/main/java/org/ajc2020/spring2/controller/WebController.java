@@ -487,7 +487,8 @@ public class WebController {
     @GetMapping("/plan")
     public String buildingPlan(
             @ModelAttribute("login") UserInfo userInfo,
-            Model model
+            Model model,
+            @RequestParam(defaultValue = "2") int dim
     ) {
         Optional<String> fullName = authorize(userInfo);
 
@@ -497,7 +498,7 @@ public class WebController {
         model.addAttribute("places",
                 getRequest(userInfo, "workstations", WorkStationResource[].class)
                         .getBody());
-        return "plan";
+        return (dim==3)?"plan3d":"plan";
     }
 
     @GetMapping("/plan/update/{planId}/{operation}")
@@ -513,7 +514,7 @@ public class WebController {
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-        String result ="";
+        String result;
         try {
             if (operation.equals("permit")) {
                 result = postRequest(userInfo, "workstations/" + planId + "/enabled", "");
