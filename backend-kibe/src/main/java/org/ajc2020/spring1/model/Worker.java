@@ -49,6 +49,9 @@ public class Worker implements User {
 
     private boolean exceptional;
 
+    @OneToOne(mappedBy = "occupier")
+    private Workstation station;
+
     public Worker(WorkerCreationRequest workerCreationRequest, String password) {
         setEmail(workerCreationRequest.getEmail());
         setName(workerCreationRequest.getName());

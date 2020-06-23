@@ -13,7 +13,7 @@ public interface WorkerService {
 
     Optional<Worker> findByEmail(String email);
 
-    Worker findByRfid(String rfid);
+    Optional<Worker> findByRfid(String rfid);
 
     Optional<Worker> findByUuid(String uuid);
 

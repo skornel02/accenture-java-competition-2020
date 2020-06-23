@@ -34,7 +34,7 @@ public class EntryLogicServiceImpl implements EntryLogicService {
     public LocalTime getEstimatedTimeRemainingForWorker(@NotNull Worker worker) {
         LocalTime time = LocalTime.of(0, 0, 0);
 
-        if (isWorkerAllowedInside(worker))
+        if (worker.isExceptional() || isWorkerAllowedInside(worker))
             return time;
 
         int workerRank = getWorkerRank(worker);

@@ -1,5 +1,6 @@
 package org.ajc2020.spring1.service;
 
+import org.ajc2020.spring1.model.Worker;
 import org.ajc2020.spring1.model.Workstation;
 
 import java.util.List;
@@ -20,5 +21,9 @@ public interface WorkstationService {
     List<Workstation> findAllOccupiable();
 
     void deleteById(String id);
+
+    Workstation occupyWorkstation(Worker worker);
+
+    void freeWorkstations(Worker worker);
 
 }

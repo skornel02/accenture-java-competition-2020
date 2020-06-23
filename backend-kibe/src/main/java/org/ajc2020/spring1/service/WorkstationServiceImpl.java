@@ -1,12 +1,11 @@
 package org.ajc2020.spring1.service;
 
+import org.ajc2020.spring1.model.Worker;
 import org.ajc2020.spring1.model.Workstation;
 import org.ajc2020.spring1.repository.WorkstationRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -15,9 +14,13 @@ public class WorkstationServiceImpl implements WorkstationService {
     private final WorkstationRepository repository;
     private final OfficeService officeService;
 
+    private final Random random;
+
     public WorkstationServiceImpl(WorkstationRepository repository, OfficeService officeService) {
         this.repository = repository;
         this.officeService = officeService;
+
+        this.random = new Random();
     }
 
     @Override
@@ -68,5 +71,29 @@ public class WorkstationServiceImpl implements WorkstationService {
     @Override
     public void deleteById(String id) {
         repository.deleteById(id);
+    }
+
+    @Override
+    public Workstation occupyWorkstation(Worker worker) {
+        synchronized (random) {
+            List<Workstation> usableWorkstations = findAllOccupiable();
+            Workstation chosen = usableWorkstations.get(random.nextInt(usableWorkstations.size()));
+            chosen.setOccupier(worker);
+            save(chosen);
+            return chosen;
+        }
+    }
+
+    @Override
+    public void freeWorkstations(Worker worker) {
+        synchronized (random) {
+            List<Workstation> stations = findAllInUse().stream()
+                    .filter(station -> Objects.equals(station.getOccupier(), worker))
+                    .collect(Collectors.toList());
+            stations.forEach(station -> {
+                station.clearOccupier();
+                save(station);
+            });
+        }
     }
 }

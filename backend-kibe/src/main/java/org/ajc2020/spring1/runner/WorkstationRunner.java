@@ -1,18 +1,20 @@
 package org.ajc2020.spring1.runner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.io.Resources;
 import lombok.extern.slf4j.Slf4j;
 import org.ajc2020.spring1.model.Workstation;
 import org.ajc2020.spring1.service.WorkstationService;
 import org.ajc2020.utility.communication.SeatResource;
 import org.ajc2020.utility.resource.DeskOrientation;
-import org.apache.commons.codec.Charsets;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -25,10 +27,12 @@ public class WorkstationRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        if (workstationService.findAll().size() == 0) {
+        if (workstationService.findAll().isEmpty()) {
+            log.info("No workstations detected, running importer...");
             Pattern pattern = Pattern.compile("L([\\d]*)R([\\d]*)C([\\d]*)");
             ObjectMapper objectMapper = new ObjectMapper();
-            SeatResource[] places = objectMapper.readValue(Resources.toString(Resources.getResource("default-seating.json"), Charsets.UTF_8), SeatResource[].class);
+            String defaultSeating = new BufferedReader(new InputStreamReader(new ClassPathResource("default-seating.json").getInputStream())).lines().collect(Collectors.joining());
+            SeatResource[] places = objectMapper.readValue(defaultSeating, SeatResource[].class);
             for (SeatResource seatResource : places) {
                 Workstation workstation = new Workstation();
                 workstation.setId(seatResource.getId());
@@ -46,18 +50,20 @@ public class WorkstationRunner implements CommandLineRunner {
                     case 3:
                         workstation.setOrientation(DeskOrientation.RIGHT);
                         break;
+                    default:
+                        break;
                 }
                 workstation.setX(seatResource.getX());
                 workstation.setY(seatResource.getY());
 
-                log.info("Adding workstation [{}]", seatResource.getId());
+                log.trace("Adding workstation [{}]", seatResource.getId());
                 Matcher m = pattern.matcher(seatResource.getId());
                 if (m.matches()) {
                     workstation.setZone(Integer.parseInt(m.group(1)));
 
                     workstationService.save(workstation);
                 } else {
-                    log.warn(seatResource.getId() + " not added!");
+                    log.warn("{} from default seating cannot be added!", seatResource.getId());
                 }
             }
         }
