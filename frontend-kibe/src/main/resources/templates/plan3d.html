@@ -65,7 +65,7 @@
                     <text y="95" x="50" th:text="#{claimed}">Claimed</text>
                 </g>
             </svg>
-            <a href="/plan?dim=3" class="btn">Switch to 3D view</a>
+            <a href="/plan?dim=2" class="btn">Switch to 2D view</a>
         </div>
     </div>
     <div class="col s12 m9 center">
@@ -73,41 +73,41 @@
         <svg
                 xmlns="http://www.w3.org/2000/svg"
                 id="svg8"
-                viewBox="0 0 210 297"
-                height="297mm"
-                width="210mm">
-            <g id="layer1">
+                viewBox="-40 -10 240 180">
+            <g id="layer1"
+               transform="translate(150, 80) matrix(0.707 0.409 -0.707 0.409 0 -0.816) translate(-150, -80)">
                 <path
                         id="path2789"
                         d="m 6.1471992,27.52876 49.5784978,0.133636 0.133633,95.281584 h 46.5049 l -0.13364,-95.147951 h 49.84577 l 0.13363,95.281591 45.56946,0.4009 -0.26727,76.43908 -45.16855,0 v 70.96006 l -51.04848,1.20272 0.13363,-72.02914 H 6.1471992 Z"
-                        style="fill:none;stroke:#000000;stroke-width:1.565;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"/>
-                <ellipse cx="26.103981" cy="44.317707" rx="1" ry="1" id="path2793" class="column"/>
-                <ellipse id="path2793-9" ry="1" rx="1" cy="73.185638" cx="26.03311" class="column"/>
-                <ellipse id="path2793-6" ry="1" rx="1" cy="102.10082" cx="26.080357" class="column"/>
-                <ellipse id="path2793-8" ry="1" rx="1" cy="130.87425" cx="26.127604" class="column"/>
-                <ellipse id="path2793-4" ry="1" rx="1" cy="102.05357" cx="122.51153" class="column"/>
-                <ellipse id="path2793-82" ry="1" rx="1" cy="123.7792" cx="122.44286" class="column"/>
-                <ellipse id="path2793-5" ry="1" rx="1" cy="198.343" cx="122.51154" class="column"/>
-                <ellipse id="path2793-81" ry="1" rx="1" cy="222.39175" cx="122.51154" class="column"/>
+                        class="building"/>
 
                 <!--/*@thymesVar id="places" type="org.ajc2020.utility.communication.WorkStationResource[]"*/-->
                 <g th:each="place : ${places}" transform="scale(0.25, 0.25)">
                     <!--/*@thymesVar id="place" type="org.ajc2020.utility.communication.WorkStationResource"*/-->
                     <g
                             class="workstation"
-                            th:transform="${place.getTransform()}"
                             th:id="${place.id}">
+                        <rect
+                                width="20"
+                                height="12"
+                                class="workplace-floor"
+                                th:transform="${place.getTransform()}"
+                                x="-10"
+                                y="5"/>
                         <rect
                                 width="20"
                                 height="12"
                                 class="workplace"
                                 th:classappend="${place.getColor()}"
+                                th:transform="'translate(-5, -5), ' + ${place.getTransform()}"
                                 th:id="${place.id} + 'rect'"
                                 x="-10"
                                 y="5"/>
+
                         <path
                                 th:style="'fill:#000000;fill-opacity:0.345382;stroke:#000000;stroke-width:0.3;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1'"
                                 th:id="${place.id} + 'chair'"
+                                th:transform="${place.getTransform()}"
                                 d="M0 2 L-2.5 -2 L2.5 -2 Z"/>
                     </g>
 
@@ -136,6 +136,29 @@
                 <rect id="rect4512" width="18.84013" height="11.968594" x="103.67917" y="71.528969" class="restricted"/>
                 <rect y="124.27596" x="47.185505" height="17.221645" width="69.833839" id="rect4514"
                       class="restricted"/>
+            </g>
+            <g id="layer2">
+                <g th:each="i : ${#numbers.sequence(0, 3, 1)}"
+                   th:transform="'translate('+ (86.8 - ${i} * 20.4) +', ' + (8.4 + ${i} * 12) + '), scale(0.03,0.1)'">
+                    <path style="fill:#b1b1b1;"
+                          d="M29,8C13.536,8,1,6.209,1,4v50c0,2.209,12.536,4,28,4s28-1.791,28-4V4C57,6.209,44.464,8,29,8z"/>
+                    <ellipse style="fill:#939393;" cx="29" cy="4" rx="28" ry="4"/>
+                    <ellipse style="fill:#939393;" cx="29" cy="54" rx="28" ry="4"/>
+                </g>
+                <g th:each="i : ${#numbers.sequence(0, 2, 1)}"
+                   th:transform="'translate('+ (155.3 - ${i} * 20.4) +', ' + (47.8 + ${i} * 12) + '), scale(0.03,0.1)'">
+                    <path style="fill:#b1b1b1;"
+                          d="M29,8C13.536,8,1,6.209,1,4v50c0,2.209,12.536,4,28,4s28-1.791,28-4V4C57,6.209,44.464,8,29,8z"/>
+                    <ellipse style="fill:#939393;" cx="29" cy="4" rx="28" ry="4"/>
+                    <ellipse style="fill:#939393;" cx="29" cy="54" rx="28" ry="4"/>
+                </g>
+                <g th:each="i : ${#numbers.sequence(0, 2, 1)}"
+                   th:transform="'translate('+ (46 - ${i} * 17.3) +', ' + (111.5 + ${i} * 9.8) + '), scale(0.03,0.1)'">
+                    <path style="fill:#b1b1b1;"
+                          d="M29,8C13.536,8,1,6.209,1,4v50c0,2.209,12.536,4,28,4s28-1.791,28-4V4C57,6.209,44.464,8,29,8z"/>
+                    <ellipse style="fill:#939393;" cx="29" cy="4" rx="28" ry="4"/>
+                    <ellipse style="fill:#939393;" cx="29" cy="54" rx="28" ry="4"/>
+                </g>
             </g>
         </svg>
     </div>
