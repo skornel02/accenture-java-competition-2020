@@ -45,9 +45,14 @@ public class Workstation {
             return Double.MAX_VALUE;
         return Math.sqrt(Math.pow(getX() - station.getX(), 2) + Math.pow(getY() - station.getY(), 2));
     }
-
+W
+    /**
+     *
+     * @param distance The units are in decimeters
+     * @return units in centimeters
+     */
     public double unitToCentimeter(double distance) {
-        return distance * 39.604d;
+        return distance * 10d;
     }
 
 
