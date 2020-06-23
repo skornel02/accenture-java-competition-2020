@@ -1,16 +1,16 @@
 package org.ajc2020.spring2.controller;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.io.Resources;
 import lombok.extern.slf4j.Slf4j;
 import org.ajc2020.spring2.communication.PasswordStatus;
 import org.ajc2020.spring2.communication.UserInfo;
 import org.ajc2020.utility.communication.*;
 import org.ajc2020.utility.resource.PermissionLevel;
-import org.apache.commons.codec.Charsets;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,7 +19,6 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.view.RedirectView;
 
-import java.io.IOException;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
@@ -178,7 +177,7 @@ public class WebController {
         putRequest(userInfo, "users/" + rid + "/tickets/" + new SimpleDateFormat("yyyy-MM-dd").format(date), "");
         putRequest(userInfo, "users/" + rid + "/tickets/" + new SimpleDateFormat("yyyy-MM-dd").format(date), "");
         if (userInfo.isAdmin() || userInfo.isSuperAdmin())
-            return new RedirectView("/userview?rid="+rid);
+            return new RedirectView("/userview?rid=" + rid);
         return new RedirectView("/");
     }
 
@@ -190,7 +189,7 @@ public class WebController {
     ) {
         deleteRequest(userInfo, "users/" + rid + "/tickets/" + new SimpleDateFormat("yyyy-MM-dd").format(date));
         if (userInfo.isAdmin() || userInfo.isSuperAdmin())
-            return new RedirectView("/userview?rid="+rid);
+            return new RedirectView("/userview?rid=" + rid);
         return new RedirectView("/");
     }
 
@@ -305,22 +304,22 @@ public class WebController {
         return restTemplate.getForEntity(url, t);
     }
 
-    private <T> void patchRequest(UserInfo login, String path, T input) {
+    private <T> String patchRequest(UserInfo login, String path, T input) {
         String url = joinUrlParts(restServiceUrl, path);
         log.info("Patch for " + url);
         RestTemplate restTemplate = new RestTemplateBuilder()
                 .basicAuthentication(login.getUserName(), login.getPassword())
                 .build();
-        restTemplate.patchForObject(url, input, String.class);
+        return restTemplate.patchForObject(url, input, String.class);
     }
 
-    private <T> void postRequest(UserInfo login, String path, T input) {
+    private <T> String postRequest(UserInfo login, String path, T input) {
         String url = joinUrlParts(restServiceUrl, path);
         log.info("Post for " + url);
         RestTemplate restTemplate = new RestTemplateBuilder()
                 .basicAuthentication(login.getUserName(), login.getPassword())
                 .build();
-        restTemplate.postForObject(url, input, String.class);
+        return restTemplate.postForObject(url, input, String.class);
     }
 
     private <T> void putRequest(UserInfo login, String path, T input) {
@@ -332,13 +331,13 @@ public class WebController {
         restTemplate.put(url, input, String.class);
     }
 
-    private void deleteRequest(UserInfo login, String path) {
+    private String deleteRequest(UserInfo login, String path) {
         String url = joinUrlParts(restServiceUrl, path);
         log.info("Delete for " + url);
         RestTemplate restTemplate = new RestTemplateBuilder()
                 .basicAuthentication(login.getUserName(), login.getPassword())
                 .build();
-        restTemplate.delete(url);
+        return restTemplate.exchange(url, HttpMethod.DELETE, null, String.class).getBody();
     }
 
     @PostMapping("/login")
@@ -424,7 +423,7 @@ public class WebController {
     RemainingTime getRemainingTime(
             @ModelAttribute("login") UserInfo userInfo,
             @RequestParam String rid
-            ) {
+    ) {
         return getRequest(userInfo, "users/" + rid + "/entry-time-remaining", RemainingTime.class).getBody();
     }
 
@@ -433,7 +432,7 @@ public class WebController {
             @ModelAttribute("login") UserInfo userInfo,
             @PathVariable String rfid
     ) {
-        postRequest(userInfo, "rfids/"+rfid+"/checkin", String.class);
+        postRequest(userInfo, "rfids/" + rfid + "/checkin", String.class);
         return new RedirectView("/users");
     }
 
@@ -442,7 +441,7 @@ public class WebController {
             @ModelAttribute("login") UserInfo userInfo,
             @PathVariable String rfid
     ) {
-        postRequest(userInfo, "rfids/"+rfid+"/checkout", String.class);
+        postRequest(userInfo, "rfids/" + rfid + "/checkout", String.class);
         return new RedirectView("/users");
     }
 
@@ -455,7 +454,7 @@ public class WebController {
         Optional<String> fullName = authorize(userInfo);
         if (!fullName.isPresent()) return "lui";
         WorkerResource workerResource = getRequest(userInfo, "users/" + rid, WorkerResource.class).getBody();
-        UserInfo workerInfo = new UserInfo(workerResource.getEmail(), "", workerResource.getId());
+        UserInfo workerInfo = new UserInfo(Objects.requireNonNull(workerResource).getEmail(), "", workerResource.getId());
         setModel(workerInfo, fullName.get() + " Effective: " + workerResource.getName(), model);
         model.addAttribute("actingAdmin", true);
 
@@ -479,36 +478,52 @@ public class WebController {
     public String buildingPlan(
             @ModelAttribute("login") UserInfo userInfo,
             Model model
-    ) throws IOException {
+    ) {
         Optional<String> fullName = authorize(userInfo);
 
-        // TODO: authorize request
-        if (!fullName.isPresent())  fullName = Optional.of("nobody");// return "lui";
+        if (!fullName.isPresent()) return "lui";
         setModel(userInfo, fullName.get(), model);
 
-        // TODO: get items from backend
-        ObjectMapper objectMapper = new ObjectMapper();
-        SeatResource[] places = objectMapper.readValue(Resources.toString(Resources.getResource("default-seating.json"), Charsets.UTF_8) ,SeatResource[].class);
-
-        Random random = new Random();
-        String[] colors={"fill-red", "fill-green", "fill-yellow"};
-        for (int i = 0; i < places.length; i++) {
-            places[i].setColor(colors[random.nextInt(colors.length)]);
-        }
-        model.addAttribute("places", places);
+        model.addAttribute("places",
+                getRequest(userInfo, "workstations", WorkStationResource[].class)
+                        .getBody());
         return "plan";
     }
 
-    @GetMapping("/plan/update/{id}/{operation}")
-    public @ResponseBody PasswordStatus updatePlan(
+    @GetMapping("/plan/update/{planId}/{operation}")
+    public @ResponseBody
+    PasswordStatus updatePlan(
             @ModelAttribute("login") UserInfo userInfo,
-            @PathVariable String id,
+            @PathVariable String planId,
             @PathVariable String operation
-            ) {
+    ) {
         Optional<String> fullName = authorize(userInfo);
 
-        if (!fullName.isPresent())  fullName = Optional.of("nobody"); //return new PasswordStatus("Error", "Unauthorized");
-        // TODO: send update request to backend
-        return new PasswordStatus("OK", "Updated");
+        if (!fullName.isPresent()) return new PasswordStatus("Error", "Unauthorized");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        String result ="";
+        try {
+            if (operation.equals("permit")) {
+                result = postRequest(userInfo, "workstations/" + planId + "/enabled", "");
+                WorkStationResource r = objectMapper.readValue(result, WorkStationResource.class);
+                if (r.isEnabled()) return new PasswordStatus("OK", "Updated");
+            }
+            if (operation.equals("forbid")) {
+                result = deleteRequest(userInfo, "workstations/" + planId + "/enabled");
+                WorkStationResource r = objectMapper.readValue(result, WorkStationResource.class);
+                if (!r.isEnabled()) return new PasswordStatus("OK", "Updated");
+            }
+            if (operation.equals("kick")) {
+                result = deleteRequest(userInfo, "workstations/" + planId + "/occupier");
+                WorkStationResource r = objectMapper.readValue(result, WorkStationResource.class);
+                if (r.getOccupier() == null) return new PasswordStatus("OK", "Updated");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new PasswordStatus("Error", "Unkown result");
+        }
+        return new PasswordStatus("Error", "Unknown method");
     }
 }
