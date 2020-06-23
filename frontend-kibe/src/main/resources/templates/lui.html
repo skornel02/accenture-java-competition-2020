@@ -14,7 +14,7 @@
             integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
 </head>
 <body>
-<div class="row valign-wrapper">
+<div class="row valign-wrapper" th:if="${backendReady}">
     <div class="col s12 m10 offset-m1 l8 offset-l2 xl6 offset-xl3">
         <div class="card">
             <div class="card-content">
@@ -63,17 +63,17 @@
         </div>
     </div>
 </div>
+<!--/*@thymesVar id="backendReady" type="boolean"*/-->
+<div th:if="${backendReady} == false" id="login-backend-unavailable">
+    <h4 th:text="#{service.down}">Service is down. Refreshing.</h4>
+    <script>
+        $(document).ready(function () {
+           setTimeout(function(){
+               location.reload();
+           }, 1000);
+        });
+    </script>
+</div>
 <script type="text/javascript" th:src="@{js/materialize.min.js}" src="../static/js/materialize.min.js"></script>
-<script th:inline="javascript">
-    /*<!<CDATA[*/
-    const loginProtocolError = /*[[#{login.protocol.error}]]*/ "Protocol error!";
-    const loginError = /*[[#{login.error}]]*/ "An error occurred!";
-    const loginTimeout = /*[[#{login.timeout}]]*/ "Timeout!";
-    const loginSuccess = /*[[#{login.success}]]*/ "Login successful!";
-    const loginInvalid = /*[[#{login.invalid}]]*/ "Login invalid!";
-    let _csrf_token = /*[[${_csrf.token}]]*/ '';
-    let _csrf_param_name = /*[[${_csrf.parameterName}]]*/ '';
-    /*]]>*/
-</script>
 </body>
 </html>

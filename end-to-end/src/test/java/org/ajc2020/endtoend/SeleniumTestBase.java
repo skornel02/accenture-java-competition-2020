@@ -1,5 +1,6 @@
 package org.ajc2020.endtoend;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -11,15 +12,17 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
 
+@Slf4j
 public class SeleniumTestBase {
     private final String propertiesPath = System.getProperty("selenium.test.kibe");
     final Properties properties;
@@ -27,6 +30,7 @@ public class SeleniumTestBase {
     public String baseUrl = "";
 
     public WebDriver webDriver;
+    protected WebDriverWait webDriverWait;
 
     public SeleniumTestBase() {
         properties = new Properties();
@@ -83,8 +87,11 @@ public class SeleniumTestBase {
                 Assert.fail();
                 break;
         }
-
-
+        webDriver.get(baseUrl);
+        webDriverWait = new WebDriverWait(webDriver, 30);
+        log.info("Waiting for login prompt");
+        webDriverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("username")));
+        log.info("Login ready, resume tests");
     }
 
     @After
@@ -110,7 +117,13 @@ public class SeleniumTestBase {
     }
 
     protected boolean loginWithSuperAdmin() {
-        return loginWith("admin@kibe", "nimda");
+        for (int i = 0; i < 3; i++) {
+            boolean success = loginWith("admin@kibe", "nimda");
+            if (success) return true;
+            log.info("Super-admin login failed. Retrying...{}", i+1);
+            sleep(500);
+        }
+        return false;
     }
 
 }

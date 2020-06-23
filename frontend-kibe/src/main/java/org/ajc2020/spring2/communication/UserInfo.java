@@ -18,4 +18,5 @@ public class UserInfo {
     private String password = "";
     private boolean isAdmin;
     private boolean isSuperAdmin;
+    private boolean isBackendReady;
 }
