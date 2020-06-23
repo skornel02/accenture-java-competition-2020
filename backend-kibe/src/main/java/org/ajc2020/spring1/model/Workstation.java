@@ -55,6 +55,9 @@ public class Workstation {
         return distance * 10d;
     }
 
+    public void clearOccupier() {
+        setOccupier(null);
+    }
 
     public WorkStationResource toResource() {
         return WorkStationResource.builder()

@@ -7,6 +7,7 @@ import org.ajc2020.spring1.manager.SessionManager;
 import org.ajc2020.spring1.model.Worker;
 import org.ajc2020.spring1.service.EntryLogicService;
 import org.ajc2020.spring1.service.WorkerService;
+import org.ajc2020.spring1.service.WorkstationService;
 import org.ajc2020.utility.communication.RemainingTime;
 import org.ajc2020.utility.exceptions.ForbiddenException;
 import org.ajc2020.utility.exceptions.UserNotFoundException;
@@ -28,13 +29,16 @@ public class HomeController {
     private final SessionManager sessionManager;
     private final WorkerService workerService;
     private final EntryLogicService entryLogicService;
+    private final WorkstationService workstationService;
 
     public HomeController(SessionManager sessionManager,
                           WorkerService workerService,
-                          EntryLogicService entryLogicService) {
+                          EntryLogicService entryLogicService,
+                          WorkstationService workstationService) {
         this.sessionManager = sessionManager;
         this.workerService = workerService;
         this.entryLogicService = entryLogicService;
+        this.workstationService = workstationService;
     }
 
     @Operation(
@@ -44,13 +48,17 @@ public class HomeController {
     )
     @PostMapping(path = "/rfids/{rfid}/checkin")
     public RfIdStatus checkin(@PathVariable String rfid) {
-        Worker worker = workerService.findByRfid(rfid);
-        if (worker == null) return RfIdStatus.unknownRfid();
+        Optional<Worker> workerOptional = workerService.findByRfid(rfid);
+        if (!workerOptional.isPresent()) return RfIdStatus.unknownRfid();
+        Worker worker = workerOptional.get();
 
+        if (worker.isExceptional())
+            return RfIdStatus.ok();
         if (!entryLogicService.isWorkerAllowedInside(worker)) {
             return RfIdStatus.fullHouse();
         }
         if (worker.checkin(OffsetDateTime.now())) {
+            workstationService.occupyWorkstation(worker);
             workerService.save(worker);
             return RfIdStatus.ok();
         }
@@ -64,10 +72,15 @@ public class HomeController {
     )
     @PostMapping(path = "/rfids/{rfid}/checkout")
     public RfIdStatus checkout(@PathVariable String rfid) {
-        Worker worker = workerService.findByRfid(rfid);
-        if (worker == null) return RfIdStatus.unknownRfid();
+        Optional<Worker> workerOptional = workerService.findByRfid(rfid);
+        if (!workerOptional.isPresent()) return RfIdStatus.unknownRfid();
+        Worker worker = workerOptional.get();
+
+        if (worker.isExceptional())
+            return RfIdStatus.ok();
         if (worker.checkout(OffsetDateTime.now())) {
             workerService.save(worker);
+            workstationService.freeWorkstations(worker);
             return RfIdStatus.ok();
         }
         return RfIdStatus.error();
@@ -88,10 +101,11 @@ public class HomeController {
             throw new ForbiddenException(resourceBundle.getString("error.forbidden.admin"));
 
         Optional<Worker> worker = workerService.findByUuid(uuid);
-        if (!worker.isPresent()) return new RegistrationStatus(RegistrationStatus.Status.UnknownUser);
+        if (!worker.isPresent()) return RegistrationStatus.unknownUser();
+        if (worker.get().isExceptional()) return RegistrationStatus.notRequired();
         worker.get().register(date);
         workerService.save(worker.get());
-        return new RegistrationStatus(RegistrationStatus.Status.OK);
+        return RegistrationStatus.ok();
     }
 
     @Operation(
@@ -109,12 +123,13 @@ public class HomeController {
             throw new ForbiddenException(resourceBundle.getString("error.forbidden.admin"));
 
         Optional<Worker> worker = workerService.findByUuid(uuid);
-        if (!worker.isPresent()) return new RegistrationStatus(RegistrationStatus.Status.UnknownUser);
+        if (!worker.isPresent()) return RegistrationStatus.unknownUser();
+        if (worker.get().isExceptional()) return RegistrationStatus.notRequired();
         if (!worker.get().cancel(date)) {
-            return new RegistrationStatus(RegistrationStatus.Status.Error);
+            return RegistrationStatus.error();
         }
         workerService.save(worker.get());
-        return new RegistrationStatus(RegistrationStatus.Status.OK);
+        return RegistrationStatus.ok();
     }
 
     @Operation(
@@ -138,6 +153,7 @@ public class HomeController {
                 RemainingTime.builder()
                         .projectedEntryTime(entryLogicService.getEstimatedTimeRemainingForWorker(worker))
                         .status(worker.getStatus())
+                        .workstation(worker.getStation() != null ? worker.getStation().toResource() : null)
                         .build()
         );
     }

@@ -19,5 +19,6 @@ public class RemainingTime {
     @JsonFormat(pattern = "HH:mm:ss")
     private LocalTime projectedEntryTime;
     private WorkerStatus status;
+    private WorkStationResource workstation;
 
 }
