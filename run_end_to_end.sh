@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function checkCluster() {
-  curl -I http://frontend.kibe:8080 2>/dev/null | head -n 1 | sed "s/^[^ ]* //"
+  curl -I http://localhost:8081 2>/dev/null | head -n 1 | sed "s/^[^ ]* //"
 
 }
 if ! mvn -B package -Dmaven.test.skip=true --file pom.xml; then
