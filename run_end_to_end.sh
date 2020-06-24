@@ -4,12 +4,11 @@ function checkCluster() {
   curl -I http://frontend.kibe:8080 2>/dev/null | head -n 1 | sed "s/^[^ ]* //"
 
 }
-
-if mvn -B package -Dmaven.test.skip=true --file pom.xml; then
+if ! mvn -B package -Dmaven.test.skip=true --file pom.xml; then
   exit 1
 fi
 
-if docker-compose up -d --build backend.kibe frontend.kibe selenium-hub chrome firefox kafka zookeeper; then
+if ! docker-compose up -d --build backend.kibe frontend.kibe selenium-hub chrome firefox kafka zookeeper; then
   docker-compose down
   exit 1
 fi
