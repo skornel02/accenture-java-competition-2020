@@ -5,6 +5,8 @@ services:
     build:
       context: backend-kibe
       dockerfile: Dockerfile
+    depends_on:
+      - kafka
     networks:
       - kibe-network
     ports:
