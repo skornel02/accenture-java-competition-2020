@@ -3,7 +3,7 @@
 df -h
 
 function checkCluster() {
-  curl -I http://localhost:8081 2>/dev/null | head -n 1 | sed "s/^[^ ]* //"
+  curl -I http://localhost:8081 2>/dev/null | head -n 1
 
 }
 if ! mvn -B package -Dmaven.test.skip=true --file pom.xml; then
@@ -15,7 +15,9 @@ if ! docker-compose up -d --build backend.kibe frontend.kibe selenium-hub firefo
   exit 1
 fi
 
-while [ "$(checkCluster)" != "200" ]; do
+sleep 10
+
+while [[ ! "$(checkCluster)" =~ "200" ]]; do
   checkCluster
   echo "Cluster not ready. Sleeping."
   sleep 1
@@ -32,6 +34,11 @@ done
 
 mvn test -pl :end-to-end -am -Dtest=* -DfailIfNoTests=false
 result=$?
+
+checkCluster
+docker-compose logs backend.kibe
+docker-compose logs frontend.kibe
+df -h
 
 docker-compose down
 
