@@ -13,7 +13,7 @@ if ! docker-compose up -d --build backend.kibe frontend.kibe selenium-hub firefo
   exit 1
 fi
 
-while [ "$(checkCluster)" -ne 200 ]; do
+while [ "$(checkCluster)" != "200" ]; do
   echo "Cluster not ready. Sleeping."
   sleep 1
 done
