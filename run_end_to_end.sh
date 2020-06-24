@@ -16,6 +16,9 @@ fi
 while [ "$(checkCluster)" != "200" ]; do
   echo "Cluster not ready. Sleeping."
   sleep 1
+  docker-compose logs
+  df -h
+  exit 1
 done
 
 mvn test -pl :end-to-end -am -Dtest=* -DfailIfNoTests=false
