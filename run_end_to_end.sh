@@ -8,7 +8,7 @@ if ! mvn -B package -Dmaven.test.skip=true --file pom.xml; then
   exit 1
 fi
 
-if ! docker-compose up -d --build backend.kibe frontend.kibe selenium-hub chrome firefox kafka zookeeper; then
+if ! docker-compose up -d --build backend.kibe frontend.kibe selenium-hub firefox kafka zookeeper; then
   docker-compose down
   exit 1
 fi
