@@ -78,6 +78,8 @@ services:
     environment:
       ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_BROKERCONNECT: kafka:29092
+    networks:
+      - kibe-network
 
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
@@ -87,6 +89,8 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - kibe-network
 
   kafka:
     image: confluentinc/cp-kafka:latest
@@ -103,6 +107,8 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - kibe-network
 
 networks:
   kibe-network:
