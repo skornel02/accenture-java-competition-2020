@@ -3,7 +3,7 @@
 df -h
 
 function checkCluster() {
-  curl -I http://localhost:8081 2>/dev/null | head -n 1
+  curl -I http://localhost:8081 | head -n 1
 
 }
 if ! mvn -B package -Dmaven.test.skip=true --file pom.xml; then
@@ -17,19 +17,14 @@ fi
 
 sleep 10
 
+checkCluster
 while [[ ! "$(checkCluster)" =~ "200" ]]; do
-  checkCluster
   echo "Cluster not ready. Sleeping."
   sleep 1
   checkCluster
   docker-compose logs backend.kibe
   docker-compose logs frontend.kibe
-  sleep 10
-  checkCluster
-  docker-compose logs backend.kibe
-  docker-compose logs frontend.kibe
   df -h
-  exit 1
 done
 
 mvn test -pl :end-to-end -am -Dtest=* -DfailIfNoTests=false
