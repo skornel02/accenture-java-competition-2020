@@ -49,15 +49,15 @@ public class WorkerController {
 
     public static WorkerResource addLinks(WorkerResource resource) {
         resource.add(linkTo(methodOn(WorkerController.class)
-                .returnWorker(resource.getId(), null)).withRel("view"));
+                .returnWorker(resource.getId(), Locale.getDefault())).withRel("view"));
         resource.add(linkTo(methodOn(WorkerController.class)
-                .returnOfficeHours(resource.getId(), null)).withRel("office hours"));
+                .returnOfficeHours(resource.getId(), Locale.getDefault())).withRel("office hours"));
         resource.add(linkTo(methodOn(WorkerController.class)
-                .returnTickets(resource.getId(), null)).withRel("tickets"));
+                .returnTickets(resource.getId(), Locale.getDefault())).withRel("tickets"));
         resource.add(linkTo(methodOn(HomeController.class)
-                .register(resource.getRfId(), null, null)).withRel("manage ticket"));
+                .register(resource.getRfId(), null, Locale.getDefault())).withRel("manage ticket"));
         resource.add(linkTo(methodOn(HomeController.class)
-                .calculateRemainingTimeTillEntry(resource.getId(), null)).withRel("view estimated time"));
+                .calculateRemainingTimeTillEntry(resource.getId(), Locale.getDefault())).withRel("view estimated time"));
 
         return resource;
     }
@@ -146,7 +146,7 @@ public class WorkerController {
     }
 
     private WorkerResource updateWorkerResource(String uuid, WorkerCreationRequest workerUpdateRequest, ResourceBundle resourceBundle) {
-        log.info("Update for " + uuid);
+        log.info("Update for {}", uuid);
         Optional<Worker> worker = workerService.findByUuid(uuid);
         if (!worker.isPresent()) {
             log.info("Worker not found");
