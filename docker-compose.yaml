@@ -65,22 +65,6 @@ services:
       - kibe-network
 
 
-  kafdrop:
-    image: obsidiandynamics/kafdrop:3.8.1
-    container_name: kafdrop
-    depends_on:
-      - zookeeper
-      - kafka
-    expose:
-      - 9000
-    ports:
-      - 9000:9000
-    environment:
-      ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_BROKERCONNECT: kafka:29092
-    networks:
-      - kibe-network
-
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
     container_name: zookeeper

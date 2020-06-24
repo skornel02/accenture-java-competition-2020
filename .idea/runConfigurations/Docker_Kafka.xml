@@ -3,14 +3,7 @@
     <deployment type="docker-compose.yml">
       <settings>
         <option name="commandLineOptions" value="--build" />
-        <option name="services">
-          <list>
-            <option value="kafdrop" />
-            <option value="kafka" />
-            <option value="zookeeper" />
-          </list>
-        </option>
-        <option name="sourceFilePath" value="docker-compose.yaml" />
+        <option name="sourceFilePath" value="docker-compose-kafka.yaml" />
       </settings>
     </deployment>
     <method v="2" />

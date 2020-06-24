@@ -10,6 +10,7 @@
             <option value="selenium-hub" />
             <option value="chrome" />
             <option value="firefox" />
+            <option value="end-to-end" />
           </list>
         </option>
         <option name="sourceFilePath" value="docker-compose.yaml" />
