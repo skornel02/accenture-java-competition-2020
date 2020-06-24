@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.ajc2020.spring1.manager.SessionManager;
 import org.ajc2020.spring1.model.Worker;
 import org.ajc2020.spring1.service.EntryLogicService;
+import org.ajc2020.spring1.service.WorkerPositionService;
 import org.ajc2020.spring1.service.WorkerService;
 import org.ajc2020.spring1.service.WorkstationService;
 import org.ajc2020.utility.communication.RemainingTime;
@@ -30,15 +31,18 @@ public class HomeController {
     private final WorkerService workerService;
     private final EntryLogicService entryLogicService;
     private final WorkstationService workstationService;
+    private final WorkerPositionService workerPositionService;
 
     public HomeController(SessionManager sessionManager,
                           WorkerService workerService,
                           EntryLogicService entryLogicService,
-                          WorkstationService workstationService) {
+                          WorkstationService workstationService,
+                          WorkerPositionService workerPositionService) {
         this.sessionManager = sessionManager;
         this.workerService = workerService;
         this.entryLogicService = entryLogicService;
         this.workstationService = workstationService;
+        this.workerPositionService = workerPositionService;
     }
 
     @Operation(
@@ -60,6 +64,8 @@ public class HomeController {
         if (worker.checkin(OffsetDateTime.now())) {
             workstationService.occupyWorkstation(worker);
             workerService.save(worker);
+            workerService.getUsersWaiting().forEach(waiter
+                    -> workerPositionService.updateWorkerPosition(waiter, workerService.getRank(waiter)));
             return RfIdStatus.ok();
         }
         return RfIdStatus.error();
