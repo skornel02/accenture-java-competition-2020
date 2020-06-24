@@ -29,5 +29,9 @@ jobs:
           ${{ runner.os }}-maven-
     - name: Cache docker images
       uses: whoan/docker-build-with-cache-action@v1
+      with:
+        username: whoan
+        password: "${{ secrets.DOCKER_PASSWORD }}"
+        image_name: whoan/node
     - name: Run End to End tests on docker
       run: source ./run_end_to_end.sh
