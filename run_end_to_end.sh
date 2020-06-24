@@ -1,5 +1,7 @@
 #!/bin/bash
 
+df -h
+
 function checkCluster() {
   curl -I http://localhost:8081 2>/dev/null | head -n 1 | sed "s/^[^ ]* //"
 
@@ -14,9 +16,16 @@ if ! docker-compose up -d --build backend.kibe frontend.kibe selenium-hub firefo
 fi
 
 while [ "$(checkCluster)" != "200" ]; do
+  checkCluster
   echo "Cluster not ready. Sleeping."
   sleep 1
-  docker-compose logs
+  checkCluster
+  docker-compose logs backend.kibe
+  docker-compose logs frontend.kibe
+  sleep 10
+  checkCluster
+  docker-compose logs backend.kibe
+  docker-compose logs frontend.kibe
   df -h
   exit 1
 done
