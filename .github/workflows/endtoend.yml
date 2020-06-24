@@ -27,5 +27,7 @@ jobs:
         key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
         restore-keys: |
           ${{ runner.os }}-maven-
+    - name: Cache docker images
+      uses: whoan/docker-build-with-cache-action@v1
     - name: Run End to End tests on docker
       run: source ./run_end_to_end.sh
