@@ -142,10 +142,8 @@ public class WebController {
             postRequest(userInfo, "admins", adminCreationRequest);
         } catch (Exception e) {
             e.printStackTrace();
-
         }
         return new RedirectView("/admins");
-
     }
 
     @GetMapping("/building/capacity")
@@ -257,7 +255,6 @@ public class WebController {
             postRequest(userInfo, "users", workerCreationRequest);
         } catch (Exception e) {
             e.printStackTrace();
-
         }
         return new RedirectView("/users");
 
@@ -307,7 +304,7 @@ public class WebController {
 
     private <T> ResponseEntity<T> getRequest(UserInfo login, String path, Class<T> t) {
         String url = joinUrlParts(restServiceUrl, path);
-        log.info("Get for " + url);
+        log.info("Get for {}", url);
         RestTemplate restTemplate = new RestTemplateBuilder()
                 .basicAuthentication(login.getUserName(), login.getPassword())
                 .build();
@@ -316,7 +313,7 @@ public class WebController {
 
     private <T> String patchRequest(UserInfo login, String path, T input) {
         String url = joinUrlParts(restServiceUrl, path);
-        log.info("Patch for " + url);
+        log.info("Patch for {}", url);
         RestTemplate restTemplate = new RestTemplateBuilder()
                 .basicAuthentication(login.getUserName(), login.getPassword())
                 .build();
@@ -325,7 +322,7 @@ public class WebController {
 
     private <T> String postRequest(UserInfo login, String path, T input) {
         String url = joinUrlParts(restServiceUrl, path);
-        log.info("Post for " + url);
+        log.info("Post for {}", url);
         RestTemplate restTemplate = new RestTemplateBuilder()
                 .basicAuthentication(login.getUserName(), login.getPassword())
                 .build();
@@ -334,7 +331,7 @@ public class WebController {
 
     private <T> void putRequest(UserInfo login, String path, T input) {
         String url = joinUrlParts(restServiceUrl, path);
-        log.info("Put for " + url);
+        log.info("Put for {}", url);
         RestTemplate restTemplate = new RestTemplateBuilder()
                 .basicAuthentication(login.getUserName(), login.getPassword())
                 .build();
@@ -343,7 +340,7 @@ public class WebController {
 
     private String deleteRequest(UserInfo login, String path) {
         String url = joinUrlParts(restServiceUrl, path);
-        log.info("Delete for " + url);
+        log.info("Delete for {}", url);
         RestTemplate restTemplate = new RestTemplateBuilder()
                 .basicAuthentication(login.getUserName(), login.getPassword())
                 .build();
@@ -399,7 +396,6 @@ public class WebController {
         if (newPassword.length() < PASSWORD_LENGTH_MIN) {
             return new PasswordStatus("Error", MessageFormat.format(resourceBundle.getString("profile.password.length"), PASSWORD_LENGTH_MIN));
         }
-
         return new PasswordStatus("OK", "");
     }
 
@@ -491,14 +487,13 @@ public class WebController {
             @RequestParam(defaultValue = "2") int dim
     ) {
         Optional<String> fullName = authorize(userInfo);
-
         if (!fullName.isPresent()) return requireLogin(userInfo, model);
         setModel(userInfo, fullName.get(), model);
 
         model.addAttribute("places",
                 getRequest(userInfo, "workstations", WorkStationResource[].class)
                         .getBody());
-        return (dim==3)?"plan3d":"plan";
+        return (dim == 3) ? "plan3d" : "plan";
     }
 
     @GetMapping("/plan/update/{planId}/{operation}")
@@ -509,7 +504,6 @@ public class WebController {
             @PathVariable String operation
     ) {
         Optional<String> fullName = authorize(userInfo);
-
         if (!fullName.isPresent()) return new PasswordStatus("Error", "Unauthorized");
 
         ObjectMapper objectMapper = new ObjectMapper();

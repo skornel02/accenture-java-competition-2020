@@ -31,10 +31,10 @@ public class WorkstationController {
     }
 
     public static WorkStationResource addLinks(WorkStationResource station) {
-        station.add(linkTo(methodOn(WorkstationController.class).returnWorkstation(station.getId(), null)).withRel("self"));
+        station.add(linkTo(methodOn(WorkstationController.class).returnWorkstation(station.getId(), Locale.getDefault())).withRel("self"));
         if (station.getOccupier() != null) {
             station.add(linkTo(methodOn(WorkerController.class)
-                    .returnWorker(station.getOccupier().getId(), null)).withRel("occupier"));
+                    .returnWorker(station.getOccupier().getId(), Locale.getDefault())).withRel("occupier"));
         }
         return station;
     }

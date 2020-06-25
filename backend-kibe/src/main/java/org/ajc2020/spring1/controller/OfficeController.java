@@ -10,6 +10,7 @@ import org.ajc2020.spring1.service.OfficeService;
 import org.ajc2020.spring1.service.WorkerService;
 import org.ajc2020.utility.communication.*;
 import org.ajc2020.utility.exceptions.ForbiddenException;
+import org.ajc2020.utility.exceptions.UserNotFoundException;
 import org.ajc2020.utility.resource.PermissionLevel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -84,9 +85,10 @@ public class OfficeController {
                     WorkerResource workerResource = WorkerController.addLinks(worker.toResource());
                     OfficeHoursResource officeHoursResource = worker.getOfficeHoursHistory().stream()
                             .filter(officeHours -> officeHours.getLeave() == null)
-                            .findAny().get().toResource()
+                            .findAny().orElseThrow(() -> new UserNotFoundException(resourceBundle.getString("error.user.not.found")))
+                            .toResource()
                             .add(linkTo(methodOn(WorkerController.class)
-                                    .returnOfficeHours(workerResource.getId(), null))
+                                    .returnOfficeHours(workerResource.getId(), Locale.getDefault()))
                                     .withRel("view"));
 
                     return new InsideResource(workerResource, officeHoursResource);
@@ -110,7 +112,7 @@ public class OfficeController {
                     WorkerResource workerResource = WorkerController.addLinks(worker.toResource());
                     TicketResource ticketResource = worker.getTicketForDay(worker.today()).toResource();
                     ticketResource.add(linkTo(methodOn(WorkerController.class)
-                            .returnTickets(workerResource.getId(), null)).withRel("view"));
+                            .returnTickets(workerResource.getId(), Locale.getDefault())).withRel("view"));
                     boolean canGoIn = entryLogicService.isWorkerAllowedInside(worker);
                     return new WaitingResource(workerResource, ticketResource, canGoIn);
                 })
@@ -140,7 +142,7 @@ public class OfficeController {
                             .map(OfficeHours::toResource)
                             .map(resource -> resource
                                     .add(linkTo(methodOn(WorkerController.class)
-                                            .returnOfficeHours(workerResource.getId(), null))
+                                            .returnOfficeHours(workerResource.getId(), Locale.getDefault()))
                                             .withRel("view")))
                             .collect(Collectors.toList());
                     return new BeenInsideResource(workerResource, officeHoursResources);

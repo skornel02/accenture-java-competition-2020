@@ -44,7 +44,7 @@ public class AdminController {
 
     public static AdminResource addLinks(AdminResource resource) {
         resource.add(linkTo(methodOn(AdminController.class)
-                .returnAdmin(resource.getUuid(), null)).withRel("view"));
+                .returnAdmin(resource.getUuid(), Locale.getDefault())).withRel("view"));
 
         return resource;
     }
