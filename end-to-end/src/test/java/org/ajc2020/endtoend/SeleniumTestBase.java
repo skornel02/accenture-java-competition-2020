@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
+import org.junit.rules.TestName;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -24,6 +26,8 @@ import java.util.Properties;
 
 @Slf4j
 public class SeleniumTestBase {
+    @Rule public TestName testName = new TestName();
+
     private final String propertiesPath = System.getProperty("selenium.test.kibe");
     final Properties properties;
 
@@ -42,6 +46,7 @@ public class SeleniumTestBase {
                 resourceInputStream = new FileInputStream(propertiesPath);
             }
             properties.load(resourceInputStream);
+            assert resourceInputStream != null;
             resourceInputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -89,9 +94,11 @@ public class SeleniumTestBase {
         }
         webDriver.get(baseUrl);
         webDriverWait = new WebDriverWait(webDriver, 30);
-        log.info("Waiting for login prompt");
-        webDriverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("username")));
-        log.info("Login ready, resume tests");
+        if (webDriver.findElements(By.id("username")).size() == 0) {
+            log.info("{} - Waiting for login prompt", testName.getMethodName());
+            webDriverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("username")));
+            log.info("{} - Login ready, resume tests", testName.getMethodName());
+        }
     }
 
     @After
@@ -120,7 +127,7 @@ public class SeleniumTestBase {
         for (int i = 0; i < 3; i++) {
             boolean success = loginWith("admin@kibe", "nimda");
             if (success) return true;
-            log.info("Super-admin login failed. Retrying...{}", i+1);
+            log.info("{} - Super-admin login failed. Retrying...{}", testName.getMethodName(), i+1);
             sleep(500);
         }
         return false;

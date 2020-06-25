@@ -3,6 +3,7 @@ package org.ajc2020.endtoend;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 
 import java.util.List;
@@ -47,21 +48,22 @@ public class FloorPlanTests extends SeleniumTestBase {
         selectPlan();
         Assert.assertTrue(getWorkstationIds().size() > 0);
         String firstPlaceId = getWorkstationIds().get(0);
+        webDriverWait.until(ExpectedConditions.presenceOfElementLocated(By.id(firstPlaceId + "rect")));
         WebElement seatingItem = getById(firstPlaceId + "rect");
         seatingItem.click();
-        sleep(1000);
+        webDriverWait.until(ExpectedConditions.attributeContains(seatingItem, "class", "fill-green"));
         Assert.assertTrue(seatingItem.getAttribute("class").contains("fill-green"));
         Assert.assertEquals(firstPlaceId, getById("sitting-id").getText());
 
         getById("sitting-action-forbid").click();
-        sleep(1000);
 
+        webDriverWait.until(ExpectedConditions.attributeContains(seatingItem, "class", "fill-red"));
         Assert.assertFalse(seatingItem.getAttribute("class").contains("fill-green"));
         Assert.assertTrue(seatingItem.getAttribute("class").contains("fill-red"));
 
         getById("sitting-action-permit").click();
-        sleep(1000);
 
+        webDriverWait.until(ExpectedConditions.attributeContains(seatingItem, "class", "fill-green"));
         Assert.assertTrue(seatingItem.getAttribute("class").contains("fill-green"));
         Assert.assertFalse(seatingItem.getAttribute("class").contains("fill-red"));
 
