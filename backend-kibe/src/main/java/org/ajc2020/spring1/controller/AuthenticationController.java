@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -38,29 +39,30 @@ public class AuthenticationController {
         MeInformation.MeInformationBuilder builder = MeInformation.builder()
                 .permission(sessionManager.getPermission());
         List<Link> links = new ArrayList<>();
-        links.add(linkTo(methodOn(OfficeController.class).returnOfficeSettings(null)).withRel("office-settings"));
+        links.add(linkTo(methodOn(OfficeController.class).returnOfficeSettings(Locale.getDefault())).withRel("office-settings"));
         if (sessionManager.isSessionWorker()) {
+            assert(workerService.findByUuid(sessionManager.getWorker().getUuid()).isPresent());
             Worker worker = workerService.findByUuid(sessionManager.getWorker().getUuid()).get();
             builder = builder.worker(worker.toResource());
             links.add(linkTo(methodOn(WorkerController.class)
-                    .returnWorker(worker.getUuid(), null)).withRel("self"));
+                    .returnWorker(worker.getUuid(), Locale.getDefault())).withRel("self"));
             links.add(linkTo(methodOn(HomeController.class)
-                    .register(worker.getRfid(), null, null)).withRel("manage ticket"));
+                    .register(worker.getRfid(), null, Locale.getDefault())).withRel("manage ticket"));
             links.add(linkTo(methodOn(WorkerController.class)
-                    .returnOfficeHours(worker.getUuid(), null)).withRel("office hours"));
+                    .returnOfficeHours(worker.getUuid(), Locale.getDefault())).withRel("office hours"));
             links.add(linkTo(methodOn(WorkerController.class)
-                    .returnTickets(worker.getUuid(), null)).withRel("tickets"));
+                    .returnTickets(worker.getUuid(), Locale.getDefault())).withRel("tickets"));
             links.add(linkTo(methodOn(HomeController.class)
-                    .calculateRemainingTimeTillEntry(worker.getUuid(), null)).withRel("view estimated time"));
+                    .calculateRemainingTimeTillEntry(worker.getUuid(), Locale.getDefault())).withRel("view estimated time"));
         }
         if (sessionManager.isSessionAdmin()) {
             builder = builder.admin(sessionManager.getAdmin().toResource());
             links.add(linkTo(methodOn(AdminController.class)
-                    .returnAdmin(sessionManager.getAdmin().getUuid(), null)).withRel("self"));
-            links.add(linkTo(methodOn(WorkerController.class).returnWorkers(null)).withRel("workers"));
-            links.add(linkTo(methodOn(OfficeController.class).returnBeenInsideResources(null)).withRel("workers that left"));
-            links.add(linkTo(methodOn(OfficeController.class).returnInsideResource(null)).withRel("workers inside"));
-            links.add(linkTo(methodOn(OfficeController.class).returnWaitingResource(null)).withRel("workers waiting"));
+                    .returnAdmin(sessionManager.getAdmin().getUuid(), Locale.getDefault())).withRel("self"));
+            links.add(linkTo(methodOn(WorkerController.class).returnWorkers(Locale.getDefault())).withRel("workers"));
+            links.add(linkTo(methodOn(OfficeController.class).returnBeenInsideResources(Locale.getDefault())).withRel("workers that left"));
+            links.add(linkTo(methodOn(OfficeController.class).returnInsideResource(Locale.getDefault())).withRel("workers inside"));
+            links.add(linkTo(methodOn(OfficeController.class).returnWaitingResource(Locale.getDefault())).withRel("workers waiting"));
             if (sessionManager.getAdmin().isSuperAdmin()) {
                 links.add(linkTo(methodOn(AdminController.class).returnAdmins()).withRel("admins"));
             }
