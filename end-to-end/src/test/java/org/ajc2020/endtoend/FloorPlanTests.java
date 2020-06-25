@@ -38,7 +38,7 @@ public class FloorPlanTests extends SeleniumTestBase {
                 .stream()
                 .map(x -> x + "rect")
                 .map(this::getById).forEach(
-                element -> Assert.assertTrue(element.getAttribute("class").contains("fill-green"))
+                element -> Assert.assertTrue(element.getAttribute("class").contains("ws-occupiable"))
         );
     }
 
@@ -51,21 +51,21 @@ public class FloorPlanTests extends SeleniumTestBase {
         webDriverWait.until(ExpectedConditions.presenceOfElementLocated(By.id(firstPlaceId + "rect")));
         WebElement seatingItem = getById(firstPlaceId + "rect");
         seatingItem.click();
-        webDriverWait.until(ExpectedConditions.attributeContains(seatingItem, "class", "fill-green"));
-        Assert.assertTrue(seatingItem.getAttribute("class").contains("fill-green"));
+        webDriverWait.until(ExpectedConditions.attributeContains(seatingItem, "class", "ws-occupiable"));
+        Assert.assertTrue(seatingItem.getAttribute("class").contains("ws-occupiable"));
         Assert.assertEquals(firstPlaceId, getById("sitting-id").getText());
 
         getById("sitting-action-forbid").click();
 
-        webDriverWait.until(ExpectedConditions.attributeContains(seatingItem, "class", "fill-red"));
-        Assert.assertFalse(seatingItem.getAttribute("class").contains("fill-green"));
-        Assert.assertTrue(seatingItem.getAttribute("class").contains("fill-red"));
+        webDriverWait.until(ExpectedConditions.attributeContains(seatingItem, "class", "ws-disabled"));
+        Assert.assertFalse(seatingItem.getAttribute("class").contains("ws-occupiable"));
+        Assert.assertTrue(seatingItem.getAttribute("class").contains("ws-disabled"));
 
         getById("sitting-action-permit").click();
 
-        webDriverWait.until(ExpectedConditions.attributeContains(seatingItem, "class", "fill-green"));
-        Assert.assertTrue(seatingItem.getAttribute("class").contains("fill-green"));
-        Assert.assertFalse(seatingItem.getAttribute("class").contains("fill-red"));
+        webDriverWait.until(ExpectedConditions.attributeContains(seatingItem, "class", "ws-occupiable"));
+        Assert.assertTrue(seatingItem.getAttribute("class").contains("ws-occupiable"));
+        Assert.assertFalse(seatingItem.getAttribute("class").contains("ws-disabled"));
 
     }
 }

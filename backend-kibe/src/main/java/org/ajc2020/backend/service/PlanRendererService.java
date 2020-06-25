@@ -8,6 +8,8 @@ public interface PlanRendererService {
 
     String createAdmin2DSVG(List<Workstation> workstations, List<Workstation> occupiable);
 
+    String createAdmin3DSVG(List<Workstation> workstations, List<Workstation> occupiable);
+
     String createWorker2DSVG(List<Workstation> workstations, Workstation chosen);
 
 }

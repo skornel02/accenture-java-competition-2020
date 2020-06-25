@@ -490,10 +490,17 @@ public class WebController {
         if (!fullName.isPresent()) return requireLogin(userInfo, model);
         setModel(userInfo, fullName.get(), model);
 
-        model.addAttribute("places",
-                getRequest(userInfo, "workstations", WorkstationResource[].class)
-                        .getBody());
-        return (dim == 3) ? "plan3d" : "plan";
+        String layout;
+        int dims = 2;
+        if (dim == 3) {
+            layout = getRequest(userInfo, "layout/3d", String.class).getBody();
+        } else {
+            dims = 3;
+            layout = getRequest(userInfo, "layout", String.class).getBody();
+        }
+        model.addAttribute("layout", layout);
+        model.addAttribute("dimensions", dims);
+        return "plan";
     }
 
     @GetMapping("/plan/update/{planId}/{operation}")

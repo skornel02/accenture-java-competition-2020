@@ -185,4 +185,19 @@ public class HomeController {
         );
     }
 
+    @Operation(
+            description = "Returns all workstations in 3 dimensional svg form",
+            tags = "Layout",
+            security = {@SecurityRequirement(name = "user", scopes = "admin")}
+    )
+    @GetMapping(value = "/layout/3d", produces = "image/svg+xml")
+    public ResponseEntity<String> returnWorkstationLayout3d() {
+        List<Workstation> workstations = workstationService.findAll();
+        List<Workstation> occupiable = workstationService.findAllOccupiable();
+
+        return ResponseEntity.ok(
+                planRendererService.createAdmin3DSVG(workstations, occupiable)
+        );
+    }
+
 }
