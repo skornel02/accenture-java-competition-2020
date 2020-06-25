@@ -491,7 +491,7 @@ public class WebController {
         setModel(userInfo, fullName.get(), model);
 
         model.addAttribute("places",
-                getRequest(userInfo, "workstations", WorkStationResource[].class)
+                getRequest(userInfo, "workstations", WorkstationResource[].class)
                         .getBody());
         return (dim == 3) ? "plan3d" : "plan";
     }
@@ -512,17 +512,17 @@ public class WebController {
         try {
             if (operation.equals("permit")) {
                 result = postRequest(userInfo, "workstations/" + planId + "/enabled", "");
-                WorkStationResource r = objectMapper.readValue(result, WorkStationResource.class);
+                WorkstationResource r = objectMapper.readValue(result, WorkstationResource.class);
                 if (r.isEnabled()) return new PasswordStatus("OK", "Updated");
             }
             if (operation.equals("forbid")) {
                 result = deleteRequest(userInfo, "workstations/" + planId + "/enabled");
-                WorkStationResource r = objectMapper.readValue(result, WorkStationResource.class);
+                WorkstationResource r = objectMapper.readValue(result, WorkstationResource.class);
                 if (!r.isEnabled()) return new PasswordStatus("OK", "Updated");
             }
             if (operation.equals("kick")) {
                 result = deleteRequest(userInfo, "workstations/" + planId + "/occupier");
-                WorkStationResource r = objectMapper.readValue(result, WorkStationResource.class);
+                WorkstationResource r = objectMapper.readValue(result, WorkstationResource.class);
                 if (r.getOccupier() == null) return new PasswordStatus("OK", "Updated");
             }
         } catch (Exception e) {

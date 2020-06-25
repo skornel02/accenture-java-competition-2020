@@ -2,8 +2,8 @@ package org.ajc2020.spring1.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.ajc2020.utility.communication.WorkStationCreationRequest;
-import org.ajc2020.utility.communication.WorkStationResource;
+import org.ajc2020.utility.communication.WorkstationCreationRequest;
+import org.ajc2020.utility.communication.WorkstationResource;
 import org.ajc2020.utility.resource.DeskOrientation;
 
 import javax.persistence.Entity;
@@ -31,7 +31,7 @@ public class Workstation {
 
     private boolean enabled = true;
 
-    public Workstation(WorkStationCreationRequest request) {
+    public Workstation(WorkstationCreationRequest request) {
         this.id = request.getId();
         this.orientation = request.getOrientation();
         this.x = request.getX();
@@ -59,8 +59,8 @@ public class Workstation {
         setOccupier(null);
     }
 
-    public WorkStationResource toResource() {
-        return WorkStationResource.builder()
+    public WorkstationResource toResource() {
+        return WorkstationResource.builder()
                 .id(getId())
                 .x(getX())
                 .y(getY())

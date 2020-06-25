@@ -1,5 +1,6 @@
 package org.ajc2020.utility.communication;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import lombok.experimental.Accessors;
@@ -14,7 +15,7 @@ import java.util.Locale;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class WorkStationResource extends RepresentationModel<WorkStationResource> {
+public class WorkstationResource extends RepresentationModel<WorkstationResource> {
 
     private String id;
     private DeskOrientation orientation;
@@ -25,6 +26,7 @@ public class WorkStationResource extends RepresentationModel<WorkStationResource
     private WorkerResource occupier;
     private boolean enabled;
 
+    @JsonIgnore
     public String getColor() {
         if (!enabled)
             return "fill-red";
@@ -33,6 +35,7 @@ public class WorkStationResource extends RepresentationModel<WorkStationResource
         return "fill-yellow";
     }
 
+    @JsonIgnore
     public String getTransform() {
         switch (orientation) {
             case DOWN:

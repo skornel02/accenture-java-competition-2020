@@ -90,9 +90,9 @@
                 <ellipse id="path2793-5" ry="1" rx="1" cy="198.343" cx="122.51154" class="column"/>
                 <ellipse id="path2793-81" ry="1" rx="1" cy="222.39175" cx="122.51154" class="column"/>
 
-                <!--/*@thymesVar id="places" type="org.ajc2020.utility.communication.WorkStationResource[]"*/-->
+                <!--/*@thymesVar id="places" type="org.ajc2020.utility.communication.WorkstationResource[]"*/-->
                 <g th:each="place : ${places}" transform="scale(0.25, 0.25)">
-                    <!--/*@thymesVar id="place" type="org.ajc2020.utility.communication.WorkStationResource"*/-->
+                    <!--/*@thymesVar id="place" type="org.ajc2020.utility.communication.WorkstationResource"*/-->
                     <g
                             class="workstation"
                             th:transform="${place.getTransform()}"

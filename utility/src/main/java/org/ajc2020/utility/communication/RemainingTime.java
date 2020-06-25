@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import org.ajc2020.utility.resource.WorkerStatus;
 
 import java.time.LocalTime;
-import java.time.OffsetTime;
 
 @Data
 @Builder
@@ -19,6 +18,7 @@ public class RemainingTime {
     @JsonFormat(pattern = "HH:mm:ss")
     private LocalTime projectedEntryTime;
     private WorkerStatus status;
-    private WorkStationResource workstation;
+    private WorkstationResource workstation;
+    private String locationSVG;
 
 }

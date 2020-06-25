@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 
 @Data
 @Builder
-public class WorkStationCreationRequest {
+public class WorkstationCreationRequest {
 
     @NotNull
     @NotEmpty

@@ -37,6 +37,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/rfid/**").permitAll()
                 .antMatchers("/admins/**").hasAnyAuthority(SUPER_ADMIN.getAuthority())
                 .antMatchers("/rfids/**").hasAnyAuthority(SUPER_ADMIN.getAuthority(), ADMIN.getAuthority(), DEVICE.getAuthority())
+                .antMatchers("/layout").hasAnyAuthority(SUPER_ADMIN.getAuthority(), ADMIN.getAuthority())
                 .anyRequest().authenticated()
 
                 .and()

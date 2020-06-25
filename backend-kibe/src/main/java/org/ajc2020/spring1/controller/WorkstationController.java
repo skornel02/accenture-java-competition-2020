@@ -4,8 +4,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.ajc2020.spring1.model.Workstation;
 import org.ajc2020.spring1.service.WorkstationService;
-import org.ajc2020.utility.communication.WorkStationCreationRequest;
-import org.ajc2020.utility.communication.WorkStationResource;
+import org.ajc2020.utility.communication.OccupiableWorkstationResource;
+import org.ajc2020.utility.communication.WorkstationCreationRequest;
+import org.ajc2020.utility.communication.WorkstationResource;
 import org.ajc2020.utility.exceptions.WorkstationNotFound;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -30,7 +32,7 @@ public class WorkstationController {
         this.workstationService = workstationService;
     }
 
-    public static WorkStationResource addLinks(WorkStationResource station) {
+    public static WorkstationResource addLinks(WorkstationResource station) {
         station.add(linkTo(methodOn(WorkstationController.class).returnWorkstation(station.getId(), Locale.getDefault())).withRel("self"));
         if (station.getOccupier() != null) {
             station.add(linkTo(methodOn(WorkerController.class)
@@ -45,7 +47,7 @@ public class WorkstationController {
             security = {@SecurityRequirement(name = "user", scopes = "admin")}
     )
     @GetMapping
-    public List<WorkStationResource> returnWorkstations() {
+    public List<WorkstationResource> returnWorkstations() {
         return workstationService.findAll().stream()
                 .map(Workstation::toResource)
                 .map(WorkstationController::addLinks)
@@ -58,7 +60,7 @@ public class WorkstationController {
             security = {@SecurityRequirement(name = "user", scopes = "admin")}
     )
     @PostMapping
-    public ResponseEntity<WorkStationResource> createWorkstation(@Valid @RequestBody WorkStationCreationRequest request) {
+    public ResponseEntity<WorkstationResource> createWorkstation(@Valid @RequestBody WorkstationCreationRequest request) {
         Workstation workstation = new Workstation(request);
         workstationService.save(workstation);
         return ResponseEntity.created(URI.create("/workstations/" + workstation.getId())).body(
@@ -67,12 +69,32 @@ public class WorkstationController {
     }
 
     @Operation(
+            description = "Returns all workstations with data whether the workstation is occupiable",
+            tags = "Workstations",
+            security = {@SecurityRequirement(name = "user", scopes = "admin")}
+    )
+    @GetMapping("/occupiable")
+    public List<OccupiableWorkstationResource> returnWorkstationWithMetadata() {
+        List<Workstation> occupiable = workstationService.findAllOccupiable();
+
+        return workstationService.findAll().stream()
+                .map(Workstation::toResource)
+                .map(WorkstationController::addLinks)
+                .map(stationResource -> OccupiableWorkstationResource.builder()
+                        .occupiable(occupiable.stream()
+                                .anyMatch(station -> Objects.equals(stationResource.getId(), station.getId())))
+                        .workstation(stationResource)
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    @Operation(
             description = "Returns a workstation",
             tags = "Workstations",
             security = {@SecurityRequirement(name = "user", scopes = "admin")}
     )
     @GetMapping("/{id}")
-    public ResponseEntity<WorkStationResource> returnWorkstation(@PathVariable String id, Locale locale) {
+    public ResponseEntity<WorkstationResource> returnWorkstation(@PathVariable String id, Locale locale) {
         ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", locale);
         Workstation workstation = workstationService.findById(id)
                 .orElseThrow(() -> new WorkstationNotFound(resourceBundle.getString("error.workstation.not.found")));
@@ -89,7 +111,7 @@ public class WorkstationController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> removeWorkstation(@PathVariable String id, Locale locale) {
         ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", locale);
-        if(!workstationService.findById(id).isPresent())
+        if (!workstationService.findById(id).isPresent())
             throw new WorkstationNotFound(resourceBundle.getString("error.workstation.not.found"));
         workstationService.deleteById(id);
         return ResponseEntity.noContent().build();
@@ -101,7 +123,7 @@ public class WorkstationController {
             security = {@SecurityRequirement(name = "user", scopes = "admin")}
     )
     @DeleteMapping("/{id}/occupier")
-    public ResponseEntity<WorkStationResource> kickWorker(@PathVariable String id, Locale locale) {
+    public ResponseEntity<WorkstationResource> kickWorker(@PathVariable String id, Locale locale) {
         ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", locale);
         Workstation workStation = workstationService.findById(id)
                 .orElseThrow(() -> new WorkstationNotFound(resourceBundle.getString("error.workstation.not.found")));
@@ -116,7 +138,7 @@ public class WorkstationController {
             security = {@SecurityRequirement(name = "user", scopes = "admin")}
     )
     @PostMapping("/{id}/enabled")
-    public ResponseEntity<WorkStationResource> enableWorkstation(@PathVariable String id, Locale locale) {
+    public ResponseEntity<WorkstationResource> enableWorkstation(@PathVariable String id, Locale locale) {
         ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", locale);
         Workstation workStation = workstationService.findById(id)
                 .orElseThrow(() -> new WorkstationNotFound(resourceBundle.getString("error.workstation.not.found")));
@@ -134,7 +156,7 @@ public class WorkstationController {
             security = {@SecurityRequirement(name = "user", scopes = "admin")}
     )
     @DeleteMapping("/{id}/enabled")
-    public ResponseEntity<WorkStationResource> disableWorkstation(@PathVariable String id, Locale locale) {
+    public ResponseEntity<WorkstationResource> disableWorkstation(@PathVariable String id, Locale locale) {
         ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", locale);
         Workstation workStation = workstationService.findById(id)
                 .orElseThrow(() -> new WorkstationNotFound(resourceBundle.getString("error.workstation.not.found")));

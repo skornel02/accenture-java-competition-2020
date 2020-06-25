@@ -5,17 +5,17 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.slf4j.Slf4j;
 import org.ajc2020.spring1.manager.SessionManager;
 import org.ajc2020.spring1.model.Worker;
-import org.ajc2020.spring1.service.EntryLogicService;
-import org.ajc2020.spring1.service.WorkerPositionService;
-import org.ajc2020.spring1.service.WorkerService;
-import org.ajc2020.spring1.service.WorkstationService;
+import org.ajc2020.spring1.model.Workstation;
+import org.ajc2020.spring1.service.*;
 import org.ajc2020.utility.communication.RemainingTime;
 import org.ajc2020.utility.exceptions.ForbiddenException;
 import org.ajc2020.utility.exceptions.UserNotFoundException;
 import org.ajc2020.utility.resource.PermissionLevel;
 import org.ajc2020.utility.resource.RegistrationStatus;
 import org.ajc2020.utility.resource.RfIdStatus;
+import org.apache.http.entity.ContentType;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,17 +32,20 @@ public class HomeController {
     private final EntryLogicService entryLogicService;
     private final WorkstationService workstationService;
     private final WorkerPositionService workerPositionService;
+    private final PlanRendererService planRendererService;
 
     public HomeController(SessionManager sessionManager,
                           WorkerService workerService,
                           EntryLogicService entryLogicService,
                           WorkstationService workstationService,
-                          WorkerPositionService workerPositionService) {
+                          WorkerPositionService workerPositionService,
+                          PlanRendererService planRendererService) {
         this.sessionManager = sessionManager;
         this.workerService = workerService;
         this.entryLogicService = entryLogicService;
         this.workstationService = workstationService;
         this.workerPositionService = workerPositionService;
+        this.planRendererService = planRendererService;
     }
 
     @Operation(
@@ -162,9 +165,26 @@ public class HomeController {
                         .workstation(worker.getStation() != null
                                 ? WorkstationController.addLinks(worker.getStation().toResource()).setOccupier(null)
                                 : null)
+                        .locationSVG(worker.getStation() != null
+                                ? planRendererService.createWorker2DSVG(workstationService.findAll(), worker.getStation())
+                                : null)
                         .build()
         );
     }
 
+    @Operation(
+            description = "Returns all workstations in svg form",
+            tags = "Layout",
+            security = {@SecurityRequirement(name = "user", scopes = "admin")}
+    )
+    @GetMapping(value = "/layout", produces = "image/svg+xml")
+    public ResponseEntity<String> returnWorkstationLayout() {
+        List<Workstation> workstations = workstationService.findAll();
+        List<Workstation> occupiable = workstationService.findAllOccupiable();
+
+        return ResponseEntity.ok(
+                planRendererService.createAdmin2DSVG(workstations, occupiable)
+        );
+    }
 
 }
