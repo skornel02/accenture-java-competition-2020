@@ -6,7 +6,7 @@
 <body>
 <div th:insert="fragments/main.html :: navigation"></div>
 <div class="row">
-    <div class="col s12 m3">
+    <div class="col s10 m6 l3 offset-s1 offset-m3">
         <div class="card">
             <div class="card-content">
                 <span class="card-title" th:text="#{building.workstation}">Sitting</span>
@@ -39,31 +39,38 @@
             </div>
         </div>
         <div class="card">
-            <h4 th:text="#{building.plan.legend}">Legend</h4>
-            <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    id="svglegend"
-                    viewBox="0 0 180 160">
-                <g id="layer1">
-                    <rect y="5" x="5" height="20" width="40" class="restricted"/>
-                    <text y="20" x="50" th:text="#{restricted}">Restricted</text>
-                    <rect y="30" x="5" height="20" width="40" class="ws-disabled"/>
-                    <text y="45" x="50" th:text="#{forbidden}">Forbidden</text>
-                    <rect y="55" x="5" height="20" width="40" class="ws-occupiable"/>
-                    <text y="70" x="50" th:text="#{free}">Free</text>
-                    <rect y="80" x="5" height="20" width="40" class="ws-will-be-occupied"/>
-                    <text y="95" x="50" th:text="#{claimed}">Claimed</text>
-                    <rect y="105" x="5" height="20" width="40" class="ws-infectious"/>
-                    <text y="120" x="50" th:text="#{infectious}">Infectious</text>
-                    <rect y="130" x="5" height="20" width="40" class="ws-occupied"/>
-                    <text y="145" x="50" th:text="#{occupied}">Occupied</text>
-                </g>
-            </svg>
-            <a th:href="'/plan?dim='+${dimensions}" class="btn" th:text="#{building.plan.view(${dimensions})}">Switch to
-                3D view</a>
+            <div class="card-content">
+                <span class="card-title" th:text="#{building.plan.legend}">Legend</span>
+            </div>
+            <div class="divider"></div>
+            <div class="card-content">
+                <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        id="svglegend"
+                        viewBox="0 0 180 160">
+                    <g id="layer1">
+                        <rect y="5" x="5" height="20" width="40" class="restricted"/>
+                        <text y="20" x="50" th:text="#{restricted}">Restricted</text>
+                        <rect y="30" x="5" height="20" width="40" class="ws-disabled"/>
+                        <text y="45" x="50" th:text="#{forbidden}">Forbidden</text>
+                        <rect y="55" x="5" height="20" width="40" class="ws-occupiable"/>
+                        <text y="70" x="50" th:text="#{free}">Free</text>
+                        <rect y="80" x="5" height="20" width="40" class="ws-will-be-occupied"/>
+                        <text y="95" x="50" th:text="#{claimed}">Claimed</text>
+                        <rect y="105" x="5" height="20" width="40" class="ws-infectious"/>
+                        <text y="120" x="50" th:text="#{infectious}">Infectious</text>
+                        <rect y="130" x="5" height="20" width="40" class="ws-occupied"/>
+                        <text y="145" x="50" th:text="#{occupied}">Occupied</text>
+                    </g>
+                </svg>
+            </div>
+            <div class="card-content">
+                <a th:href="'/plan?dim='+${dimensions}" class="btn" th:text="#{building.plan.view(${dimensions})}">Switch to
+                    3D view</a>
+            </div>
         </div>
     </div>
-    <div class="col s12 m9 center">
+    <div class="col s12 m12 l9 center">
         <h4 th:text="#{building.plan}">Plan</h4>
         <div th:utext="${layout}">Layout</div>
     </div>
@@ -76,20 +83,10 @@
     const claimed = /*[[#{claimed}]]*/ "Claimed";
     const free = /*[[#{free}]]*/ "Free";
     const forbidden = /*[[#{forbidden}]]*/ "Forbidden";
-
     /*]]>*/
 
-    function resize() {
-        document.querySelectorAll('.resized').forEach(x => {
-            x.style.maxHeight = window.outerHeight;
-            x.style.maxWidth = window.outerWidth;
-        });
-    }
-
     var lastSelected = null;
-    document.body.onresize = resize;
     $(document).ready(function () {
-        resize();
         $("#sitting-action-forbid").hide().click(function () {
             let id = $(lastSelected).parent().attr('id');
             let selection = lastSelected;

@@ -5,10 +5,10 @@
 </head>
 
 <body>
-<div th:insert="fragments/main.html :: navigation"></div>
-<div class="container">
+<div th:insert="fragments/main.html :: navigation" th:remove="tag"></div>
+<div class="container" th:if="${!actingAdmin && adminMode}">
     <div class="row">
-        <div class="col s12 m12 l12" th:if="${!actingAdmin && adminMode}">
+        <div class="col s12 m12 l12">
             <h5 th:text="#{dashboard.greet(${username})}">Hello Admin!</h5>
             <h4 th:text="#{dashboard.workers.in.office}">Workers currently in the office</h4>
             <table class="responsive-table striped bordered">
@@ -73,6 +73,7 @@
         </div>
     </div>
 </div>
+<div class="row">
     <div class="col s12 m12 l12" th:if="${actingAdmin || !adminMode}">
         <h5 th:text="#{dashboard.greet(${username})}">Hello Worker!</h5>
 
@@ -168,6 +169,7 @@
             </div>
         </div>
     </div>
+</div>
 <script type="text/javascript" th:src="@{js/materialize.min.js}" src="../static/js/materialize.min.js"></script>
 <script th:inline="javascript" th:if="${actingAdmin || !adminMode}">
     /*<!<CDATA[*/
@@ -329,11 +331,11 @@
                     document.getElementById("counterContainer").style.display = "none";
                     document.getElementById("calendar").classList.remove("offset-l3");
                     document.getElementById(result.workstation.id + "rect").classList.remove("fill-black");
-                    document.getElementById(result.workstation.id + "rect").classList.add("fill-green");
+                    document.getElementById(result.workstation.id + "rect").classList.add("ws-occupiable");
                     document.querySelectorAll(".fill-green").forEach(x => {
                         if (x.id !== result.workstation.id + "rect") {
                             x.classList.add("fill-black");
-                            x.classList.remove("fill-green");
+                            x.classList.remove("ws-occupiable");
                         }
                     });
                 } else if (result.status === "WorkingFromHome") {
