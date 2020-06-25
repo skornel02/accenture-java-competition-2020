@@ -82,9 +82,14 @@ public class WorkstationTest {
         inRow3.setId("inRow3");
         inRow3.setY(0);
         inRow3.setX(2);
+        Workstation inRow4 = new Workstation();
+        inRow4.setId("inRow4");
+        inRow4.setY(0);
+        inRow4.setX(2.1);
         stations.add(inRow1);
         stations.add(inRow2);
         stations.add(inRow3);
+        stations.add(inRow4);
 
         Workstation inSecondRow1 = new Workstation();
         inSecondRow1.setId("inSecondRow1");
@@ -117,7 +122,8 @@ public class WorkstationTest {
         assertThat(occupiable).contains(twoFreeNeighbours2);
         assertThat(occupiable).doesNotContain(inRow1);
         assertThat(occupiable).doesNotContain(inRow2);
-        assertThat(occupiable).contains(inRow3);
+        assertThat(occupiable).doesNotContain(inRow3);
+        assertThat(occupiable).contains(inRow4);
         assertThat(occupiable).doesNotContain(inSecondRow1);
         assertThat(occupiable).doesNotContain(inSecondRow2);
         assertThat(occupiable).doesNotContain(inSecondRow3);
