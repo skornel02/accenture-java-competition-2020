@@ -6,24 +6,16 @@ import Backend from "../resource/Backend";
 import 'react-calendar/dist/Calendar.css';
 import WorkerCountDown from "./WorkerCountDown";
 import WorkerCalendar from "./WorkerCalendar";
+import WorkerDateSelector from "./WorkerDateSelector";
+import WorkerUIChooser from "./WorkerUIChooser";
+
 
 const WorkerArea: React.FunctionComponent = () => {
-    const info = useAuthInformation();
-    const worker = info.worker!;
-    const {data: remainingTime, revalidate: reValidate} = useSWR<RemainingTime>(
-        () => "/workers/" + worker.id + "/remaining-time",
-        () => Backend.getTimeRemaining(worker.id),
-        {suspense: true});
-
     return (
         <div style={{display: "flex", flexDirection: "column"}}>
-            {remainingTime !== undefined ? (
-                <>
-                    <WorkerCountDown worker={worker} remainingTime={remainingTime}/>
-                    <hr/>
-                    <WorkerCalendar worker={worker} remainingTime={remainingTime} reValidateRemainingTime={reValidate}/>
-                </>
-            ) : (<></>)}
+            <WorkerDateSelector>
+                <WorkerUIChooser/>
+            </WorkerDateSelector>
         </div>
     )
 };

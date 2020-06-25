@@ -4,7 +4,8 @@ import {
     AuthenticationInformation,
     AuthenticationType,
     BasicAuthentication,
-    BasicLoginInformation, GoogleAuthentication
+    BasicLoginInformation,
+    GoogleAuthentication
 } from "../resource/Resources";
 import StorageManager from "../resource/StorageManager";
 import Login from "./Login";
@@ -68,6 +69,27 @@ const SecuredArea: React.FunctionComponent = props => {
                 if (authInfo.permission !== "WORKER") {
                     toast(t("login.onlyWorkers"), {type: "error"});
                     handleLogout();
+                    // if (auth.type === AuthenticationType.BASIC) {
+                    //     const basicAuth = auth as BasicAuthentication;
+                    //     const f = document.createElement('form');
+                    //     f.action='http://accenture.localhost:8081/login';
+                    //     f.method='POST';
+                    //
+                    //     const username=document.createElement('input');
+                    //     username.type='hidden';
+                    //     username.name='username';
+                    //     username.value=basicAuth.username;
+                    //     f.appendChild(username);
+                    //
+                    //     const password=document.createElement('input');
+                    //     password.type='hidden';
+                    //     password.name='password';
+                    //     password.value=basicAuth.password;
+                    //     f.appendChild(password);
+                    //
+                    //     document.body.appendChild(f);
+                    //     f.submit();
+                    // } // Will be back 
                 }
             })
     }

@@ -13,7 +13,8 @@
 
 .TimeText {
     text-align: center;
-    color: var(--Rendarch-4);
+    color: #29abe2;
+    text-shadow: 1px 1px #12aea1;
     font-size: 2rem;
     margin-top: 0.2em;
     margin-bottom: 0.4em;
@@ -25,15 +26,22 @@
 }
 
 .ButtonWrapper {
+    margin-top: 5px;
     text-align: center;
 }
 
 .CreateButton {
     font-size: 1.5rem;
-    background-color: limegreen;
+    background-color: #29abe2;
+    border-radius: 5px;
 }
 
 .DeleteButton {
     font-size: 1.5rem;
-    background-color: red;
+    background-color: salmon;
+    border-radius: 5px;
+}
+
+.WorkerMapContainer {
+    width: 100vw;
 }

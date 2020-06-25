@@ -7,7 +7,6 @@ import moment from "moment";
 import {firstDayInPreviousMonth, firstDayInTwoMonths, isSameDate, previousDay} from "../utility/DateUtils";
 import workerStyle from "../resource/style/worker.module.css";
 import Calendar from "react-calendar";
-
 // @ts-ignore
 import {Online} from 'react-detect-offline'
 
@@ -85,7 +84,6 @@ const WorkerCalendar: React.FunctionComponent<{
         )
     } else {
         const ticketsToday = tickets?.filter(ticket => ticketFilter(ticket, selectedDate)) ?? [];
-        console.log(ticketsToday);
         if (!(isSameDate(new Date(), selectedDate) && props.remainingTime.status === "InOffice")) {
             items = (
                 <div>
