@@ -27,6 +27,7 @@
     "react-scripts": "3.4.1",
     "react-toastify": "^6.0.5",
     "swr": "^0.2.3",
+    "swr-sync-storage": "^1.0.1",
     "typescript": "^3.7.5"
   },
   "scripts": {

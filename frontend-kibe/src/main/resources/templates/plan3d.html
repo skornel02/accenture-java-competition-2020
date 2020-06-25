@@ -81,9 +81,9 @@
                         d="m 6.1471992,27.52876 49.5784978,0.133636 0.133633,95.281584 h 46.5049 l -0.13364,-95.147951 h 49.84577 l 0.13363,95.281591 45.56946,0.4009 -0.26727,76.43908 -45.16855,0 v 70.96006 l -51.04848,1.20272 0.13363,-72.02914 H 6.1471992 Z"
                         class="building"/>
 
-                <!--/*@thymesVar id="places" type="org.ajc2020.utility.communication.WorkStationResource[]"*/-->
+                <!--/*@thymesVar id="places" type="org.ajc2020.utility.communication.WorkstationResource[]"*/-->
                 <g th:each="place : ${places}" transform="scale(0.25, 0.25)">
-                    <!--/*@thymesVar id="place" type="org.ajc2020.utility.communication.WorkStationResource"*/-->
+                    <!--/*@thymesVar id="place" type="org.ajc2020.utility.communication.WorkstationResource"*/-->
                     <g
                             class="workstation"
                             th:id="${place.id}">
