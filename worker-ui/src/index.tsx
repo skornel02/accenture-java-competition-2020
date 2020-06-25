@@ -4,6 +4,8 @@ import './index.css';
 import * as serviceWorker from './serviceWorker';
 import App from "./App";
 import Loading from "./general/Loading";
+import {syncWithLocalStorage} from "swr-sync-storage";
+syncWithLocalStorage();
 
 ReactDOM.render(
   <React.StrictMode>

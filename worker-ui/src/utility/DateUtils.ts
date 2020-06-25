@@ -1,4 +1,4 @@
-import moment from "moment";
+import moment, {Moment} from "moment";
 
 /* in memoriam in stack redundantiam */
 
@@ -24,4 +24,16 @@ export function previousDay(yourDate: Date) {
 
 export function isSameDate(d1: Date, d2: Date): boolean {
     return moment(moment(d1).format("YYYY-MM-DD")).isSame(moment(d2).format("YYYY-MM-DD"))
+}
+
+export function isSameDateMoment(d1: Moment, d2: Moment) {
+    return moment(d1.format("YYYY-MM-DD")).isSame(d2.format("YYYY-MM-DD"))
+}
+
+export function isDateBeforeDate(d1: Moment, d2: Moment) {
+    return moment(d1.format("YYYY-MM-DD")).isBefore(d2.format("YYYY-MM-DD"))
+}
+
+export function isDateAfterDate(d1: Moment, d2: Moment) {
+    return moment(d1.format("YYYY-MM-DD")).isAfter(d2.format("YYYY-MM-DD"))
 }

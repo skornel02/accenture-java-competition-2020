@@ -63,7 +63,8 @@ export interface OfficeHoursResource {
 
 export interface RemainingTime {
     projectedEntryTime: string,
-    status: WorkerStatus
+    status: WorkerStatus,
+    locationSVG: string,
 }
 
 export interface TicketResource {

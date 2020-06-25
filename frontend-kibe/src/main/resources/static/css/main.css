@@ -35,7 +35,7 @@ table.striped > tbody > tr:nth-child(even) {
     width: 100% !important;
     position: initial !important;
     box-shadow: initial !important;
-    -webkit-box-shadown: initial !important;
+    -webkit-box-shadow: initial !important;
 }
 
 #errorMessage {
@@ -84,18 +84,25 @@ table.striped > tbody > tr:nth-child(even) {
     stroke-opacity: 1
 }
 
-.fill-red {
-    fill: #c80000;
+.ws-disabled {
+    fill: #5e5e5e;
 }
 
-.fill-green {
+.ws-occupiable {
     fill: #00c800;
 }
 
-.fill-yellow {
+.ws-will-be-occupied {
     fill: #c8c800;
 }
 
+.ws-infectious {
+    fill: #c85d00;
+}
+
+.ws-occupied {
+    fill: #c80000;
+}
 .fill-black {
     fill: #000000;
 }
