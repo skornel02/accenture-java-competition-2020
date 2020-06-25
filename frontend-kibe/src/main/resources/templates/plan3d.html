@@ -4,71 +4,94 @@
     <title>KiBe</title>
 </head>
 <body>
+<div th:insert="fragments/main.html :: navigation"></div>
 <div class="row">
-    <div class="col s12 m12 l12" th:insert="fragments/main.html :: navigation">
-    </div>
-</div>
-<div class="row">
-    <div class="col s12 m3">
-        <div class="card">
-            <h4 th:text="#{building.workstation}">Sitting</h4>
-            <div class="row">
-                <div class="col s12 m6" th:text="#{building.workstation.id}">
-                    Id:
-                </div>
-                <div class="col s12 m6" id="sitting-id">
-
-                </div>
+    <div class="col s10 m6 l3 offset-s1 offset-m3">
+        <div class="card hide-on-large-only">
+            <div class="card-content">
+                <span class="card-title" th:text="#{building.plan.legend}">Legend</span>
             </div>
-            <div class="row">
-                <div class="col s12 m6" th:text="#{building.workstation.reserved.by}">
-                    Reserved by:
-                </div>
-                <div class="col s12 m6" id="sitting-claimed" th:text="#{nobody}">
-                    &lt;Nobody&gt;
-                </div>
+            <div class="divider"></div>
+            <div class="card-content">
+                <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        id="svg10"
+                        viewBox="0 0 180 100">
+                    <g id="layer1">
+                        <rect y="5" x="5" height="20" width="40" class="restricted"/>
+                        <text y="20" x="50" th:text="#{restricted}">Restricted</text>
+                        <rect y="30" x="5" height="20" width="40" class="fill-red"/>
+                        <text y="45" x="50" th:text="#{forbidden}">Forbidden</text>
+                        <rect y="55" x="5" height="20" width="40" class="fill-green"/>
+                        <text y="70" x="50" th:text="#{free}">Free</text>
+                        <rect y="80" x="5" height="20" width="40" class="fill-yellow"/>
+                        <text y="95" x="50" th:text="#{claimed}">Claimed</text>
+                    </g>
+                </svg>
             </div>
-            <div class="row">
-                <div class="col s12 m6" th:text="#{building.workstation.state}">
-                    State:
-                </div>
-                <div class="col s12 m6" id="sitting-state">
-                    empty
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s12 m6" th:text="#{building.workstation.actions}">
-                    Actions:
-                </div>
-                <div class="col s12 m6">
-                    <a href="#" class="btn" id="sitting-action-forbid" th:text="#{building.workstation.actions.forbid}">Forbid</a>
-                    <a href="#" class="btn" id="sitting-action-permit" th:text="#{building.workstation.actions.permit}">Permit</a>
-                    <a href="#" class="btn" id="sitting-action-kick"
-                       th:text="#{building.workstation.actions.kick}">Kick</a>
-                </div>
+            <div class="card-content">
+                <a href="/plan?dim=2" class="btn" th:text="#{building.plan.2dview}">Switch to 2D view</a>
             </div>
         </div>
         <div class="card">
-            <h4 th:text="#{building.plan.legend}">Legend</h4>
-            <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    id="svg8"
-                    viewBox="0 0 180 100">
-                <g id="layer1">
-                    <rect y="5" x="5" height="20" width="40" class="restricted"/>
-                    <text y="20" x="50" th:text="#{restricted}">Restricted</text>
-                    <rect y="30" x="5" height="20" width="40" class="fill-red"/>
-                    <text y="45" x="50" th:text="#{forbidden}">Forbidden</text>
-                    <rect y="55" x="5" height="20" width="40" class="fill-green"/>
-                    <text y="70" x="50" th:text="#{free}">Free</text>
-                    <rect y="80" x="5" height="20" width="40" class="fill-yellow"/>
-                    <text y="95" x="50" th:text="#{claimed}">Claimed</text>
-                </g>
-            </svg>
-            <a href="/plan?dim=2" class="btn">Switch to 2D view</a>
+            <div class="card-content">
+                <span class="card-title" th:text="#{building.workstation}">Sitting</span>
+            </div>
+            <div class="divider"></div>
+            <div class="card-content">
+                <span th:text="#{building.workstation.id}">Id:</span>
+                &nbsp;
+                <span id="sitting-id"></span>
+            </div>
+            <div class="card-content">
+                <span th:text="#{building.workstation.reserved.by}">Reserved by:</span>
+                &nbsp;
+                <span id="sitting-claimed" th:text="#{nobody}"></span>
+            </div>
+            <div class="card-content">
+                <span th:text="#{building.workstation.state}">State:</span>
+                &nbsp;
+                <span id="sitting-state"></span>
+            </div>
+            <div class="card-content">
+                <span th:text="#{building.workstation.actions}">Actions:</span>
+                &nbsp;
+                <a href="#" class="btn" style="display: none" id="sitting-action-forbid"
+                   th:text="#{building.workstation.actions.forbid}">Forbid</a>
+                <a href="#" class="btn" style="display: none" id="sitting-action-permit"
+                   th:text="#{building.workstation.actions.permit}">Permit</a>
+                <a href="#" class="btn" style="display: none" id="sitting-action-kick"
+                   th:text="#{building.workstation.actions.kick}">Kick</a>
+            </div>
+        </div>
+        <div class="card hide-on-med-and-down">
+            <div class="card-content">
+                <span class="card-title" th:text="#{building.plan.legend}">Legend</span>
+            </div>
+            <div class="divider"></div>
+            <div class="card-content">
+                <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        id="svg10"
+                        viewBox="0 0 180 100">
+                    <g id="layer1">
+                        <rect y="5" x="5" height="20" width="40" class="restricted"/>
+                        <text y="20" x="50" th:text="#{restricted}">Restricted</text>
+                        <rect y="30" x="5" height="20" width="40" class="fill-red"/>
+                        <text y="45" x="50" th:text="#{forbidden}">Forbidden</text>
+                        <rect y="55" x="5" height="20" width="40" class="fill-green"/>
+                        <text y="70" x="50" th:text="#{free}">Free</text>
+                        <rect y="80" x="5" height="20" width="40" class="fill-yellow"/>
+                        <text y="95" x="50" th:text="#{claimed}">Claimed</text>
+                    </g>
+                </svg>
+            </div>
+            <div class="card-content">
+                <a href="/plan?dim=2" class="btn" th:text="#{building.plan.2dview}">Switch to 2D view</a>
+            </div>
         </div>
     </div>
-    <div class="col s12 m9 center">
+    <div class="col s12 m12 l9 center">
         <h4 th:text="#{building.plan}">Plan</h4>
         <svg
                 xmlns="http://www.w3.org/2000/svg"

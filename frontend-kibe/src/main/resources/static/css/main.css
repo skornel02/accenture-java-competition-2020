@@ -96,6 +96,10 @@ table.striped > tbody > tr:nth-child(even) {
     fill: #c8c800;
 }
 
+.fill-black {
+    fill: #000000;
+}
+
 .column {
     fill: none;
     fill-opacity: 1;

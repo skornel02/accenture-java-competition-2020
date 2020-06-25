@@ -4,142 +4,168 @@
     <title>KiBe</title>
 </head>
 <body>
-<div class="row">
-    <div class="col s12 m12 l12" th:insert="fragments/main.html :: navigation">
-    </div>
-</div>
-<div class="row">
-    <div class="col s12 m3">
-        <div class="card">
-            <h4 th:text="#{building.workstation}">Sitting</h4>
-            <div class="row">
-                <div class="col s12 m6" th:text="#{building.workstation.id}">
-                    Id:
+<div th:insert="fragments/main.html :: navigation"></div>
+    <div class="row">
+        <div class="col s10 m6 l3 offset-s1 offset-m3">
+            <div class="card hide-on-large-only">
+                <div class="card-content">
+                    <span class="card-title" th:text="#{building.plan.legend}">Legend</span>
                 </div>
-                <div class="col s12 m6" id="sitting-id">
-
+                <div class="divider"></div>
+                <div class="card-content">
+                    <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            id="svg10"
+                            viewBox="0 0 180 100">
+                        <g id="layer1">
+                            <rect y="5" x="5" height="20" width="40" class="restricted"/>
+                            <text y="20" x="50" th:text="#{restricted}">Restricted</text>
+                            <rect y="30" x="5" height="20" width="40" class="fill-red"/>
+                            <text y="45" x="50" th:text="#{forbidden}">Forbidden</text>
+                            <rect y="55" x="5" height="20" width="40" class="fill-green"/>
+                            <text y="70" x="50" th:text="#{free}">Free</text>
+                            <rect y="80" x="5" height="20" width="40" class="fill-yellow"/>
+                            <text y="95" x="50" th:text="#{claimed}">Claimed</text>
+                        </g>
+                    </svg>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col s12 m6" th:text="#{building.workstation.reserved.by}">
-                    Reserved by:
-                </div>
-                <div class="col s12 m6" id="sitting-claimed" th:text="#{nobody}">
-                    &lt;Nobody&gt;
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s12 m6" th:text="#{building.workstation.state}">
-                    State:
-                </div>
-                <div class="col s12 m6" id="sitting-state">
-                    empty
+                <div class="card-content">
+                    <a href="/plan?dim=3" class="btn" th:text="#{building.plan.3dview}">Switch to 3D view</a>
                 </div>
             </div>
-            <div class="row">
-                <div class="col s12 m6" th:text="#{building.workstation.actions}">
-                    Actions:
+            <div class="card">
+                <div class="card-content">
+                    <span class="card-title" th:text="#{building.workstation}">Sitting</span>
                 </div>
-                <div class="col s12 m6">
-                    <a href="#" class="btn" id="sitting-action-forbid" th:text="#{building.workstation.actions.forbid}">Forbid</a>
-                    <a href="#" class="btn" id="sitting-action-permit" th:text="#{building.workstation.actions.permit}">Permit</a>
-                    <a href="#" class="btn" id="sitting-action-kick"
+                <div class="divider"></div>
+                <div class="card-content">
+                    <span th:text="#{building.workstation.id}">Id:</span>
+                    &nbsp;
+                    <span id="sitting-id"></span>
+                </div>
+                <div class="card-content">
+                    <span th:text="#{building.workstation.reserved.by}">Reserved by:</span>
+                    &nbsp;
+                    <span id="sitting-claimed" th:text="#{nobody}"></span>
+                </div>
+                <div class="card-content">
+                    <span th:text="#{building.workstation.state}">State:</span>
+                    &nbsp;
+                    <span id="sitting-state"></span>
+                </div>
+                <div class="card-content">
+                    <span th:text="#{building.workstation.actions}">Actions:</span>
+                    &nbsp;
+                    <a href="#" class="btn" style="display: none" id="sitting-action-forbid"
+                       th:text="#{building.workstation.actions.forbid}">Forbid</a>
+                    <a href="#" class="btn" style="display: none" id="sitting-action-permit"
+                       th:text="#{building.workstation.actions.permit}">Permit</a>
+                    <a href="#" class="btn" style="display: none" id="sitting-action-kick"
                        th:text="#{building.workstation.actions.kick}">Kick</a>
                 </div>
             </div>
+            <div class="card hide-on-med-and-down">
+                <div class="card-content">
+                    <span class="card-title" th:text="#{building.plan.legend}">Legend</span>
+                </div>
+                <div class="divider"></div>
+                <div class="card-content">
+                    <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            id="svg9"
+                            viewBox="0 0 180 100">
+                        <g id="layer1">
+                            <rect y="5" x="5" height="20" width="40" class="restricted"/>
+                            <text y="20" x="50" th:text="#{restricted}">Restricted</text>
+                            <rect y="30" x="5" height="20" width="40" class="fill-red"/>
+                            <text y="45" x="50" th:text="#{forbidden}">Forbidden</text>
+                            <rect y="55" x="5" height="20" width="40" class="fill-green"/>
+                            <text y="70" x="50" th:text="#{free}">Free</text>
+                            <rect y="80" x="5" height="20" width="40" class="fill-yellow"/>
+                            <text y="95" x="50" th:text="#{claimed}">Claimed</text>
+                        </g>
+                    </svg>
+                </div>
+                <div class="card-content">
+                    <a href="/plan?dim=3" class="btn" th:text="#{building.plan.3dview}">Switch to 3D view</a>
+                </div>
+            </div>
         </div>
-        <div class="card">
-            <h4 th:text="#{building.plan.legend}">Legend</h4>
+        <div class="col s12 m12 l9 center">
+            <h4 th:text="#{building.plan}">Plan</h4>
             <svg
                     xmlns="http://www.w3.org/2000/svg"
                     id="svg8"
-                    viewBox="0 0 180 100">
+                    class="resized"
+                    viewBox="0 0 210 297">
                 <g id="layer1">
-                    <rect y="5" x="5" height="20" width="40" class="restricted"/>
-                    <text y="20" x="50" th:text="#{restricted}">Restricted</text>
-                    <rect y="30" x="5" height="20" width="40" class="fill-red"/>
-                    <text y="45" x="50" th:text="#{forbidden}">Forbidden</text>
-                    <rect y="55" x="5" height="20" width="40" class="fill-green"/>
-                    <text y="70" x="50" th:text="#{free}">Free</text>
-                    <rect y="80" x="5" height="20" width="40" class="fill-yellow"/>
-                    <text y="95" x="50" th:text="#{claimed}">Claimed</text>
+                    <path
+                            id="path2789"
+                            d="m 6.1471992,27.52876 49.5784978,0.133636 0.133633,95.281584 h 46.5049 l -0.13364,-95.147951 h 49.84577 l 0.13363,95.281591 45.56946,0.4009 -0.26727,76.43908 -45.16855,0 v 70.96006 l -51.04848,1.20272 0.13363,-72.02914 H 6.1471992 Z"
+                            style="fill:none;stroke:#000000;stroke-width:1.565;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"/>
+                    <ellipse cx="26.103981" cy="44.317707" rx="1" ry="1" id="path2793" class="column"/>
+                    <ellipse id="path2793-9" ry="1" rx="1" cy="73.185638" cx="26.03311" class="column"/>
+                    <ellipse id="path2793-6" ry="1" rx="1" cy="102.10082" cx="26.080357" class="column"/>
+                    <ellipse id="path2793-8" ry="1" rx="1" cy="130.87425" cx="26.127604" class="column"/>
+                    <ellipse id="path2793-4" ry="1" rx="1" cy="102.05357" cx="122.51153" class="column"/>
+                    <ellipse id="path2793-82" ry="1" rx="1" cy="123.7792" cx="122.44286" class="column"/>
+                    <ellipse id="path2793-5" ry="1" rx="1" cy="198.343" cx="122.51154" class="column"/>
+                    <ellipse id="path2793-81" ry="1" rx="1" cy="222.39175" cx="122.51154" class="column"/>
+
+                    <!--/*@thymesVar id="places" type="org.ajc2020.utility.communication.WorkStationResource[]"*/-->
+                    <g th:each="place : ${places}" transform="scale(0.25, 0.25)">
+                        <!--/*@thymesVar id="place" type="org.ajc2020.utility.communication.WorkStationResource"*/-->
+                        <g
+                                class="workstation"
+                                th:transform="${place.getTransform()}"
+                                th:id="${place.id}">
+                            <rect
+                                    width="20"
+                                    height="12"
+                                    class="workplace"
+                                    th:classappend="${place.getColor()}"
+                                    th:id="${place.id} + 'rect'"
+                                    x="-10"
+                                    y="5"/>
+                            <path
+                                    th:style="'fill:#000000;fill-opacity:0.345382;stroke:#000000;stroke-width:0.3;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1'"
+                                    th:id="${place.id} + 'chair'"
+                                    d="M0 2 L-2.5 -2 L2.5 -2 Z"/>
+                        </g>
+
+                    </g>
+                    <rect y="29.055113" x="35.041462" height="11.503038" width="19.347887" id="rect4488"
+                          class="restricted"/>
+                    <rect id="rect4490" width="18.281523" height="10.944996" x="7.4989252" y="70.543571"
+                          class="restricted"/>
+                    <rect id="rect4492" width="17.781469" height="14.401464" x="132.88309" y="29.04755"
+                          class="restricted"/>
+                    <rect y="124.0565" x="132.23834" height="17.984049" width="21.831776" id="rect4494"
+                          class="restricted"/>
+                    <rect id="rect4496" width="24.564068" height="51.085953" x="7.2851453" y="147.73283"
+                          class="restricted"/>
+                    <rect y="124.27596" x="31.555872" height="14.370269" width="15.629634" id="rect4498"
+                          class="restricted"/>
+                    <rect id="rect4500" width="60.639816" height="24.512148" x="31.9282" y="147.81181"
+                          class="restricted"/>
+                    <rect y="147.84087" x="100.46545" height="24.454029" width="91.197769" id="rect4502"
+                          class="restricted"/>
+                    <rect id="rect4504" width="11.672786" height="14.250654" x="139.19159" y="177.81427"
+                          class="restricted"/>
+                    <rect y="192.06493" x="130.05791" height="15.656054" width="20.806471" id="rect4506"
+                          class="restricted"/>
+                    <rect id="rect4508" width="11.833088" height="12.816936" x="69.216408" y="185.70984"
+                          class="restricted"/>
+                    <rect y="186.01071" x="31.858076" height="12.799209" width="17.485004" id="rect4510"
+                          class="restricted"/>
+                    <rect id="rect4512" width="18.84013" height="11.968594" x="103.67917" y="71.528969"
+                          class="restricted"/>
+                    <rect y="124.27596" x="47.185505" height="17.221645" width="69.833839" id="rect4514"
+                          class="restricted"/>
                 </g>
             </svg>
-            <a href="/plan?dim=3" class="btn">Switch to 3D view</a>
         </div>
     </div>
-    <div class="col s12 m9 center">
-        <h4 th:text="#{building.plan}">Plan</h4>
-        <svg
-                xmlns="http://www.w3.org/2000/svg"
-                id="svg8"
-                viewBox="0 0 210 297"
-                height="297mm"
-                width="210mm">
-            <g id="layer1">
-                <path
-                        id="path2789"
-                        d="m 6.1471992,27.52876 49.5784978,0.133636 0.133633,95.281584 h 46.5049 l -0.13364,-95.147951 h 49.84577 l 0.13363,95.281591 45.56946,0.4009 -0.26727,76.43908 -45.16855,0 v 70.96006 l -51.04848,1.20272 0.13363,-72.02914 H 6.1471992 Z"
-                        style="fill:none;stroke:#000000;stroke-width:1.565;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"/>
-                <ellipse cx="26.103981" cy="44.317707" rx="1" ry="1" id="path2793" class="column"/>
-                <ellipse id="path2793-9" ry="1" rx="1" cy="73.185638" cx="26.03311" class="column"/>
-                <ellipse id="path2793-6" ry="1" rx="1" cy="102.10082" cx="26.080357" class="column"/>
-                <ellipse id="path2793-8" ry="1" rx="1" cy="130.87425" cx="26.127604" class="column"/>
-                <ellipse id="path2793-4" ry="1" rx="1" cy="102.05357" cx="122.51153" class="column"/>
-                <ellipse id="path2793-82" ry="1" rx="1" cy="123.7792" cx="122.44286" class="column"/>
-                <ellipse id="path2793-5" ry="1" rx="1" cy="198.343" cx="122.51154" class="column"/>
-                <ellipse id="path2793-81" ry="1" rx="1" cy="222.39175" cx="122.51154" class="column"/>
-
-                <!--/*@thymesVar id="places" type="org.ajc2020.utility.communication.WorkStationResource[]"*/-->
-                <g th:each="place : ${places}" transform="scale(0.25, 0.25)">
-                    <!--/*@thymesVar id="place" type="org.ajc2020.utility.communication.WorkStationResource"*/-->
-                    <g
-                            class="workstation"
-                            th:transform="${place.getTransform()}"
-                            th:id="${place.id}">
-                        <rect
-                                width="20"
-                                height="12"
-                                class="workplace"
-                                th:classappend="${place.getColor()}"
-                                th:id="${place.id} + 'rect'"
-                                x="-10"
-                                y="5"/>
-                        <path
-                                th:style="'fill:#000000;fill-opacity:0.345382;stroke:#000000;stroke-width:0.3;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1'"
-                                th:id="${place.id} + 'chair'"
-                                d="M0 2 L-2.5 -2 L2.5 -2 Z"/>
-                    </g>
-
-                </g>
-                <rect y="29.055113" x="35.041462" height="11.503038" width="19.347887" id="rect4488"
-                      class="restricted"/>
-                <rect id="rect4490" width="18.281523" height="10.944996" x="7.4989252" y="70.543571"
-                      class="restricted"/>
-                <rect id="rect4492" width="17.781469" height="14.401464" x="132.88309" y="29.04755" class="restricted"/>
-                <rect y="124.0565" x="132.23834" height="17.984049" width="21.831776" id="rect4494" class="restricted"/>
-                <rect id="rect4496" width="24.564068" height="51.085953" x="7.2851453" y="147.73283"
-                      class="restricted"/>
-                <rect y="124.27596" x="31.555872" height="14.370269" width="15.629634" id="rect4498"
-                      class="restricted"/>
-                <rect id="rect4500" width="60.639816" height="24.512148" x="31.9282" y="147.81181" class="restricted"/>
-                <rect y="147.84087" x="100.46545" height="24.454029" width="91.197769" id="rect4502"
-                      class="restricted"/>
-                <rect id="rect4504" width="11.672786" height="14.250654" x="139.19159" y="177.81427"
-                      class="restricted"/>
-                <rect y="192.06493" x="130.05791" height="15.656054" width="20.806471" id="rect4506"
-                      class="restricted"/>
-                <rect id="rect4508" width="11.833088" height="12.816936" x="69.216408" y="185.70984"
-                      class="restricted"/>
-                <rect y="186.01071" x="31.858076" height="12.799209" width="17.485004" id="rect4510"
-                      class="restricted"/>
-                <rect id="rect4512" width="18.84013" height="11.968594" x="103.67917" y="71.528969" class="restricted"/>
-                <rect y="124.27596" x="47.185505" height="17.221645" width="69.833839" id="rect4514"
-                      class="restricted"/>
-            </g>
-        </svg>
-    </div>
-</div>
 <script th:inline="javascript">
     /*<!<CDATA[*/
     const notAvailable = /*[[#{not.available}]]*/ "Not available";
@@ -149,8 +175,17 @@
     const forbidden = /*[[#{forbidden}]]*/ "Forbidden";
     /*]]>*/
 
+    function resize(){
+        document.querySelectorAll('.resized').forEach(x => {
+            x.style.maxHeight = window.outerHeight;
+            x.style.maxWidth = window.outerWidth;
+        });
+    }
+
     var lastSelected = null;
+    document.body.onresize = resize;
     $(document).ready(function () {
+        resize();
         $("#sitting-action-forbid").hide().click(function () {
             let id = $(lastSelected).parent().attr('id');
             let selection = lastSelected;

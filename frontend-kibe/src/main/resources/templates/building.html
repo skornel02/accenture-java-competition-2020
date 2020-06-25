@@ -4,11 +4,10 @@
     <title>KiBe</title>
 </head>
 
-<body class="container">
-
+<body>
+<div th:insert="fragments/main.html :: navigation"></div>
+<div class="container">
 <div class="row">
-    <div class="col s12 m12 l12" th:insert="fragments/main.html :: navigation">
-    </div>
     <div class="col s12 m12 l12">
         <h5 th:text="#{building.administration}">Building administration</h5>
         <form action="/building/capacity" method="get">
@@ -17,7 +16,7 @@
                     <td><label for="building.capacity" th:text="#{building.total.capacity}"></label></td>
                     <td>
                         <input type="number" id="building.capacity" name="capacity"
-                               th:value="${building.getCapacity()}">
+                               th:value="${building.getCapacity()}" min="1">
                     </td>
                 </tr>
                 <tr>
@@ -29,14 +28,17 @@
                 </tr>
                 <tr>
                     <td colspan="2">
-                        <input type="submit" value="Set" th:value="#{value.set}">
+                        <button class="btn waves-effect waves-light" type="submit">
+                            <span th:text="#{value.set}" th:remove="tag">Set</span>
+                            <i class="material-icons left">build</i>
+                        </button>
                     </td>
                 </tr>
             </table>
         </form>
     </div>
 </div>
-
+</div>
 <script type="text/javascript" th:src="@{js/materialize.min.js}" src="../static/js/materialize.min.js"></script>
 
 </body>

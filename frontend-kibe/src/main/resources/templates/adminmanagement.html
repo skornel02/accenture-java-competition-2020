@@ -1,14 +1,13 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en" th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
 <head th:insert="fragments/main.html :: headerfiles" th:remove="tag">
     <title>KiBe</title>
 </head>
 
-<body class="container">
-
+<body>
+<div th:insert="fragments/main.html :: navigation"></div>
+<div class="container">
 <div class="row">
-    <div class="col s12 m12 l12" th:insert="fragments/main.html :: navigation">
-    </div>
     <div class="col s12 m12 l12">
         <h5 th:text="#{users.admins}">Admins</h5>
         <table class="responsive-table striped bordered">
@@ -43,9 +42,14 @@
             </tr>
             </tbody>
         </table>
+    </div>
+</div>
+<div class="row">
+    <div class="col s12 m12 l12">
         <button data-target="create-admin-modal" class="btn modal-trigger"
                 th:text="#{users.new.admin}">Create admin</button>
     </div>
+</div>
 </div>
 <div class="col s12 m3 modal" id="edit-admin-modal">
     <div class="card-panel modal-content">
