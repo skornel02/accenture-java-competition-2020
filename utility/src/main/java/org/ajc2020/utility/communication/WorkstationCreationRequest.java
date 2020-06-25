@@ -1,16 +1,18 @@
 package org.ajc2020.utility.communication;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.ajc2020.utility.resource.DeskOrientation;
-import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class WorkstationCreationRequest {
 
     @NotNull

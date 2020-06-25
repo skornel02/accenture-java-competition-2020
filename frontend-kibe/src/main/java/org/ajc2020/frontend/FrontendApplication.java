@@ -1,16 +1,16 @@
-package org.ajc2020.backend;
+package org.ajc2020.frontend;
 
-import org.ajc2020.backend.processor.WorkerPositionTransmitterProcessor;
+import org.ajc2020.frontend.processor.WorkerPositionReceiverProcessor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 
 @SpringBootApplication
-@EnableBinding(WorkerPositionTransmitterProcessor.class)
-public class Spring1Application {
+@EnableBinding(WorkerPositionReceiverProcessor.class)
+public class FrontendApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(Spring1Application.class, args);
+        SpringApplication.run(FrontendApplication.class, args);
     }
 
 }

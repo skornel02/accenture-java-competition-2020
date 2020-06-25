@@ -1,11 +1,5 @@
 import React from 'react';
-import {useAuthInformation} from "../authentication/SecuredArea";
-import {RemainingTime} from "../resource/Resources";
-import useSWR from "swr";
-import Backend from "../resource/Backend";
 import 'react-calendar/dist/Calendar.css';
-import WorkerCountDown from "./WorkerCountDown";
-import WorkerCalendar from "./WorkerCalendar";
 import WorkerDateSelector from "./WorkerDateSelector";
 import WorkerUIChooser from "./WorkerUIChooser";
 
