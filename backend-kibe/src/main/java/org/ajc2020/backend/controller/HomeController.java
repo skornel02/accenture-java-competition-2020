@@ -63,11 +63,11 @@ public class HomeController {
             return RfIdStatus.fullHouse();
         }
         if (worker.checkin(OffsetDateTime.now())) {
-            workstationService.occupyWorkstation(worker);
+            Workstation station = workstationService.occupyWorkstation(worker);
             workerService.save(worker);
             workerService.getUsersWaiting().forEach(waiter
                     -> workerPositionService.updateWorkerPosition(waiter, workerService.getRank(waiter)));
-            return RfIdStatus.ok();
+            return RfIdStatus.okWithMap(planRendererService.createWorker2DSVG(workstationService.findAll(), station));
         }
         return RfIdStatus.error();
     }

@@ -1,17 +1,16 @@
-import {Authentication} from "./Resources";
 import localForage from 'localforage';
 
 class StorageManager {
-    async getAuthentication(): Promise<Authentication | null> {
-        return await localForage.getItem<Authentication | null>("authentication");
+    async getDeviceToken(): Promise<string | null> {
+        return await localForage.getItem<string | null>("deviceToken");
     }
 
-    async saveAuthentication(auth: Authentication): Promise<void> {
-        await localForage.setItem("authentication", auth);
+    async saveDeviceToken(deviceToken: string): Promise<void> {
+        await localForage.setItem("deviceToken", deviceToken);
     }
 
-    async clearAuthentication() {
-        await localForage.removeItem("authentication");
+    async clearDeviceToken() {
+        await localForage.removeItem("deviceToken");
     }
 }
 

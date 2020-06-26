@@ -1,5 +1,5 @@
 import axios, {AxiosError, AxiosInstance, AxiosRequestConfig} from 'axios/index';
-import {AuthenticationInformation} from "./Resources";
+import {AuthenticationInformation, RfIdStatusResponse} from "./Resources";
 
 const settingsProduction = {
     url: "http://localhost:8080",
@@ -47,6 +47,36 @@ class Backend {
                     "Authorization": "DeviceToken " + deviceToken,
                 }
             });
+            return result.data;
+        } catch (err) {
+            if (err) {
+                const axiosError = err as AxiosError;
+                if (err.response) {
+                    console.error(axiosError.response);
+                }
+            }
+            throw err;
+        }
+    }
+
+    async checkIn(rfId: string): Promise<RfIdStatusResponse> {
+        try {
+            const result = await this.axios.post<RfIdStatusResponse>(`/rfids/${rfId}/checkin`);
+            return result.data;
+        } catch (err) {
+            if (err) {
+                const axiosError = err as AxiosError;
+                if (err.response) {
+                    console.error(axiosError.response);
+                }
+            }
+            throw err;
+        }
+    }
+
+    async checkOut(rfId: string): Promise<RfIdStatusResponse> {
+        try {
+            const result = await this.axios.post<RfIdStatusResponse>(`/rfids/${rfId}/checkout`);
             return result.data;
         } catch (err) {
             if (err) {

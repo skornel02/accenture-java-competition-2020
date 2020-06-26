@@ -4,30 +4,11 @@
       "logout": "Kijelentkezés"
     },
     "login": {
-      "password": "Jelszó",
-      "loginText": "Bejelentkezés",
+      "loginText": "Légyszives add meg az eszköz kódodat",
+      "deviceToken": "Eszköz kód",
       "button": "Tovább",
-      "emailMissing": "Email cím nincs kitöltve",
-      "passwordMissing": "Jelszó nincs kitöltve",
-      "onlyWorkers": "Ez a kliens csak alkalmazottak számára működik",
-      "invalidCredentials": "Nem megfelelő adatok",
-      "invalidToken": "Nincs fiók rendelve ehhez a címhez"
-    },
-    "worker": {
-      "currentlyInside": "Az épületben vagy",
-      "currentlyWaiting": "Éppen várósoron vagy",
-      "currentlyNotWaiting": "Éppen nem állsz sorban",
-      "estimatedTimeToEntry": "Előrevetített várakozási idő: ",
-      "entryMightChange": "regisztrálj most",
-      "instantly": "Bemehetsz",
-      "tickets": "Regisztráció",
-      "noTickets": "Nem regisztráltál erre a napra",
-      "yesTickets": "Regisztráltál erre a napra",
-      "officeHours": "Bent töltött idő",
-      "noOfficeHours": "Ezen a napon nem voltál bent",
-      "yesOfficeHours": "Ezen a napon bent voltál",
-      "cancel": "Regisztráció lemondása",
-      "create": "Regisztrálás"
+      "deviceTokenMissing": "Eszköz kód nincs kitöltve",
+      "invalidCredentials": "Nem megfelelő adatok"
     }
   }
 }
