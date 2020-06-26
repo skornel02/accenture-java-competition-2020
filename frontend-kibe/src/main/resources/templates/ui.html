@@ -110,9 +110,9 @@
                                 <ellipse id="path2793-5" ry="1" rx="1" cy="198.343" cx="122.51154" class="column"/>
                                 <ellipse id="path2793-81" ry="1" rx="1" cy="222.39175" cx="122.51154" class="column"/>
 
-                                <!--/*@thymesVar id="places" type="org.ajc2020.utility.communication.WorkStationResource[]"*/-->
+                                <!--/*@thymesVar id="places" type="org.ajc2020.utility.communication.WorkstationResource[]"*/-->
                                 <g th:each="place : ${places}" transform="scale(0.25, 0.25)">
-                                    <!--/*@thymesVar id="place" type="org.ajc2020.utility.communication.WorkStationResource"*/-->
+                                    <!--/*@thymesVar id="place" type="org.ajc2020.utility.communication.WorkstationResource"*/-->
                                     <g
                                             class="workstation"
                                             th:transform="${place.getTransform()}"
@@ -187,6 +187,7 @@
     const ticketEnter = /*[[#{ticket.enter}]]*/ "";
     const statusEnter = /*[[#{status.enter}]]*/ "Enter in {0}";
     const calendarChooseDate = /*[[#{calendar.choose.date}]]*/ "Please choose a date!";
+    const cannotEnter = /*[[#{status.cannot.enter}]]*/ "You can't enter right now";
     const calendarPastEntry = /*[[#{calendar.past.entry}]]*/ "You could have entered on {0}";
     const calendarFutureEntry = /*[[#{calendar.future.entry}]]*/ "You can enter on {0}";
     const uuid = /*[[${uuid}]]*/ "0";
@@ -290,7 +291,11 @@
                     document.getElementById("workStations").style.display = "none";
                     document.getElementById("counterContainer").style.display = "";
                     document.getElementById("calendar").classList.add("offset-l3");
-                    document.getElementById("counter").innerText = (result.projectedEntryTime === "00:00:00" ? ticketEnter : format(statusEnter, result.projectedEntryTime));
+                    if (result.permittedToEnter) {
+                        document.getElementById("counter").innerText = ticketEnter;
+                    } else {
+                        document.getElementById("counter").innerText = (result.projectedEntryTime === "00:00:00" ? cannotEnter : format(statusEnter, result.projectedEntryTime));;
+                    }
                     $("#counter").removeClass("waiting");
                 } else if (result.status === "InOffice") {
                     document.getElementById("workStations").style.display = "";
