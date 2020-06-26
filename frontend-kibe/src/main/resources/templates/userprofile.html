@@ -4,7 +4,7 @@
     <title>KiBe</title>
 </head>
 <body>
-<div th:insert="fragments/main.html :: navigation"></div>
+<div th:insert="fragments/main.html :: navigation" th:remove="tag"></div>
 <div class="container">
     <div class="col s12 m3" id="edit-user">
         <form action="/updateProfile" method="post" id="update.profile">

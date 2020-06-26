@@ -5,7 +5,7 @@
 </head>
 
 <body>
-<div th:insert="fragments/main.html :: navigation"></div>
+<div th:insert="fragments/main.html :: navigation" th:remove="tag"></div>
 <div class="container">
 <div class="row">
     <h5 th:text="#{users.users}">Workers</h5>
