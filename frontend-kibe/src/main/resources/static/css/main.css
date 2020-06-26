@@ -103,6 +103,10 @@ table.striped > tbody > tr:nth-child(even) {
 .ws-occupied {
     fill: #c80000;
 }
+.fill-black {
+    fill: #000000;
+}
+
 .column {
     fill: none;
     fill-opacity: 1;
@@ -124,3 +128,5 @@ table.striped > tbody > tr:nth-child(even) {
     stroke-dashoffset: 0;
     stroke-opacity: 1
 }
+
+input:-webkit-autofill { +label { @extend .active; } }

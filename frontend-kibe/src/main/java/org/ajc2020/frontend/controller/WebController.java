@@ -94,6 +94,9 @@ public class WebController {
                             .map(x -> x.format(DateTimeFormatter.ISO_DATE))
                             .toArray(String[]::new);
             model.addAttribute("reservations", reservations);
+            model.addAttribute("places",
+                    getRequest(userInfo, "workstations", WorkstationResource[].class)
+                            .getBody());
         } else {
             InsideResourcePlain[] workersIn = getRequest(userInfo, "office/inside", InsideResourcePlain[].class).getBody();
             model.addAttribute("workersIn", workersIn);
@@ -475,6 +478,10 @@ public class WebController {
         model.addAttribute("reservations", reservations);
 
         model.addAttribute("adminMode", userInfo.isAdmin() || userInfo.isSuperAdmin());
+
+        model.addAttribute("places",
+                getRequest(userInfo, "workstations", WorkstationResource[].class)
+                        .getBody());
 
         return "ui";
     }

@@ -120,7 +120,7 @@ public class SeleniumTestBase {
         webDriver.findElement(By.id("password")).sendKeys(password);
         webDriver.findElement(By.tagName("button")).click();
 
-        return webDriver.findElement(By.tagName("body")).getAttribute("class").equals("container");
+        return webDriver.findElements(By.id("nav-mobile")).size() == 1;
     }
 
     protected boolean loginWithSuperAdmin() {

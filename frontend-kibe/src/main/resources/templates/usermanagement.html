@@ -4,32 +4,30 @@
     <title>KiBe</title>
 </head>
 
-<body class="container">
-
+<body>
+<div th:insert="fragments/main.html :: navigation" th:remove="tag"></div>
 <div class="row">
-    <div class="col s12 m12 l12" th:insert="fragments/main.html :: navigation">
-    </div>
-    <div class="col s12 m12 l12">
+    <div class="col s12 m12 xl10 offset-xl1">
         <h5 th:text="#{users.users}">Workers</h5>
         <table class="responsive-table striped bordered">
             <thead>
             <tr>
-                <td th:text="#{users.uuid}">uuid</td>
-                <td th:text="#{users.name}">name</td>
-                <td th:text="#{users.email}">email</td>
-                <td th:text="#{users.rfid}">rfid</td>
-                <td th:text="#{users.password}">password</td>
-                <td class="center"><i class="material-icons" th:title="#{icons.check.in.out}">swap_horiz</i><br/><span
+                <th th:text="#{users.uuid}">uuid</th>
+                <th th:text="#{users.name}">name</th>
+                <th th:text="#{users.email}">email</th>
+                <th th:text="#{users.rfid}">rfid</th>
+                <th th:text="#{users.password}">password</th>
+                <th class="center"><i class="material-icons" th:title="#{icons.check.in.out}">swap_horiz</i><br/><span
                         th:text="#{icons.check.in.out}">Check
                     in / Check out</span>
-                </td>
-                <td class="center"><i class="material-icons"
+                </th>
+                <th class="center"><i class="material-icons"
                                       th:title="#{icons.reservations}">verified_user</i><br/><span
                         th:text="#{icons.reservations}">Reservations</span>
-                </td>
-                <td class="center"><i class="material-icons" th:title="#{icons.delete}">delete_forever</i><br/><span
+                </th>
+                <th class="center"><i class="material-icons" th:title="#{icons.delete}">delete_forever</i><br/><span
                         th:text="#{users.delete}">Delete</span>
-                </td>
+                </th>
             </tr>
             </thead>
             <tbody>
@@ -46,27 +44,34 @@
                 </td>
 
                 <td th:switch="${user.getStatus()}">
-                    <a th:case="${T(org.ajc2020.utility.resource.WorkerStatus).InOffice}" th:href="'/checkout/'+${user.getRfId()}">
+                    <a class="valign-wrapper" th:case="${T(org.ajc2020.utility.resource.WorkerStatus).InOffice}"
+                       th:href="'/checkout/'+${user.getRfId()}">
                         <i class="material-icons">swap_horiz</i>
                         <span th:text="#{icons.check.out}">Check out</span>
                     </a>
-                    <a th:case="*" th:href="'/checkin/'+${user.getRfId()}">
+                    <a class="valign-wrapper" th:case="*" th:href="'/checkin/'+${user.getRfId()}">
                         <i class="material-icons">code</i>
                         <span th:text="#{icons.check.in}">Check in</span>
                     </a>
                 </td>
 
-                <td><a th:href="'/userview?rid='+${user.getId()}"><i class="material-icons" th:title="#{icons.reservations}">verified_user</i>
+                <td><a class="valign-wrapper" th:href="'/userview?rid='+${user.getId()}"><i class="material-icons"
+                                                                     th:title="#{icons.reservations}">verified_user</i>
                     <span th:text="#{icons.reservations}">reservations</span></a>
                 </td>
-                <td><a th:href="${'/deleteUser/'+user.getId()}"><i class="material-icons" th:title="#{icons.delete}">delete_forever</i><span
+                <td><a class="valign-wrapper" th:href="${'/deleteUser/'+user.getId()}"><i class="material-icons" th:title="#{icons.delete}">delete_forever</i><span
                         th:text="#{users.delete}">Delete</span></a></td>
             </tr>
             </tbody>
         </table>
-        <button data-target="create-user-modal" class="btn modal-trigger" th:text="#{users.new.user}">Create
-            user
-        </button>
+    </div>
+</div>
+<div class="row">
+    <div class="col s12 m12 xl10 offset-xl1">
+        <a href="#create-user-modal" class="waves-effect waves-light btn modal-trigger">
+            <i class="material-icons left">person_add</i>
+            <span th:text="#{users.new.user}" th:remove="tag">Create user</span>
+        </a>
     </div>
 </div>
 <div class="col s12 m3 modal" id="edit-user-modal">
@@ -93,20 +98,20 @@
                 </tr>
                 <tr id="edit.user.password.row">
                     <td><label for="edit.user.password" th:text="#{editor.password}">Password:</label></td>
-                    <td><input id="edit.user.password" type="password" name="edit.user.password"></td>
+                    <td><input autocomplete="new-password" id="edit.user.password" type="password" name="edit.user.password"></td>
                 </tr>
                 <tr id="edit.user.password.confirm.row">
                     <td><label for="edit.user.password.confirm" th:text="#{editor.password.confirm}">Password:</label>
                     </td>
-                    <td><input id="edit.user.password.confirm" type="password" name="edit.user.password.confirm"></td>
+                    <td><input autocomplete="new-password" id="edit.user.password.confirm" type="password" name="edit.user.password.confirm"></td>
                 </tr>
 
                 <tr>
                     <td><input type="submit" th:value="#{editor.save}" value="Submit" class="btn-flat"></td>
                     <td>
-                        <button type="submit" class="modal-close waves-effect waves-green btn-flat"
-                                data-target="edit-user-modal" onclick="return false;" th:text="#{editor.cancel}">Cancel
-                        </button>
+                        <a type="submit" class="modal-close waves-effect waves-red btn-flat"
+                                onclick="return false;" th:text="#{editor.cancel}">Cancel
+                        </a>
                     </td>
                 </tr>
             </table>
@@ -132,12 +137,12 @@
                 </tr>
                 <tr>
                     <td><label for="create.user.password" th:text="#{editor.password}">Password:</label></td>
-                    <td><input id="create.user.password" type="password" name="create.user.password"></td>
+                    <td><input autocomplete="new-password" id="create.user.password" type="password" name="create.user.password"></td>
                 </tr>
                 <tr>
                     <td><label for="create.user.password.confirm" th:text="#{editor.password.confirm}">Password:</label>
                     </td>
-                    <td><input id="create.user.password.confirm" type="password" name="create.user.password.confirm">
+                    <td><input autocomplete="new-password" id="create.user.password.confirm" type="password" name="create.user.password.confirm">
                     </td>
                 </tr>
                 <tr>
@@ -147,17 +152,15 @@
                 <tr>
                     <td><input type="submit" value="Submit" th:value="#{editor.create}" class="btn-flat"></td>
                     <td>
-                        <button type="submit" class="modal-close waves-effect waves-green btn-flat"
-                                data-target="edit-user-modal" onclick="return false;" th:text="#{editor.cancel}">Cancel
-                        </button>
+                        <a type="submit" class="modal-close waves-effect waves-red btn-flat"
+                                onclick="return false;" th:text="#{editor.cancel}">Cancel
+                        </a>
                     </td>
                 </tr>
             </table>
         </form>
     </div>
 </div>
-
-<script type="text/javascript" th:src="@{js/materialize.min.js}" src="../static/js/materialize.min.js"></script>
 <script>
     $(document).ready(function () {
         $('.modal').modal();
