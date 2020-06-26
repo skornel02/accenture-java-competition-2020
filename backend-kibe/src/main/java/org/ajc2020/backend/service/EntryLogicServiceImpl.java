@@ -43,6 +43,7 @@ public class EntryLogicServiceImpl implements EntryLogicService {
         if (worker.isExceptional() || isWorkerAllowedInside(worker))
             return time;
 
+        int effectiveCapacity = officeService.getOfficeSetting().getEffectiveCapacity();
         int workerRank = getWorkerRank(worker);
 
         List<Double> timeRequired = new LinkedList<>();
@@ -51,20 +52,24 @@ public class EntryLogicServiceImpl implements EntryLogicService {
         List<Worker> workersWaiting = workerService.getUsersWaiting();
         workersWaiting.sort(Comparator.comparing(w -> w.getTicketForDay(w.today()).getCreationDate()));
 
-        for (int i = 0; i <= workerRank; i++) {
-            if (i < workersInOffice.size()) {
-                timeRequired.add(workersInOffice.get(i).getAverageTime());
+        int indexOfPersonThatWillFreeYourSpace = (workerRank) - effectiveCapacity + workersInOffice.size();
+
+        for (Worker value : workersInOffice) {
+            timeRequired.add(value.getAverageTime());
+        }
+
+        for (int i = 0; i < workerRank; i++) {
+            if (effectiveCapacity > timeRequired.size()) {
+                timeRequired.add(workersWaiting.get(i).getAverageTime());
             } else {
-                int k = i - workersInOffice.size();
-                if (k >= workersWaiting.size()){
-                    log.error("Logical error happened. No one is inside, no one is waiting, but you are still looking for time required");
-                    continue;
-                }
-                timeRequired.add(timeRequired.get(k) + workersWaiting.get(k).getAverageTime());
+                timeRequired.add(
+                        workersWaiting.get(i).getAverageTime()
+                                + timeRequired.get(i - effectiveCapacity + workersInOffice.size())
+                );
             }
         }
 
-        return time.plus(Math.round(timeRequired.get(workerRank)), ChronoUnit.MICROS);
+        return time.plus(Math.round(timeRequired.get(indexOfPersonThatWillFreeYourSpace)), ChronoUnit.MICROS);
     }
 
     public int getWorkerRank(@NotNull Worker worker) {

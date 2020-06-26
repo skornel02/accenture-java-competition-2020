@@ -14,6 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -93,10 +94,38 @@ public class EntryLogicTest {
                 expected = expected.plus(Math.round(waiterAverageTime), ChronoUnit.MICROS);
             }
 
+            System.out.println("Expected time with fold " + fold + " is " + expected.toString());
             assertEquals(expected, entryLogicService.getEstimatedTimeRemainingForWorker(withTicket));
             assertEquals(expected, entryLogicService.getEstimatedTimeRemainingForWorker(withoutTicket));
-            System.out.println("Expected time with fold " + fold + " is " + expected.toString());
         }
     }
+
+    @Test
+    public void regressionTestNoOneInsideButMoreWaitingThanCapacity() {
+        Mockito.when(workerService.getUsersWaiting()).thenReturn(new ArrayList<>());
+        Mockito.when(workerService.countUsersInOffice()).thenReturn(0);
+
+        List<Worker> waiting = new LinkedList<>();
+        for (int i = 0 ; i < settings.getCapacity() ; i++) {
+            Worker waitingWorker = new Worker();
+            waitingWorker.setAverageTime(waiterAverageTime);
+            waitingWorker.register(waitingWorker.today());
+            waiting.add(waitingWorker);
+        }
+
+        Worker withTicket = new Worker();
+        withTicket.register(withTicket.today());
+        withTicket.setAverageTime(waiterAverageTime);
+        waiting.add(withTicket);
+
+        Mockito.when(workerService.getUsersWaiting()).thenReturn(waiting);
+        Mockito.when(workerService.countUsersWaiting()).thenReturn(waiting.size() - 1);
+        Mockito.when(workerService.getRank(withTicket)).thenReturn(waiting.size());
+
+        assertFalse(entryLogicService.isWorkerAllowedInside(withTicket));
+        LocalTime expected = LocalTime.of(0,0).plus(Math.round(waiterAverageTime), ChronoUnit.MICROS);
+        assertEquals(expected, entryLogicService.getEstimatedTimeRemainingForWorker(withTicket));
+    }
+
 
 }
