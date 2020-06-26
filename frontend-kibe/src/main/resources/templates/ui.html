@@ -282,60 +282,16 @@
         };
     });
 
-    /*
-    var runCountdown = true;
-    var expectedTimeStamp = 0;
-
-    setInterval(function () {
-        var now = new Date();
-        if (!runCountdown)
-            return;
-        if (expectedTimeStamp === 0) {
-            document.getElementById("counter").innerHTML = "&nbsp;";
-            return;
-        }
-        let expected = new Date(expectedTimeStamp);
-        if (now.toDateString() === expected.toDateString()) {
-            if (now >= expected) {
-                document.getElementById("counter").innerText = ticketEnter;
-                $("#counter").removeClass("waiting");
-            } else {
-                let remaining = (Date.parse(expected) - Date.parse(now)) / 1000;
-                let hour = (remaining - (remaining % 3600)) / 3600;
-                remaining -= hour * 3600;
-                let min = (remaining - (remaining % 60)) / 60;
-                let sec = remaining % 60;
-                let enterTime = ("0" + hour).slice(-2) + ":" + ("0" + min).slice(-2) + ":" + ("0" + sec).slice(-2);
-                document.getElementById("counter").innerText = format(statusEnter, enterTime);
-                $("#counter").removeClass("waiting");
-            }
-        } else {
-            if (now > expected) {
-                document.getElementById("counter").innerText = format(calendarPastEntry, expected.toLocaleDateString("en-US"));
-                $("#counter").removeClass("waiting");
-            } else {
-                document.getElementById("counter").innerText = format(calendarFutureEntry, expected.toLocaleDateString("en-US"));
-                $("#counter").removeClass("waiting");
-            }
-        }
-    }, 1000);
-
-    function getDate(fromdate) {
-        let temp = fromdate.split(":");
-        return (parseInt(temp[0]) * 3600 + parseInt(temp[1]) * 60 + parseInt(temp[2])) * 1000;
-    }*/
-
     let requestTime = function () {
         $.ajax({
             url: "/timeToEnter?rid=" + uuid,
             success: function (result) {
-                /*runCountdown = (result.status === "OnList");
-                expectedTimeStamp = new Date().getTime() + getDate(result.projectedEntryTime);*/
                 if (result.status === "OnList") {
                     document.getElementById("workStations").style.display = "none";
                     document.getElementById("counterContainer").style.display = "";
                     document.getElementById("calendar").classList.add("offset-l3");
                     document.getElementById("counter").innerText = (result.projectedEntryTime === "00:00:00" ? ticketEnter : format(statusEnter, result.projectedEntryTime));
+                    $("#counter").removeClass("waiting");
                 } else if (result.status === "InOffice") {
                     document.getElementById("workStations").style.display = "";
                     document.getElementById("counterContainer").style.display = "none";
@@ -348,10 +304,12 @@
                             x.classList.remove("ws-occupiable");
                         }
                     });
+                    $("#counter").removeClass("waiting");
                 } else if (result.status === "WorkingFromHome") {
                     document.getElementById("workStations").style.display = "none";
                     document.getElementById("counterContainer").style.display = "none";
                     document.getElementById("calendar").classList.add("offset-l3");
+                    $("#counter").removeClass("waiting");
                 }
             }
         });
