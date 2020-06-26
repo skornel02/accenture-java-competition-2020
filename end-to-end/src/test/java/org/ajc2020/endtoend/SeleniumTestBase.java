@@ -8,6 +8,7 @@ import org.junit.Rule;
 import org.junit.rules.TestName;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -35,6 +36,8 @@ public class SeleniumTestBase {
 
     public WebDriver webDriver;
     protected WebDriverWait webDriverWait;
+
+    protected void onTeardown() {}
 
     public SeleniumTestBase() {
         properties = new Properties();
@@ -104,11 +107,21 @@ public class SeleniumTestBase {
     @After
     public void tearDown() {
         try {
+            onTeardown();
             logout();
         } finally {
             webDriver.quit();
         }
     }
+
+    protected WebElement getRowElement(String email, String role) {
+        return webDriver.findElement(By.xpath("//a[contains(text(), '" + email + "')]/../..//*[@data-role='" + role + "']"));
+    }
+
+    protected long countElements(String email, String role) {
+        return webDriver.findElements(By.xpath("//a[contains(text(), '" + email + "')]/../..//*[@data-role='" + role + "']")).size();
+    }
+
 
     protected void logout() {
         webDriver.get(baseUrl + "/logout");
@@ -121,6 +134,15 @@ public class SeleniumTestBase {
         webDriver.findElement(By.tagName("button")).click();
 
         return webDriver.findElement(By.tagName("body")).getAttribute("class").equals("container");
+    }
+
+    protected void setBuildingParameters(int max, int percentage) {
+        webDriver.get(baseUrl + "/building");
+        webDriver.findElement(By.id("building.capacity")).clear();
+        webDriver.findElement(By.id("building.capacity")).sendKeys(String.valueOf(max));
+        webDriver.findElement(By.id("building.percentage")).clear();
+        webDriver.findElement(By.id("building.percentage")).sendKeys(String.valueOf(percentage));
+        webDriver.findElement(By.cssSelector("form[action='/building/capacity'")).submit();
     }
 
     protected boolean loginWithSuperAdmin() {
