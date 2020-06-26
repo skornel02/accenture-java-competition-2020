@@ -73,7 +73,7 @@
         <input type="text" class="datepicker" id="sched_picker">
         <div class="row">
             <div class="col s12 center">
-                <h4 id="counter">&nbsp;</h4>
+                <h4 id="counter" class="waiting">&nbsp;</h4>
             </div>
         </div>
         <div>
@@ -202,6 +202,7 @@
         if (now.toDateString() === expected.toDateString()) {
             if (now >= expected) {
                 document.getElementById("counter").innerText = ticketEnter;
+                $("#counter").removeClass("waiting");
             } else {
                 let remaining = (Date.parse(expected) - Date.parse(now)) / 1000;
                 let hour = (remaining - (remaining % 3600)) / 3600;
@@ -210,12 +211,15 @@
                 let sec = remaining % 60;
                 let enterTime = ("0" + hour).slice(-2) + ":" + ("0" + min).slice(-2) + ":" + ("0" + sec).slice(-2);
                 document.getElementById("counter").innerText = format(statusEnter, enterTime);
+                $("#counter").removeClass("waiting");
             }
         } else {
             if (now > expected) {
                 document.getElementById("counter").innerText = format(calendarPastEntry, expected.toLocaleDateString("en-US"));
+                $("#counter").removeClass("waiting");
             } else {
                 document.getElementById("counter").innerText = format(calendarFutureEntry, expected.toLocaleDateString("en-US"));
+                $("#counter").removeClass("waiting");
             }
         }
     }, 1000);

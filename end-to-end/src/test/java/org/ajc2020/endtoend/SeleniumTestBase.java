@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -36,6 +37,7 @@ public class SeleniumTestBase {
 
     public WebDriver webDriver;
     protected WebDriverWait webDriverWait;
+    protected JavascriptExecutor javascriptExecutor;
 
     protected void onTeardown() {}
 
@@ -102,6 +104,7 @@ public class SeleniumTestBase {
             webDriverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("username")));
             log.info("{} - Login ready, resume tests", testName.getMethodName());
         }
+         javascriptExecutor = (JavascriptExecutor) webDriver;
     }
 
     @After

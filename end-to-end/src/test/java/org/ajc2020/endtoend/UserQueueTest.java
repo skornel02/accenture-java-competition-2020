@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.ajc2020.utility.communication.WorkerCreationRequest;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 
@@ -143,6 +144,53 @@ public class UserQueueTest extends SeleniumTestBase {
         assertUserCheckedOut(workerCreationRequests[10].getEmail());
         checkIn(workerCreationRequests[10].getEmail());
         assertUserCheckedIn(workerCreationRequests[10].getEmail());
+    }
+
+    private void navigateToUserPage(WorkerCreationRequest worker) {
+        webDriver.navigate().to(baseUrl + "/users");
+        getRowElement(worker.getEmail(), "reservations").click();
+    }
+
+    private void reserveForToday() {
+        webDriver.findElement(By.cssSelector(".is-today")).click();
+        webDriver.findElement(By.id("doneButton")).click();
+    }
+
+    private boolean isReservedForToday() {
+        return webDriver.findElement(By.cssSelector(".is-today")).getAttribute("class").contains("has-event");
+    }
+
+    private String getCounter(WorkerCreationRequest worker) {
+        navigateToUserPage(worker);
+        webDriverWait.until(ExpectedConditions.not(ExpectedConditions.attributeContains(By.id("counter"), "class", "waiting")));
+        return webDriver.findElement(By.id("counter")).getText();
+    }
+
+
+    @Test
+    public void testWaitQueueOnFullHouse() {
+        Assert.assertTrue(loginWithSuperAdmin());
+        addAllWorkers();
+
+        navigateToUserPage(workerCreationRequests[0]);
+
+        String ticketEnter = (String)javascriptExecutor.executeScript("return window.eval('ticketEnter')");
+
+        // Admit only 2 people
+        setBuildingParameters(200, 1);
+
+        for (WorkerCreationRequest worker : workerCreationRequests) {
+            navigateToUserPage(worker);
+            Assert.assertFalse(isReservedForToday());
+            reserveForToday();
+            Assert.assertTrue(isReservedForToday());
+        }
+
+        Assert.assertEquals(ticketEnter, getCounter(workerCreationRequests[0]));
+        Assert.assertEquals(ticketEnter, getCounter(workerCreationRequests[1]));
+        Assert.assertEquals(" ", getCounter(workerCreationRequests[2]));
+        Assert.assertEquals(" ", getCounter(workerCreationRequests[3]));
+
 
     }
 }
