@@ -79,7 +79,7 @@
         <input type="text" class="datepicker" id="sched_picker">
         <div class="row" id="counterContainer">
             <div class="col s12 center">
-                <h4 id="counter">&nbsp;</h4>
+                <h4 id="counter" class="waiting">&nbsp;</h4>
             </div>
         </div>
         <div class="row">
@@ -110,9 +110,9 @@
                                 <ellipse id="path2793-5" ry="1" rx="1" cy="198.343" cx="122.51154" class="column"/>
                                 <ellipse id="path2793-81" ry="1" rx="1" cy="222.39175" cx="122.51154" class="column"/>
 
-                                <!--/*@thymesVar id="places" type="org.ajc2020.utility.communication.WorkStationResource[]"*/-->
+                                <!--/*@thymesVar id="places" type="org.ajc2020.utility.communication.WorkstationResource[]"*/-->
                                 <g th:each="place : ${places}" transform="scale(0.25, 0.25)">
-                                    <!--/*@thymesVar id="place" type="org.ajc2020.utility.communication.WorkStationResource"*/-->
+                                    <!--/*@thymesVar id="place" type="org.ajc2020.utility.communication.WorkstationResource"*/-->
                                     <g
                                             class="workstation"
                                             th:transform="${place.getTransform()}"
@@ -187,6 +187,7 @@
     const ticketEnter = /*[[#{ticket.enter}]]*/ "";
     const statusEnter = /*[[#{status.enter}]]*/ "Enter in {0}";
     const calendarChooseDate = /*[[#{calendar.choose.date}]]*/ "Please choose a date!";
+    const cannotEnter = /*[[#{status.cannot.enter}]]*/ "You can't enter right now";
     const calendarPastEntry = /*[[#{calendar.past.entry}]]*/ "You could have entered on {0}";
     const calendarFutureEntry = /*[[#{calendar.future.entry}]]*/ "You can enter on {0}";
     const uuid = /*[[${uuid}]]*/ "0";
@@ -282,56 +283,20 @@
         };
     });
 
-    /*
-    var runCountdown = true;
-    var expectedTimeStamp = 0;
-
-    setInterval(function () {
-        var now = new Date();
-        if (!runCountdown)
-            return;
-        if (expectedTimeStamp === 0) {
-            document.getElementById("counter").innerHTML = "&nbsp;";
-            return;
-        }
-        let expected = new Date(expectedTimeStamp);
-        if (now.toDateString() === expected.toDateString()) {
-            if (now >= expected) {
-                document.getElementById("counter").innerText = ticketEnter;
-            } else {
-                let remaining = (Date.parse(expected) - Date.parse(now)) / 1000;
-                let hour = (remaining - (remaining % 3600)) / 3600;
-                remaining -= hour * 3600;
-                let min = (remaining - (remaining % 60)) / 60;
-                let sec = remaining % 60;
-                let enterTime = ("0" + hour).slice(-2) + ":" + ("0" + min).slice(-2) + ":" + ("0" + sec).slice(-2);
-                document.getElementById("counter").innerText = format(statusEnter, enterTime);
-            }
-        } else {
-            if (now > expected) {
-                document.getElementById("counter").innerText = format(calendarPastEntry, expected.toLocaleDateString("en-US"));
-            } else {
-                document.getElementById("counter").innerText = format(calendarFutureEntry, expected.toLocaleDateString("en-US"));
-            }
-        }
-    }, 1000);
-
-    function getDate(fromdate) {
-        let temp = fromdate.split(":");
-        return (parseInt(temp[0]) * 3600 + parseInt(temp[1]) * 60 + parseInt(temp[2])) * 1000;
-    }*/
-
     let requestTime = function () {
         $.ajax({
             url: "/timeToEnter?rid=" + uuid,
             success: function (result) {
-                /*runCountdown = (result.status === "OnList");
-                expectedTimeStamp = new Date().getTime() + getDate(result.projectedEntryTime);*/
                 if (result.status === "OnList") {
                     document.getElementById("workStations").style.display = "none";
                     document.getElementById("counterContainer").style.display = "";
                     document.getElementById("calendar").classList.add("offset-l3");
-                    document.getElementById("counter").innerText = (result.projectedEntryTime === "00:00:00" ? ticketEnter : format(statusEnter, result.projectedEntryTime));
+                    if (result.permittedToEnter) {
+                        document.getElementById("counter").innerText = ticketEnter;
+                    } else {
+                        document.getElementById("counter").innerText = (result.projectedEntryTime === "00:00:00" ? cannotEnter : format(statusEnter, result.projectedEntryTime));;
+                    }
+                    $("#counter").removeClass("waiting");
                 } else if (result.status === "InOffice") {
                     document.getElementById("workStations").style.display = "";
                     document.getElementById("counterContainer").style.display = "none";
@@ -344,10 +309,12 @@
                             x.classList.remove("ws-occupiable");
                         }
                     });
+                    $("#counter").removeClass("waiting");
                 } else if (result.status === "WorkingFromHome") {
                     document.getElementById("workStations").style.display = "none";
                     document.getElementById("counterContainer").style.display = "none";
                     document.getElementById("calendar").classList.add("offset-l3");
+                    $("#counter").removeClass("waiting");
                 }
             }
         });

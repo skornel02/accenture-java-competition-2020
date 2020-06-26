@@ -32,34 +32,34 @@
             </thead>
             <tbody>
             <tr th:each="user : ${users}">
-                <td th:text="${user.getId()}">uuid</td>
-                <td><a href="#" th:text="${user.getName()}"
+                <td th:text="${user.getId()}" data-role="uuid">uuid</td>
+                <td><a href="#" th:text="${user.getName()}" data-role="name"
                        th:onclick="editUserName([[${user.getId()}]], [[${user.getName()}]])">John Doe</a></td>
-                <td><a href="#" th:text="${user.getEmail()}"
+                <td><a href="#" th:text="${user.getEmail()}" data-role="email"
                        th:onclick="editUserEmail([[${user.getId()}]], [[${user.getEmail()}]])">john.doe@kibe</a></td>
-                <td><a href="#" th:text="${user.getRfId()}"
+                <td><a href="#" th:text="${user.getRfId()}" data-role="rfid"
                        th:onclick="editUserRfid([[${user.getId()}]], [[${user.getRfId()}]])">36324743743747</a></td>
-                <td><a href="#" th:text="#{users.change.password}"
+                <td><a href="#" th:text="#{users.change.password}" data-role="password"
                        th:onclick="editUserPassword([[${user.getId()}]])">Change password</a>
                 </td>
 
                 <td th:switch="${user.getStatus()}">
                     <a class="valign-wrapper" th:case="${T(org.ajc2020.utility.resource.WorkerStatus).InOffice}"
-                       th:href="'/checkout/'+${user.getRfId()}">
+                       th:href="'/checkout/'+${user.getRfId()}" data-role="checkout">
                         <i class="material-icons">swap_horiz</i>
                         <span th:text="#{icons.check.out}">Check out</span>
                     </a>
-                    <a class="valign-wrapper" th:case="*" th:href="'/checkin/'+${user.getRfId()}">
+                    <a class="valign-wrapper" th:case="*" th:href="'/checkin/'+${user.getRfId()}" data-role="checkin">
                         <i class="material-icons">code</i>
                         <span th:text="#{icons.check.in}">Check in</span>
                     </a>
                 </td>
 
-                <td><a class="valign-wrapper" th:href="'/userview?rid='+${user.getId()}"><i class="material-icons"
+                <td><a class="valign-wrapper" th:href="'/userview?rid='+${user.getId()}" data-role="reservations"><i class="material-icons"
                                                                      th:title="#{icons.reservations}">verified_user</i>
                     <span th:text="#{icons.reservations}">reservations</span></a>
                 </td>
-                <td><a class="valign-wrapper" th:href="${'/deleteUser/'+user.getId()}"><i class="material-icons" th:title="#{icons.delete}">delete_forever</i><span
+                <td><a class="valign-wrapper" th:href="${'/deleteUser/'+user.getId()}" data-role="delete"><i class="material-icons" th:title="#{icons.delete}">delete_forever</i><span
                         th:text="#{users.delete}">Delete</span></a></td>
             </tr>
             </tbody>

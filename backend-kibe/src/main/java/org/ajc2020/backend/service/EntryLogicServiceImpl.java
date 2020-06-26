@@ -1,5 +1,6 @@
 package org.ajc2020.backend.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.ajc2020.backend.model.Worker;
 import org.springframework.stereotype.Service;
 
@@ -11,14 +12,19 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Service
+@Slf4j
 public class EntryLogicServiceImpl implements EntryLogicService {
 
     private final WorkerService workerService;
     private final OfficeService officeService;
+    private final WorkstationService workstationService;
 
-    public EntryLogicServiceImpl(WorkerService workerService, OfficeService officeService) {
+    public EntryLogicServiceImpl(WorkerService workerService,
+                                 OfficeService officeService,
+                                 WorkstationService workstationService) {
         this.workerService = workerService;
         this.officeService = officeService;
+        this.workstationService = workstationService;
     }
 
     @Override
@@ -27,7 +33,7 @@ public class EntryLogicServiceImpl implements EntryLogicService {
         int freeCapacity = getFreeCapacityInBuilding();
 
         // 15 real capacity | 15 rank = 16th in line => full house
-        return freeCapacity > workerRank;
+        return freeCapacity > workerRank && workstationService.occupiableWorkstationExists();
     }
 
     @Override
@@ -37,6 +43,7 @@ public class EntryLogicServiceImpl implements EntryLogicService {
         if (worker.isExceptional() || isWorkerAllowedInside(worker))
             return time;
 
+        int effectiveCapacity = officeService.getOfficeSetting().getEffectiveCapacity();
         int workerRank = getWorkerRank(worker);
 
         List<Double> timeRequired = new LinkedList<>();
@@ -45,18 +52,24 @@ public class EntryLogicServiceImpl implements EntryLogicService {
         List<Worker> workersWaiting = workerService.getUsersWaiting();
         workersWaiting.sort(Comparator.comparing(w -> w.getTicketForDay(w.today()).getCreationDate()));
 
-        for (int i = 0; i <= workerRank; i++) {
-            if (i < workersInOffice.size()) {
-                timeRequired.add(workersInOffice.get(i).getAverageTime());
+        int indexOfPersonThatWillFreeYourSpace = (workerRank) - effectiveCapacity + workersInOffice.size();
+
+        for (Worker value : workersInOffice) {
+            timeRequired.add(value.getAverageTime());
+        }
+
+        for (int i = 0; i < workerRank; i++) {
+            if (effectiveCapacity > timeRequired.size()) {
+                timeRequired.add(workersWaiting.get(i).getAverageTime());
             } else {
-                if (i == 0 && workersInOffice.size() == 0)
-                    continue;
-                int k = i - workersInOffice.size();
-                timeRequired.add(timeRequired.get(k) + workersWaiting.get(k).getAverageTime());
+                timeRequired.add(
+                        workersWaiting.get(i).getAverageTime()
+                                + timeRequired.get(i - effectiveCapacity + workersInOffice.size())
+                );
             }
         }
 
-        return time.plus(Math.round(timeRequired.get(workerRank)), ChronoUnit.MICROS);
+        return time.plus(Math.round(timeRequired.get(indexOfPersonThatWillFreeYourSpace)), ChronoUnit.MICROS);
     }
 
     public int getWorkerRank(@NotNull Worker worker) {

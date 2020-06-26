@@ -22,6 +22,8 @@ public interface WorkstationService {
 
     void deleteById(String id);
 
+    boolean occupiableWorkstationExists();
+
     Workstation occupyWorkstation(Worker worker);
 
     void freeWorkstations(Worker worker);

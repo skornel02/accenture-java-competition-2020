@@ -65,6 +65,7 @@ export interface RemainingTime {
     projectedEntryTime: string,
     status: WorkerStatus,
     locationSVG: string,
+    permittedToEnter: boolean,
 }
 
 export interface TicketResource {

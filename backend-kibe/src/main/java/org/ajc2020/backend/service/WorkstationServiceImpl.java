@@ -72,6 +72,14 @@ public class WorkstationServiceImpl implements WorkstationService {
     }
 
     @Override
+    public boolean occupiableWorkstationExists() {
+        synchronized (lock) {
+            List<Workstation> usableWorkstations = findAllOccupiable();
+            return !usableWorkstations.isEmpty();
+        }
+    }
+
+    @Override
     public Workstation occupyWorkstation(Worker worker) {
         synchronized (lock) {
             List<Workstation> usableWorkstations = findAllOccupiable();

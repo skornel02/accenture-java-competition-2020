@@ -441,7 +441,11 @@ public class WebController {
             @ModelAttribute("login") UserInfo userInfo,
             @PathVariable String rfid
     ) {
-        postRequest(userInfo, "rfids/" + rfid + "/checkin", String.class);
+        try {
+            postRequest(userInfo, "rfids/" + rfid + "/checkin", String.class);
+        } catch (Exception ignored) {
+            // TODO: show error message
+        }
         return new RedirectView("/users");
     }
 

@@ -7,7 +7,9 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -35,6 +37,9 @@ public class SeleniumTestBase {
 
     public WebDriver webDriver;
     protected WebDriverWait webDriverWait;
+    protected JavascriptExecutor javascriptExecutor;
+
+    protected void onTeardown() {}
 
     public SeleniumTestBase() {
         properties = new Properties();
@@ -99,16 +104,27 @@ public class SeleniumTestBase {
             webDriverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("username")));
             log.info("{} - Login ready, resume tests", testName.getMethodName());
         }
+         javascriptExecutor = (JavascriptExecutor) webDriver;
     }
 
     @After
     public void tearDown() {
         try {
+            onTeardown();
             logout();
         } finally {
             webDriver.quit();
         }
     }
+
+    protected WebElement getRowElement(String email, String role) {
+        return webDriver.findElement(By.xpath("//a[contains(text(), '" + email + "')]/../..//*[@data-role='" + role + "']"));
+    }
+
+    protected long countElements(String email, String role) {
+        return webDriver.findElements(By.xpath("//a[contains(text(), '" + email + "')]/../..//*[@data-role='" + role + "']")).size();
+    }
+
 
     protected void logout() {
         webDriver.get(baseUrl + "/logout");
@@ -121,6 +137,15 @@ public class SeleniumTestBase {
         webDriver.findElement(By.tagName("button")).click();
 
         return webDriver.findElements(By.id("nav-mobile")).size() == 1;
+    }
+
+    protected void setBuildingParameters(int max, int percentage) {
+        webDriver.get(baseUrl + "/building");
+        webDriver.findElement(By.id("building.capacity")).clear();
+        webDriver.findElement(By.id("building.capacity")).sendKeys(String.valueOf(max));
+        webDriver.findElement(By.id("building.percentage")).clear();
+        webDriver.findElement(By.id("building.percentage")).sendKeys(String.valueOf(percentage));
+        webDriver.findElement(By.cssSelector("form[action='/building/capacity'")).submit();
     }
 
     protected boolean loginWithSuperAdmin() {

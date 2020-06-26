@@ -3,8 +3,6 @@ package org.ajc2020.endtoend;
 import org.ajc2020.utility.communication.AdminCreationRequest;
 import org.junit.*;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-
 
 public class AdminTests extends SeleniumTestBase {
 
@@ -35,10 +33,6 @@ public class AdminTests extends SeleniumTestBase {
             .name("Mike Test")
             .email("mike.test@kibe")
             .password("secret").build();
-
-    private WebElement getRowElement(String email, String role) {
-        return webDriver.findElement(By.xpath("//a[contains(text(), '" + email + "')]/../..//*[@data-role='" + role + "']"));
-    }
 
     private void changePassword(AdminCreationRequest newCredentials) {
         webDriver.navigate().to(baseUrl + "/admins");
