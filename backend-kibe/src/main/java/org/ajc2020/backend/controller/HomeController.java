@@ -160,6 +160,7 @@ public class HomeController {
                 RemainingTime.builder()
                         .projectedEntryTime(entryLogicService.getEstimatedTimeRemainingForWorker(worker))
                         .status(worker.getStatus())
+                        .permittedToEnter(entryLogicService.isWorkerAllowedInside(worker))
                         .workstation(worker.getStation() != null
                                 ? WorkstationController.addLinks(worker.getStation().toResource()).setOccupier(null)
                                 : null)

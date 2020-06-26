@@ -1,5 +1,6 @@
 package org.ajc2020.backend.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.ajc2020.backend.model.Worker;
 import org.springframework.stereotype.Service;
 
@@ -11,14 +12,19 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Service
+@Slf4j
 public class EntryLogicServiceImpl implements EntryLogicService {
 
     private final WorkerService workerService;
     private final OfficeService officeService;
+    private final WorkstationService workstationService;
 
-    public EntryLogicServiceImpl(WorkerService workerService, OfficeService officeService) {
+    public EntryLogicServiceImpl(WorkerService workerService,
+                                 OfficeService officeService,
+                                 WorkstationService workstationService) {
         this.workerService = workerService;
         this.officeService = officeService;
+        this.workstationService = workstationService;
     }
 
     @Override
@@ -27,7 +33,7 @@ public class EntryLogicServiceImpl implements EntryLogicService {
         int freeCapacity = getFreeCapacityInBuilding();
 
         // 15 real capacity | 15 rank = 16th in line => full house
-        return freeCapacity > workerRank;
+        return freeCapacity > workerRank && workstationService.occupiableWorkstationExists();
     }
 
     @Override
@@ -49,9 +55,11 @@ public class EntryLogicServiceImpl implements EntryLogicService {
             if (i < workersInOffice.size()) {
                 timeRequired.add(workersInOffice.get(i).getAverageTime());
             } else {
-                if (i == 0 && workersInOffice.size() == 0)
-                    continue;
                 int k = i - workersInOffice.size();
+                if (k >= workersWaiting.size()){
+                    log.error("Logical error happened. No one is inside, no one is waiting, but you are still looking for time required");
+                    continue;
+                }
                 timeRequired.add(timeRequired.get(k) + workersWaiting.get(k).getAverageTime());
             }
         }

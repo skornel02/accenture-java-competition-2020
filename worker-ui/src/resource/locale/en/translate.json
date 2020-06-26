@@ -19,7 +19,7 @@
       "currentlyNotWaiting": "You are not in line",
       "estimatedTimeToEntry": "Your estimated time to entry: ",
       "entryMightChange": "create ticket now",
-      "instantly": "Instantly",
+      "canEnter": "You can enter now",
       "tickets": "Tickets",
       "noTickets": "You have no tickets for this day",
       "yesTickets": "You have a ticket for this day",

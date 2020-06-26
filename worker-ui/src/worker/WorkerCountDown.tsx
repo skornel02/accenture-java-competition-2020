@@ -9,8 +9,8 @@ const WorkerCountDown: React.FunctionComponent<{
 }> = props => {
     const {t} = useTranslation();
 
-    const projectedTime = props.remainingTime.projectedEntryTime === "00:00:00" ?
-        t("worker.instantly")
+    const projectedTime = props.remainingTime.permittedToEnter
+        ? t("worker.canEnter")
         : props.remainingTime.projectedEntryTime;
 
     switch (props.remainingTime.status) {
