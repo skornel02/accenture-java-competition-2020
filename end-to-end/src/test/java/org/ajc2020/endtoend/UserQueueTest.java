@@ -152,11 +152,13 @@ public class UserQueueTest extends SeleniumTestBase {
     }
 
     private void reserveForToday() {
+        webDriverWait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".is-today")));
         webDriver.findElement(By.cssSelector(".is-today")).click();
         webDriver.findElement(By.id("doneButton")).click();
     }
 
     private boolean isReservedForToday() {
+        webDriverWait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".is-today")));
         return webDriver.findElement(By.cssSelector(".is-today")).getAttribute("class").contains("has-event");
     }
 
