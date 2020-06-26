@@ -6,20 +6,19 @@
 
 <body>
 <div th:insert="fragments/main.html :: navigation" th:remove="tag"></div>
-<div class="container">
 <div class="row">
-    <div class="col s12 m12 l12">
+    <div class="col s12 m12 xl10 offset-xl1">
         <h5 th:text="#{users.admins}">Admins</h5>
         <table class="responsive-table striped bordered">
             <thead>
             <tr>
-                <td th:text="#{users.uuid}">uuid</td>
-                <td th:text="#{users.name}">name</td>
-                <td th:text="#{users.email}">email</td>
-                <td th:text="#{users.password}">password</td>
-                <td class="center"><i class="material-icons" th:title="#{icons.delete}">delete_forever</i><br/><span
+                <th th:text="#{users.uuid}">uuid</th>
+                <th th:text="#{users.name}">name</th>
+                <th th:text="#{users.email}">email</th>
+                <th th:text="#{users.password}">password</th>
+                <th class="center"><i class="material-icons" th:title="#{icons.delete}">delete_forever</i><br/><span
                         th:text="#{users.delete}">delete</span>
-                </td>
+                </th>
 
             </tr>
             </thead>
@@ -35,7 +34,7 @@
                 <td><a href="#" th:text="#{users.change.password}"
                        th:onclick="editAdminPassword([[${admin.getUuid()}]])" data-role="password">Change password</a>
                 </td>
-                <td><a th:href="${'/deleteAdmin/'+admin.getUuid()}" data-role="delete">
+                <td><a class="valign-wrapper" th:href="${'/deleteAdmin/'+admin.getUuid()}" data-role="delete">
                     <i class="material-icons" th:title="#{icons.delete}">delete_forever</i><span
                         th:text="#{users.delete}">Delete</span></a></td>
 
@@ -45,11 +44,12 @@
     </div>
 </div>
 <div class="row">
-    <div class="col s12 m12 l12">
-        <button data-target="create-admin-modal" class="btn modal-trigger"
-                th:text="#{users.new.admin}">Create admin</button>
+    <div class="col s12 m12 xl10 offset-xl1">
+        <a href="#create-admin-modal" class="waves-effect waves-light btn modal-trigger">
+            <i class="material-icons left">person_add</i>
+            <span th:text="#{users.new.admin}" th:remove="tag">Create admin</span>
+        </a>
     </div>
-</div>
 </div>
 <div class="col s12 m3 modal" id="edit-admin-modal">
     <div class="card-panel modal-content">
@@ -70,19 +70,19 @@
                 </tr>
                 <tr id="edit.admin.password.row">
                     <td><label for="edit.admin.password" th:text="#{editor.password}">New password:</label></td>
-                    <td><input id="edit.admin.password" type="password" name="edit.admin.password"></td>
+                    <td><input autocomplete="new-password" id="edit.admin.password" type="password" name="edit.admin.password"></td>
                 </tr>
                 <tr id="edit.admin.password.confirm.row">
                     <td><label for="edit.admin.password.confirm" th:text="#{editor.password.confirm}">Confirm
                         password:</label></td>
-                    <td><input id="edit.admin.password.confirm" type="password" name="edit.admin.password.confirm"></td>
+                    <td><input autocomplete="new-password"  id="edit.admin.password.confirm" type="password" name="edit.admin.password.confirm"></td>
                 </tr>
                 <tr>
                     <td><input type="submit" value="Submit" th:value="#{editor.save}" class="btn-flat"></td>
                     <td>
-                        <button type="submit" class="modal-close waves-effect waves-green btn-flat"
-                                data-target="edit-admin-modal" onclick="return false;" th:text="#{editor.cancel}">Cancel
-                        </button>
+                        <a type="submit" class="modal-close waves-effect waves-red btn-flat"
+                           onclick="return false;" th:text="#{editor.cancel}">Cancel
+                        </a>
                     </td>
                 </tr>
             </table>
@@ -107,28 +107,26 @@
                 </tr>
                 <tr>
                     <td><label for="create.admin.password" th:text="#{editor.password}">New password:</label></td>
-                    <td><input id="create.admin.password" type="password" name="create.admin.password"></td>
+                    <td><input autocomplete="new-password" id="create.admin.password" type="password" name="create.admin.password"></td>
                 </tr>
                 <tr>
                     <td><label for="create.admin.password.confirm" th:text="#{editor.password.confirm}">Confirm
                         password:</label></td>
-                    <td><input id="create.admin.password.confirm" type="password" name="create.admin.password.confirm">
+                    <td><input autocomplete="new-password" id="create.admin.password.confirm" type="password" name="create.admin.password.confirm">
                     </td>
                 </tr>
                 <tr>
                     <td><input type="submit" value="Submit" th:value="#{editor.create}" class="btn-flat"></td>
                     <td>
-                        <button type="submit" class="modal-close waves-effect waves-green btn-flat"
-                                data-target="edit-admin-modal" onclick="return false;" th:text="#{editor.cancel}">Cancel
-                        </button>
+                        <a type="submit" class="modal-close waves-effect waves-red btn-flat"
+                           onclick="return false;" th:text="#{editor.cancel}">Cancel
+                        </a>
                     </td>
                 </tr>
             </table>
         </form>
     </div>
 </div>
-
-<script type="text/javascript" th:src="@{js/materialize.min.js}" src="../static/js/materialize.min.js"></script>
 <script>
     $(document).ready(function () {
         $('.modal').modal();

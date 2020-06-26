@@ -30,11 +30,11 @@
             <div class="card-content">
                 <span th:text="#{building.workstation.actions}">Actions:</span>
                 &nbsp;
-                <a href="#" class="btn" style="display: none" id="sitting-action-forbid"
+                <a href="#" class="btn waves-effect waves-light red" style="display: none" id="sitting-action-forbid"
                    th:text="#{building.workstation.actions.forbid}">Forbid</a>
-                <a href="#" class="btn" style="display: none" id="sitting-action-permit"
+                <a href="#" class="btn waves-effect waves-light green" style="display: none" id="sitting-action-permit"
                    th:text="#{building.workstation.actions.permit}">Permit</a>
-                <a href="#" class="btn" style="display: none" id="sitting-action-kick"
+                <a href="#" class="btn waves-effect waves-light orange" style="display: none" id="sitting-action-kick"
                    th:text="#{building.workstation.actions.kick}">Kick</a>
             </div>
         </div>
@@ -65,7 +65,7 @@
                 </svg>
             </div>
             <div class="card-content">
-                <a th:href="'/plan?dim='+${dimensions}" class="btn" th:text="#{building.plan.view(${dimensions})}">Switch to
+                <a th:href="'/plan?dim='+${dimensions}" class="btn waves-effect waves-light" th:text="#{building.plan.view(${dimensions})}">Switch to
                     3D view</a>
             </div>
         </div>
@@ -115,7 +115,7 @@
             $.ajax({
                 url: "/plan/update/" + id + "/kick", success: function (result) {
                     if (result.status === "OK") {
-                        $(selection).removeClass("ws-will-be-occupied").addClass("ws-occupiable").click();
+                        $(selection).removeClass("ws-occupied").addClass("ws-occupiable").click();
                     }
                 }
             })
@@ -140,7 +140,7 @@
                 $("#sitting-action-kick").hide();
                 $("#sitting-action-permit").hide();
             }
-            if ($(this).hasClass("ws-will-be-occupied")) {
+            if ($(this).hasClass("ws-occupied")) {
                 $("#sitting-state").text(claimed);
                 // TODO: get user name
                 $("#sitting-claimed").text("John Doe");

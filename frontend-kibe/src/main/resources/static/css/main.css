@@ -128,3 +128,5 @@ table.striped > tbody > tr:nth-child(even) {
     stroke-dashoffset: 0;
     stroke-opacity: 1
 }
+
+input:-webkit-autofill { +label { @extend .active; } }
