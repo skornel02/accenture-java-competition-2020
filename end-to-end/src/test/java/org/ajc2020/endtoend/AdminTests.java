@@ -10,7 +10,7 @@ public class AdminTests extends SeleniumTestBase {
 
     private void createAdmin(String name, String email, String password) {
         webDriver.navigate().to(baseUrl + "/admins");
-        webDriver.findElement(By.cssSelector("[data-target='create-admin-modal']")).click();
+        webDriver.findElement(By.cssSelector("[href='#create-admin-modal']")).click();
         webDriver.findElement(By.id("create.admin.name")).sendKeys(name);
         webDriver.findElement(By.id("create.admin.email")).sendKeys(email);
         webDriver.findElement(By.id("create.admin.password")).sendKeys(password);
