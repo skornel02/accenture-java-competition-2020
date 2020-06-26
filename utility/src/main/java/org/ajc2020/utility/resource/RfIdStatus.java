@@ -13,6 +13,8 @@ public class RfIdStatus {
     private static RfIdStatus errorStatus = new RfIdStatus(Status.ERROR);
     private static RfIdStatus unknownRfidStatus = new RfIdStatus(Status.UNKNOWN_RF_ID);
     private static RfIdStatus fullHouseStatus = new RfIdStatus(Status.FULL_HOUSE);
+    private static RfIdStatus notInside = new RfIdStatus(Status.NOT_INSIDE);
+    private static RfIdStatus notOutside = new RfIdStatus(Status.NOT_OUTSIDE);
 
     public static RfIdStatus ok() {
         return okStatus;
@@ -34,6 +36,14 @@ public class RfIdStatus {
         return fullHouseStatus;
     }
 
+    public static RfIdStatus notInside() {
+        return notInside;
+    }
+
+    public static RfIdStatus notOutside() {
+        return notOutside;
+    }
+
     public RfIdStatus(Status status) {
         this.status = status;
     }
@@ -42,6 +52,8 @@ public class RfIdStatus {
         UNKNOWN_RF_ID,
         OK,
         ERROR,
-        FULL_HOUSE
+        FULL_HOUSE,
+        NOT_INSIDE,
+        NOT_OUTSIDE,
     }
 }

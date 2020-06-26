@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class DeviceConfiguration {
 
-    String authorizationType = "DeviceToken";
-    String token = "SecretDeviceToken";
+    private String authorizationType = "DeviceToken";
+    private String token = "SecretDeviceToken";
 
 }

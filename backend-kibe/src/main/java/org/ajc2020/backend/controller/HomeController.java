@@ -13,6 +13,7 @@ import org.ajc2020.utility.exceptions.UserNotFoundException;
 import org.ajc2020.utility.resource.PermissionLevel;
 import org.ajc2020.utility.resource.RegistrationStatus;
 import org.ajc2020.utility.resource.RfIdStatus;
+import org.ajc2020.utility.resource.WorkerStatus;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -57,6 +58,8 @@ public class HomeController {
         if (!workerOptional.isPresent()) return RfIdStatus.unknownRfid();
         Worker worker = workerOptional.get();
 
+        if (worker.getStatus() == WorkerStatus.InOffice)
+            return RfIdStatus.notOutside();
         if (worker.isExceptional())
             return RfIdStatus.ok();
         if (!entryLogicService.isWorkerAllowedInside(worker)) {
@@ -83,6 +86,8 @@ public class HomeController {
         if (!workerOptional.isPresent()) return RfIdStatus.unknownRfid();
         Worker worker = workerOptional.get();
 
+        if (worker.getStatus() != WorkerStatus.InOffice)
+            return RfIdStatus.notInside();
         if (worker.isExceptional())
             return RfIdStatus.ok();
         if (worker.checkout(OffsetDateTime.now())) {

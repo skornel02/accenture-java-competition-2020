@@ -9,6 +9,17 @@
       "button": "Submit",
       "deviceTokenMissing": "Your device token address is missing",
       "invalidCredentials": "Invalid credentials"
+    },
+    "rfid": {
+      "rfid": "Card identifier",
+      "enter": "Enter",
+      "leave": "Leave",
+      "fullHouse": "Full house, you may not enter!",
+      "rfidNotFound": "RFID not found!",
+      "youCanEnter": "You may enter!",
+      "youCanLeave": "You may leave!",
+      "alreadyInside": "You are already inside!",
+      "alreadyOutside": "You are already outside!"
     }
   }
 }

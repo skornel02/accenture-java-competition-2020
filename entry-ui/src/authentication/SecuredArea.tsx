@@ -14,7 +14,7 @@ const SecuredArea: React.FunctionComponent = props => {
         StorageManager.getDeviceToken()
             .then(token => {
                 if (token !== null) {
-                    setDeviceToken(token);
+                    handleLogin(token);
                 }
             });
     }, []);

@@ -6,7 +6,7 @@
     align-content: center;
 }
 
-.SignInForm {
+.InputForm {
     min-width: 350px;
     max-width: 80vh;
     box-sizing: border-box;
