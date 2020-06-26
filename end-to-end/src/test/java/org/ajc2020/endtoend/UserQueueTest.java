@@ -52,7 +52,7 @@ public class UserQueueTest extends SeleniumTestBase {
 
     private void createWorker(String name, String email, String password, String rfId) {
         webDriver.findElement(By.id("menu-users")).click();
-        webDriver.findElement(By.cssSelector("[data-target='create-user-modal']")).click();
+        webDriver.findElement(By.cssSelector("[href='#create-user-modal']")).click();
         webDriver.findElement(By.id("create.user.name")).sendKeys(name);
         webDriver.findElement(By.id("create.user.email")).sendKeys(email);
         webDriver.findElement(By.id("create.user.password")).sendKeys(password);
@@ -152,11 +152,13 @@ public class UserQueueTest extends SeleniumTestBase {
     }
 
     private void reserveForToday() {
+        webDriverWait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".is-today")));
         webDriver.findElement(By.cssSelector(".is-today")).click();
         webDriver.findElement(By.id("doneButton")).click();
     }
 
     private boolean isReservedForToday() {
+        webDriverWait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".is-today")));
         return webDriver.findElement(By.cssSelector(".is-today")).getAttribute("class").contains("has-event");
     }
 
@@ -188,8 +190,54 @@ public class UserQueueTest extends SeleniumTestBase {
 
         Assert.assertEquals(ticketEnter, getCounter(workerCreationRequests[0]));
         Assert.assertEquals(ticketEnter, getCounter(workerCreationRequests[1]));
-        Assert.assertEquals(" ", getCounter(workerCreationRequests[2]));
-        Assert.assertEquals(" ", getCounter(workerCreationRequests[3]));
+        Assert.assertEquals("", getCounter(workerCreationRequests[2]));
+        Assert.assertEquals("", getCounter(workerCreationRequests[3]));
+    }
+
+    @Test
+    public void testWaitQueueOnFullHouseWithAdmission() {
+        Assert.assertTrue(loginWithSuperAdmin());
+        addAllWorkers();
+
+        navigateToUserPage(workerCreationRequests[0]);
+
+        String ticketEnter = (String)javascriptExecutor.executeScript("return window.eval('ticketEnter')");
+
+        // Admit only 5 people
+        setBuildingParameters(200, 5);
+
+        navigateToUserPage(workerCreationRequests[0]);
+        reserveForToday();
+        checkIn(workerCreationRequests[0].getEmail());
+
+        for (int i = 1; i < 8; i++) {
+            navigateToUserPage(workerCreationRequests[i]);
+            Assert.assertFalse(isReservedForToday());
+            reserveForToday();
+            Assert.assertTrue(isReservedForToday());
+        }
+
+        Assert.assertEquals(ticketEnter, getCounter(workerCreationRequests[1]));
+        Assert.assertEquals(ticketEnter, getCounter(workerCreationRequests[2]));
+        Assert.assertEquals(ticketEnter, getCounter(workerCreationRequests[3]));
+        Assert.assertEquals(ticketEnter, getCounter(workerCreationRequests[4]));
+        Assert.assertEquals(ticketEnter, getCounter(workerCreationRequests[5]));
+        Assert.assertEquals(ticketEnter, getCounter(workerCreationRequests[6]));
+        Assert.assertEquals(ticketEnter, getCounter(workerCreationRequests[7]));
+
+        checkIn(workerCreationRequests[1].getEmail());
+        checkIn(workerCreationRequests[3].getEmail());
+        checkIn(workerCreationRequests[4].getEmail());
+        checkIn(workerCreationRequests[5].getEmail());
+
+        Assert.assertEquals("", getCounter(workerCreationRequests[0]));
+        Assert.assertEquals("", getCounter(workerCreationRequests[1]));
+        Assert.assertEquals(ticketEnter, getCounter(workerCreationRequests[2]));
+        Assert.assertEquals("", getCounter(workerCreationRequests[3]));
+        Assert.assertEquals("", getCounter(workerCreationRequests[4]));
+        Assert.assertEquals("", getCounter(workerCreationRequests[5]));
+        Assert.assertEquals(ticketEnter, getCounter(workerCreationRequests[6]));
+        Assert.assertEquals(ticketEnter, getCounter(workerCreationRequests[7]));
 
 
     }
