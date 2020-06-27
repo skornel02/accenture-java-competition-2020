@@ -90,77 +90,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col s12">
-                        <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                id="svg8"
-                                class="resized"
-                                viewBox="0 0 210 297">
-                            <g id="layer1">
-                                <path
-                                        id="path2789"
-                                        d="m 6.1471992,27.52876 49.5784978,0.133636 0.133633,95.281584 h 46.5049 l -0.13364,-95.147951 h 49.84577 l 0.13363,95.281591 45.56946,0.4009 -0.26727,76.43908 -45.16855,0 v 70.96006 l -51.04848,1.20272 0.13363,-72.02914 H 6.1471992 Z"
-                                        style="fill:none;stroke:#000000;stroke-width:1.565;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"/>
-                                <ellipse cx="26.103981" cy="44.317707" rx="1" ry="1" id="path2793" class="column"/>
-                                <ellipse id="path2793-9" ry="1" rx="1" cy="73.185638" cx="26.03311" class="column"/>
-                                <ellipse id="path2793-6" ry="1" rx="1" cy="102.10082" cx="26.080357" class="column"/>
-                                <ellipse id="path2793-8" ry="1" rx="1" cy="130.87425" cx="26.127604" class="column"/>
-                                <ellipse id="path2793-4" ry="1" rx="1" cy="102.05357" cx="122.51153" class="column"/>
-                                <ellipse id="path2793-82" ry="1" rx="1" cy="123.7792" cx="122.44286" class="column"/>
-                                <ellipse id="path2793-5" ry="1" rx="1" cy="198.343" cx="122.51154" class="column"/>
-                                <ellipse id="path2793-81" ry="1" rx="1" cy="222.39175" cx="122.51154" class="column"/>
-
-                                <!--/*@thymesVar id="places" type="org.ajc2020.utility.communication.WorkstationResource[]"*/-->
-                                <g th:each="place : ${places}" transform="scale(0.25, 0.25)">
-                                    <!--/*@thymesVar id="place" type="org.ajc2020.utility.communication.WorkstationResource"*/-->
-                                    <g
-                                            class="workstation"
-                                            th:transform="${place.getTransform()}"
-                                            th:id="${place.id}">
-                                        <rect
-                                                width="20"
-                                                height="12"
-                                                class="workplace fill-black"
-                                                th:id="${place.id} + 'rect'"
-                                                x="-10"
-                                                y="5"/>
-                                        <path
-                                                th:style="'fill:#000000;fill-opacity:0.345382;stroke:#000000;stroke-width:0.3;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1'"
-                                                th:id="${place.id} + 'chair'"
-                                                d="M0 2 L-2.5 -2 L2.5 -2 Z"/>
-                                    </g>
-
-                                </g>
-                                <rect y="29.055113" x="35.041462" height="11.503038" width="19.347887" id="rect4488"
-                                      class="restricted"/>
-                                <rect id="rect4490" width="18.281523" height="10.944996" x="7.4989252" y="70.543571"
-                                      class="restricted"/>
-                                <rect id="rect4492" width="17.781469" height="14.401464" x="132.88309" y="29.04755"
-                                      class="restricted"/>
-                                <rect y="124.0565" x="132.23834" height="17.984049" width="21.831776" id="rect4494"
-                                      class="restricted"/>
-                                <rect id="rect4496" width="24.564068" height="51.085953" x="7.2851453" y="147.73283"
-                                      class="restricted"/>
-                                <rect y="124.27596" x="31.555872" height="14.370269" width="15.629634" id="rect4498"
-                                      class="restricted"/>
-                                <rect id="rect4500" width="60.639816" height="24.512148" x="31.9282" y="147.81181"
-                                      class="restricted"/>
-                                <rect y="147.84087" x="100.46545" height="24.454029" width="91.197769" id="rect4502"
-                                      class="restricted"/>
-                                <rect id="rect4504" width="11.672786" height="14.250654" x="139.19159" y="177.81427"
-                                      class="restricted"/>
-                                <rect y="192.06493" x="130.05791" height="15.656054" width="20.806471" id="rect4506"
-                                      class="restricted"/>
-                                <rect id="rect4508" width="11.833088" height="12.816936" x="69.216408" y="185.70984"
-                                      class="restricted"/>
-                                <rect y="186.01071" x="31.858076" height="12.799209" width="17.485004" id="rect4510"
-                                      class="restricted"/>
-                                <rect id="rect4512" width="18.84013" height="11.968594" x="103.67917" y="71.528969"
-                                      class="restricted"/>
-                                <rect y="124.27596" x="47.185505" height="17.221645" width="69.833839" id="rect4514"
-                                      class="restricted"/>
-                            </g>
-                        </svg>
+                    <div class="col s12" id="login-place">
                     </div>
                 </div>
             </div>
@@ -191,6 +121,7 @@
     const calendarPastEntry = /*[[#{calendar.past.entry}]]*/ "You could have entered on {0}";
     const calendarFutureEntry = /*[[#{calendar.future.entry}]]*/ "You can enter on {0}";
     const uuid = /*[[${uuid}]]*/ "0";
+    const currentIds = /*[[${currentIds}]]*/ [];
 
     /*]]>*/
 
@@ -267,8 +198,8 @@
         instance.modal.$overlay.remove();
         instance.doneBtn.setAttribute("id", "doneButton");
         instance.cancelBtn.setAttribute("id", "resetButton");
-        instance.cancelBtn.classList.add("yellow-text");
-        instance.cancelBtn.classList.add("text-darken-3");
+        instance.cancelBtn.classList.add("blue-text");
+        instance.cancelBtn.classList.add("text-darken-1");
         instance.cancelBtn.outerHTML = instance.cancelBtn.outerHTML;
         instance.doneBtn.outerHTML = instance.doneBtn.outerHTML;
         document.querySelector("#resetButton").onclick = function () {
@@ -304,6 +235,7 @@
                 } else if (result.status === "InOffice") {
                     document.getElementById("workStations").style.display = "";
                     document.getElementById("counterContainer").style.display = "none";
+                    document.getElementById("login-place").innerHTML = result.locationSVG;
                     document.getElementById("calendar").classList.remove("offset-l3");
                     document.getElementById(result.workstation.id + "rect").classList.remove("fill-black");
                     document.getElementById(result.workstation.id + "rect").classList.add("ws-occupiable");
