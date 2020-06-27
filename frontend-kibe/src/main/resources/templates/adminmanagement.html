@@ -34,9 +34,9 @@
                 <td><a href="#" th:text="#{users.change.password}"
                        th:onclick="editAdminPassword([[${admin.getUuid()}]])" data-role="password">Change password</a>
                 </td>
-                <td><a class="valign-wrapper" th:href="${'/deleteAdmin/'+admin.getUuid()}" data-role="delete">
-                    <i class="material-icons" th:title="#{icons.delete}">delete_forever</i><span
-                        th:text="#{users.delete}">Delete</span></a></td>
+                <td><a class="valign-wrapper" href="#" data-role="delete" th:onclick="deleteAdmin([[${admin.getUuid()}]])">
+                        <i class="material-icons" th:title="#{icons.delete}">delete_forever</i>
+                        <span th:text="#{users.delete}">Delete</span></a></td>
 
             </tr>
             </tbody>
@@ -87,6 +87,23 @@
                 </tr>
             </table>
         </form>
+    </div>
+</div>
+<div class="col s12 m3 modal" id="delete-admin-modal">
+    <div class="card-panel modal-content">
+        <input type="hidden" id="delete.admin.uuid" name="delete.admin.uuid">
+        <h5 class="center" th:text="#{delete.admin}">Delete Admin</h5>
+        <table>
+            <tr>
+                <td><input type="button" onclick="requestRemoval()" th:value="#{users.delete}" value="Submit"
+                           class="btn-flat"></td>
+                <td>
+                    <a type="submit" class="modal-close waves-effect waves-red btn-flat"
+                       onclick="return false;" th:text="#{editor.cancel}">Cancel
+                    </a>
+                </td>
+            </tr>
+        </table>
     </div>
 </div>
 <div class="col s12 m3 modal" id="create-admin-modal">
@@ -178,6 +195,17 @@
         $('#edit\\.admin\\.uuid').val(uuid);
         modal.modal();
         modal.modal('open');
+    }
+
+    function deleteAdmin(uuid) {
+        let modal = $('#delete-admin-modal');
+        $('#delete\\.admin\\.uuid').val(uuid);
+        modal.modal();
+        modal.modal('open');
+    }
+
+    function requestRemoval(e) {
+        $(location).attr('href', "/deleteAdmin/" + $('#delete\\.admin\\.uuid').val());
     }
 </script>
 </body>

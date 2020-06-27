@@ -107,6 +107,22 @@
         </div>
     </div>
 </div>
+<div class="col s12 m3 modal" id="delete-reservation-modal">
+    <div class="card-panel modal-content">
+        <h5 class="center" id="titleOfModal">Delete ticket</h5>
+        <table>
+            <tr>
+                <td><a id="requestRemoval" th:text="#{users.delete}"
+                       class="waves-effect btn-flat">Remove</a></td>
+                <td>
+                    <a type="submit" class="modal-close waves-effect waves-red btn-flat"
+                       onclick="return false;" th:text="#{editor.cancel}">Cancel
+                    </a>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
 <script th:inline="javascript" th:if="${actingAdmin || !adminMode}">
     /*<!<CDATA[*/
     const ticketNew = /*[[#{ticket.new}]]*/ "New ticket";
@@ -124,6 +140,8 @@
     const currentIds = /*[[${currentIds}]]*/ [];
 
     /*]]>*/
+
+    document.getElementById("titleOfModal").innerText = ticketDelete;
 
     function addOneMonth(dateToAddTo) {
         return new Date((dateToAddTo.getMonth() === 11 ? dateToAddTo.getFullYear() + 1 : dateToAddTo.getFullYear()), (dateToAddTo.getMonth() + 1) % 12, Math.min(dateToAddTo.getDate(), new Date((dateToAddTo.getMonth() === 11 ? dateToAddTo.getFullYear() + 1 : dateToAddTo.getFullYear()), (dateToAddTo.getMonth() + 2) % 12, 0).getDate()));
@@ -193,7 +211,7 @@
         );
         let instance = M.Datepicker.getInstance(picker);
         instance.open();
-        M.Modal._modalsOpen = 0;
+        M.Modal._modalsOpen = 2;
         window.scrollTo(0, 0);
         instance.modal.$overlay.remove();
         instance.doneBtn.setAttribute("id", "doneButton");
@@ -211,7 +229,10 @@
                 return;
             }
             if (reservations.indexOf(instance.toString()) !== -1) {
-                document.location = "/cancel?rid=" + uuid + "&date=" + instance.toString();
+                let modal = $('#delete-reservation-modal');
+                modal.modal();
+                modal.modal('open');
+                document.getElementById("requestRemoval").href = "/cancel?rid=" + uuid + "&date=" + instance.toString();
             } else {
                 document.location = "/register?rid=" + uuid + "&date=" + instance.toString();
             }
@@ -231,7 +252,7 @@
                     } else {
                         document.getElementById("counter").innerText = (result.projectedEntryTime === "00:00:00" ? cannotEnter : format(statusEnter, result.projectedEntryTime));
                     }
-                    $("#counter").removeClass("waiting");
+                    document.getElementById("counter").classList.remove("waiting");
                 } else if (result.status === "InOffice") {
                     document.getElementById("workStations").style.display = "";
                     document.getElementById("counterContainer").style.display = "none";
@@ -250,7 +271,7 @@
                     document.getElementById("workStations").style.display = "none";
                     document.getElementById("counterContainer").style.display = "none";
                     document.getElementById("calendar").classList.add("offset-l3");
-                    $("#counter").removeClass("waiting");
+                    document.getElementById("counter").classList.remove("waiting");
                 }
             }
         });

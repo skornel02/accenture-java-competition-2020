@@ -25,7 +25,8 @@
                                       th:title="#{icons.reservations}">verified_user</i><br/><span
                         th:text="#{icons.reservations}">Reservations</span>
                 </th>
-                <th class="center"><i class="material-icons" th:title="#{icons.delete}">delete_forever</i><br/><span
+                <th class="center">
+                    <i class="material-icons" th:title="#{icons.delete}">delete_forever</i><br/><span
                         th:text="#{users.delete}">Delete</span>
                 </th>
             </tr>
@@ -55,12 +56,16 @@
                     </a>
                 </td>
 
-                <td><a class="valign-wrapper" th:href="'/userview?rid='+${user.getId()}" data-role="reservations"><i class="material-icons"
-                                                                     th:title="#{icons.reservations}">verified_user</i>
+                <td><a class="valign-wrapper" th:href="'/userview?rid='+${user.getId()}" data-role="reservations"><i
+                        class="material-icons"
+                        th:title="#{icons.reservations}">verified_user</i>
                     <span th:text="#{icons.reservations}">reservations</span></a>
                 </td>
-                <td><a class="valign-wrapper" th:href="${'/deleteUser/'+user.getId()}" data-role="delete"><i class="material-icons" th:title="#{icons.delete}">delete_forever</i><span
-                        th:text="#{users.delete}">Delete</span></a></td>
+                <td>
+                    <a class="valign-wrapper" href="#" data-role="delete" th:onclick="deleteUser([[${user.getId()}]])">
+                        <i class="material-icons" th:title="#{icons.delete}">delete_forever</i>
+                        <span th:text="#{users.delete}">Delete</span></a>
+                </td>
             </tr>
             </tbody>
         </table>
@@ -98,24 +103,43 @@
                 </tr>
                 <tr id="edit.user.password.row">
                     <td><label for="edit.user.password" th:text="#{editor.password}">Password:</label></td>
-                    <td><input autocomplete="new-password" id="edit.user.password" type="password" name="edit.user.password"></td>
+                    <td><input autocomplete="new-password" id="edit.user.password" type="password"
+                               name="edit.user.password"></td>
                 </tr>
                 <tr id="edit.user.password.confirm.row">
                     <td><label for="edit.user.password.confirm" th:text="#{editor.password.confirm}">Password:</label>
                     </td>
-                    <td><input autocomplete="new-password" id="edit.user.password.confirm" type="password" name="edit.user.password.confirm"></td>
+                    <td><input autocomplete="new-password" id="edit.user.password.confirm" type="password"
+                               name="edit.user.password.confirm"></td>
                 </tr>
 
                 <tr>
                     <td><input type="submit" th:value="#{editor.save}" value="Submit" class="btn-flat"></td>
                     <td>
                         <a type="submit" class="modal-close waves-effect waves-red btn-flat"
-                                onclick="return false;" th:text="#{editor.cancel}">Cancel
+                           onclick="return false;" th:text="#{editor.cancel}">Cancel
                         </a>
                     </td>
                 </tr>
             </table>
         </form>
+    </div>
+</div>
+<div class="col s12 m3 modal" id="delete-user-modal">
+    <div class="card-panel modal-content">
+        <input type="hidden" id="delete.user.uuid" name="delete.user.uuid">
+        <h5 class="center" th:text="#{delete.worker}">Delete Worker</h5>
+        <table>
+            <tr>
+                <td><input type="button" onclick="requestRemoval()" th:value="#{users.delete}" value="Submit"
+                           class="btn-flat"></td>
+                <td>
+                    <a type="submit" class="modal-close waves-effect waves-red btn-flat"
+                       onclick="return false;" th:text="#{editor.cancel}">Cancel
+                    </a>
+                </td>
+            </tr>
+        </table>
     </div>
 </div>
 <div class="col s12 m3 modal" id="create-user-modal">
@@ -137,12 +161,14 @@
                 </tr>
                 <tr>
                     <td><label for="create.user.password" th:text="#{editor.password}">Password:</label></td>
-                    <td><input autocomplete="new-password" id="create.user.password" type="password" name="create.user.password"></td>
+                    <td><input autocomplete="new-password" id="create.user.password" type="password"
+                               name="create.user.password"></td>
                 </tr>
                 <tr>
                     <td><label for="create.user.password.confirm" th:text="#{editor.password.confirm}">Password:</label>
                     </td>
-                    <td><input autocomplete="new-password" id="create.user.password.confirm" type="password" name="create.user.password.confirm">
+                    <td><input autocomplete="new-password" id="create.user.password.confirm" type="password"
+                               name="create.user.password.confirm">
                     </td>
                 </tr>
                 <tr>
@@ -153,7 +179,7 @@
                     <td><input type="submit" value="Submit" th:value="#{editor.create}" class="btn-flat"></td>
                     <td>
                         <a type="submit" class="modal-close waves-effect waves-red btn-flat"
-                                onclick="return false;" th:text="#{editor.cancel}">Cancel
+                           onclick="return false;" th:text="#{editor.cancel}">Cancel
                         </a>
                     </td>
                 </tr>
@@ -226,6 +252,17 @@
         $('#edit\\.user\\.uuid').val(uuid);
         modal.modal();
         modal.modal('open');
+    }
+
+    function deleteUser(uuid) {
+        let modal = $('#delete-user-modal');
+        $('#delete\\.user\\.uuid').val(uuid);
+        modal.modal();
+        modal.modal('open');
+    }
+
+    function requestRemoval(e) {
+        $(location).attr('href', "/deleteUser/" + $('#delete\\.user\\.uuid').val());
     }
 
 </script>
