@@ -464,13 +464,15 @@ public class WebController {
     public String reservations(
             @ModelAttribute("login") UserInfo userInfo,
             @RequestParam String rid,
-            Model model
+            Model model,
+            Locale locale
     ) {
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", locale);
         Optional<String> fullName = authorize(userInfo);
         if (!fullName.isPresent()) return requireLogin(userInfo, model);
         WorkerResource workerResource = getRequest(userInfo, "users/" + rid, WorkerResource.class).getBody();
         UserInfo workerInfo = new UserInfo(Objects.requireNonNull(workerResource).getEmail(), "", workerResource.getId());
-        setModel(workerInfo, fullName.get() + " Effective: " + workerResource.getName(), model);
+        setModel(workerInfo, String.format(resourceBundle.getString("admin.effective"),fullName.get(), workerResource.getName()), model);
         model.addAttribute("actingAdmin", true);
 
         String[] reservations =

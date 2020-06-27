@@ -167,7 +167,7 @@
             <div class="col s12 m12 l6 offset-l3" id="calendar">
                 <div class="row">
                     <div class="col s12 center">
-                        <h5 th:text="#{calendar.select}"></h5>
+                        <h5 th:text="#{calendar.select}">Select</h5>
                     </div>
                 </div>
                 <div class="row">
@@ -251,8 +251,10 @@
                 onSelect: function (date) {
                     if (calendarEvents.indexOf(date.toDateString()) !== -1) {
                         document.querySelector("#doneButton").textContent = ticketDelete;
+                        document.querySelector("#doneButton").classList.add("red-text");
                     } else {
                         document.querySelector("#doneButton").textContent = ticketRegister;
+                        document.querySelector("#doneButton").classList.remove("red-text");
                     }
                     console.log(date);
                 }
@@ -265,6 +267,8 @@
         instance.modal.$overlay.remove();
         instance.doneBtn.setAttribute("id", "doneButton");
         instance.cancelBtn.setAttribute("id", "resetButton");
+        instance.cancelBtn.classList.add("yellow-text");
+        instance.cancelBtn.classList.add("text-darken-3");
         instance.cancelBtn.outerHTML = instance.cancelBtn.outerHTML;
         instance.doneBtn.outerHTML = instance.doneBtn.outerHTML;
         document.querySelector("#resetButton").onclick = function () {
@@ -294,7 +298,7 @@
                     if (result.permittedToEnter) {
                         document.getElementById("counter").innerText = ticketEnter;
                     } else {
-                        document.getElementById("counter").innerText = (result.projectedEntryTime === "00:00:00" ? cannotEnter : format(statusEnter, result.projectedEntryTime));;
+                        document.getElementById("counter").innerText = (result.projectedEntryTime === "00:00:00" ? cannotEnter : format(statusEnter, result.projectedEntryTime));
                     }
                     $("#counter").removeClass("waiting");
                 } else if (result.status === "InOffice") {
