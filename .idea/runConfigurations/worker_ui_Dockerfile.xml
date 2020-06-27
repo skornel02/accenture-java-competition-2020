@@ -5,7 +5,7 @@
         <option name="imageTag" value="worker-ui" />
         <option name="buildCliOptions" value="" />
         <option name="command" value="" />
-        <option name="containerName" value="react.kibe" />
+        <option name="containerName" value="worker.ui.kibe" />
         <option name="entrypoint" value="" />
         <option name="portBindings">
           <list>
