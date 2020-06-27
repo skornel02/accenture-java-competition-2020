@@ -1,0 +1,20 @@
+{
+  "short_name": "KIBe",
+  "name": "KIBe Entry App - KIBe Bejelentkező App",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "128x128",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "logo.png",
+      "type": "image/png",
+      "sizes": "1024x1024"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#736317",
+  "background_color": "#88898C"
+}

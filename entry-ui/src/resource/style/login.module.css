@@ -1,0 +1,45 @@
+.LoginPage {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+}
+
+.InputForm {
+    min-width: 350px;
+    max-width: 80vh;
+    box-sizing: border-box;
+    padding: 3em;
+}
+
+.SignInLogo {
+    display: block;
+    margin: 0 auto;
+    width: 80%;
+    max-width: 280px;
+    border-radius: 50%;
+}
+
+.SignInInput {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 10px 0.2em;
+    font-size: 1.5em;
+}
+
+.SignInButton {
+    width: 100%;
+    font-size: 1.3em;
+    display: block;
+    box-sizing: border-box;
+    color: var(--Rendarch-4);
+    background-color: var(--Rendarch-3);
+    border: 2px solid var(--Rendarch-4);
+    margin-top: 10px;
+}
+
+.SignInButton:hover {
+    background-color: var(--Rendarch-1);
+    transition: all 0.2s;
+}

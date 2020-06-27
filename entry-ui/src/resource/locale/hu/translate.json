@@ -1,0 +1,25 @@
+{
+  "translations": {
+    "footer": {
+      "logout": "Kijelentkezés"
+    },
+    "login": {
+      "loginText": "Légyszives add meg az eszköz kódodat",
+      "deviceToken": "Eszköz kód",
+      "button": "Tovább",
+      "deviceTokenMissing": "Eszköz kód nincs kitöltve",
+      "invalidCredentials": "Nem megfelelő adatok"
+    },
+    "rfid": {
+      "rfid": "Kártya azonosító",
+      "enter": "Belép",
+      "leave": "Kilép",
+      "fullHouse": "Épület teli, nem léphetsz be!",
+      "rfidNotFound": "Azonosító nem található!",
+      "youCanEnter": "Beléphetsz!",
+      "youCanLeave": "Nem léphetsz be!",
+      "alreadyInside": "Már bent vagy az épületben!",
+      "alreadyOutside": "Már kiléptél az épületből"
+    }
+  }
+}

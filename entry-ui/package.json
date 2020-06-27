@@ -1,5 +1,5 @@
 {
-  "name": "worker-ui",
+  "name": "entry-ui",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -8,27 +8,19 @@
     "@testing-library/user-event": "^7.2.1",
     "@types/jest": "^24.9.1",
     "@types/node": "^12.12.47",
-    "@types/react": "^16.9.36",
+    "@types/react": "^16.9.41",
     "@types/react-dom": "^16.9.8",
     "axios": "^0.19.2",
     "i18next": "^19.4.5",
     "i18next-browser-languagedetector": "^4.3.0",
     "i18next-xhr-backend": "^3.2.2",
-    "js-base64": "^2.5.2",
     "localforage": "^1.7.4",
-    "moment": "^2.26.0",
     "react": "^16.13.1",
-    "react-calendar": "^3.1.0",
-    "react-confirm-alert": "^2.6.1",
-    "react-detect-offline": "^2.4.0",
     "react-dom": "^16.13.1",
-    "react-google-login": "^5.1.20",
     "react-hook-form": "^5.7.2",
     "react-i18next": "^11.5.1",
     "react-scripts": "3.4.1",
     "react-toastify": "^6.0.5",
-    "swr": "^0.2.3",
-    "swr-sync-storage": "^1.0.1",
     "typescript": "^3.7.5"
   },
   "scripts": {
@@ -51,9 +43,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "@types/js-base64": "^2.3.1",
-    "@types/react-calendar": "^3.1.0"
   }
 }

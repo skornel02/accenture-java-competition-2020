@@ -1,0 +1,59 @@
+.ComponentWrapper {
+    display: flex;
+    flex-direction: column;
+    height: 96vh;
+}
+
+.EntryWrapper {
+    height: 95vh;
+}
+
+.MapContainer {
+    height: 85vh;
+    width: 100vw;
+}
+
+.InputForm {
+    margin: 0 auto;
+    min-width: 350px;
+    max-width: 80vh;
+    box-sizing: border-box;
+    padding: 5px 2em;
+    display: flex;
+    height: 9vh;
+}
+
+.Input {
+    box-sizing: border-box;
+    width: 60%;
+    padding: 10px 0.2em;
+    font-size: 1.5em;
+    border-bottom-left-radius: 5px;
+    border-top-left-radius: 5px;
+}
+
+.EntryButton {
+    width: 20%;
+    font-size: 1.3em;
+    display: block;
+    box-sizing: border-box;
+    color: #29abe2;
+    background-color: var(--Rendarch-3);
+    border: 2px solid #12aea1;
+}
+
+.LeaveButton {
+    width: 20%;
+    font-size: 1.3em;
+    display: block;
+    box-sizing: border-box;
+    color: red;
+    background-color: var(--Rendarch-3);
+    border: 2px solid salmon;
+    border-bottom-right-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.LeaveWrapper {
+    height: 10vh
+}

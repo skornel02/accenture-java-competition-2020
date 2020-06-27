@@ -34,6 +34,17 @@ services:
       - kibe-network
     ports:
       - 5000:5000
+  entry-ui:
+    container_name: entry.ui.kibe
+    build:
+      context: entry-ui
+      dockerfile: Dockerfile
+    depends_on:
+      - backend.kibe
+    networks:
+      - kibe-network
+    ports:
+      - 5001:5000
 
   selenium-hub:
     image: selenium/hub

@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Docker Run" type="docker-deploy" factoryName="docker-compose.yml" server-name="Docker">
+  <configuration default="false" name="Compose Run" type="docker-deploy" factoryName="docker-compose.yml" server-name="Docker">
     <deployment type="docker-compose.yml">
       <settings>
         <option name="commandLineOptions" value="--build" />
@@ -8,6 +8,7 @@
             <option value="frontend.kibe" />
             <option value="backend.kibe" />
             <option value="worker-ui" />
+            <option value="entry-ui" />
           </list>
         </option>
         <option name="sourceFilePath" value="docker-compose.yaml" />

@@ -27,7 +27,12 @@
       "noOfficeHours": "You haven't been in the office this day",
       "yesOfficeHours": "You have been in the office this day",
       "cancel": "Cancel ticket",
-      "create": "Create ticket"
+      "create": "Create ticket",
+      "areYouSure": "Are you sure?",
+      "areYouSureCreate": "Are you sure you want to add that ticket?",
+      "areYouSureCancel": "Cancel",
+      "areYouSureYes": "Yes!",
+      "areYouSureRemove": "Are you sure you want to remove that ticket?"
     }
   }
 }
