@@ -24,6 +24,7 @@ import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
@@ -93,15 +94,13 @@ public class WebController {
                             .map(TicketResource::getTargetDay)
                             .map(x -> x.format(DateTimeFormatter.ISO_DATE))
                             .toArray(String[]::new);
-            model.addAttribute("reservations", reservations);
-            model.addAttribute("places",
-                    getRequest(userInfo, "workstations", WorkstationResource[].class)
-                            .getBody());
+
+            setLayoutModelFor(userInfo, userInfo.getUuid(), model);
+
         } else {
             InsideResourcePlain[] workersIn = getRequest(userInfo, "office/inside", InsideResourcePlain[].class).getBody();
             model.addAttribute("workersIn", workersIn);
             WaitingResourcePlain[] workersWaiting = getRequest(userInfo, "office/waiting", WaitingResourcePlain[].class).getBody();
-            // TODO: sort workers by rank
             model.addAttribute("workersWaiting", workersWaiting);
         }
         return "ui";
@@ -153,11 +152,13 @@ public class WebController {
     public RedirectView setCapacity(
             @ModelAttribute("login") UserInfo userInfo,
             @RequestParam int capacity,
-            @RequestParam double percentage
+            @RequestParam double percentage,
+            @RequestParam double centimeters
     ) {
         OfficeResource officeResource = OfficeResource.builder()
                 .capacity(capacity)
                 .percentage(percentage / 100)
+                .centimetersBetweenEmployeeStations(centimeters)
                 .build();
         patchRequest(userInfo, "office/settings", officeResource);
         return new RedirectView("/building");
@@ -462,32 +463,43 @@ public class WebController {
     public String reservations(
             @ModelAttribute("login") UserInfo userInfo,
             @RequestParam String rid,
-            Model model
+            Model model,
+            Locale locale
     ) {
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", locale);
         Optional<String> fullName = authorize(userInfo);
         if (!fullName.isPresent()) return requireLogin(userInfo, model);
         WorkerResource workerResource = getRequest(userInfo, "users/" + rid, WorkerResource.class).getBody();
         UserInfo workerInfo = new UserInfo(Objects.requireNonNull(workerResource).getEmail(), "", workerResource.getId());
-        setModel(workerInfo, fullName.get() + " Effective: " + workerResource.getName(), model);
+        setModel(workerInfo, String.format(resourceBundle.getString("admin.effective"),fullName.get(), workerResource.getName()), model);
         model.addAttribute("actingAdmin", true);
 
+        model.addAttribute("adminMode", userInfo.isAdmin() || userInfo.isSuperAdmin());
+
+        setLayoutModelFor(userInfo, rid, model);
+
+        return "ui";
+    }
+
+    private void setLayoutModelFor(UserInfo userInfo, String uuid, Model model) {
         String[] reservations =
                 Arrays.stream(
                         Objects.requireNonNull(
-                                getRequest(userInfo, "users/" + rid + "/tickets", TicketResource[].class)
+                                getRequest(userInfo, "users/" + uuid + "/tickets", TicketResource[].class)
                                         .getBody()))
                         .map(TicketResource::getTargetDay)
                         .map(x -> x.format(DateTimeFormatter.ISO_DATE))
                         .toArray(String[]::new);
         model.addAttribute("reservations", reservations);
 
-        model.addAttribute("adminMode", userInfo.isAdmin() || userInfo.isSuperAdmin());
+        WorkstationResource[] workstations = getRequest(userInfo, "workstations", WorkstationResource[].class).getBody();
+        model.addAttribute("currentIds",
+                Arrays.stream(Objects.requireNonNull(workstations))
+                        .filter(x->x.getOccupier() != null)
+                        .filter(x->x.getOccupier().getId().equals(uuid))
+                        .map(WorkstationResource::getId)
+                        .collect(Collectors.toList()));
 
-        model.addAttribute("places",
-                getRequest(userInfo, "workstations", WorkstationResource[].class)
-                        .getBody());
-
-        return "ui";
     }
 
 

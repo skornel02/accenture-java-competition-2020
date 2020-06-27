@@ -32,10 +32,10 @@ table.striped > tbody > tr:nth-child(even) {
 }
 
 .datepicker-modal {
-    width: 100% !important;
-    position: initial !important;
-    box-shadow: initial !important;
-    -webkit-box-shadow: initial !important;
+    width: 100%;
+    position: initial;
+    box-shadow: initial;
+    -webkit-box-shadow: initial;
 }
 
 #errorMessage {
@@ -129,4 +129,6 @@ table.striped > tbody > tr:nth-child(even) {
     stroke-opacity: 1
 }
 
-input:-webkit-autofill { +label { @extend .active; } }
+.datepicker-footer > .confirmation-btns {
+    text-align: center;
+}
