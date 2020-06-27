@@ -105,6 +105,12 @@ public class PlanRendererServiceImpl implements PlanRendererService {
                     "                xmlns=\"http://www.w3.org/2000/svg\"\n" +
                     "                id=\"svg8\"\n" +
                     "                viewBox=\"-40 -10 240 180\">\n" +
+                    "            <defs>\n" +
+                    "                <linearGradient id=\"grad1\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\">\n" +
+                    "                    <stop offset=\"0%\" style=\"stop-color:#636363;stop-opacity:1\" />\n" +
+                    "                    <stop offset=\"100%\" style=\"stop-color:#939393;stop-opacity:1\" />\n" +
+                    "                </linearGradient>\n" +
+                    "            </defs>\n" +
                     "            <g id=\"layer1\"\n" +
                     "               transform=\"translate(150, 80) matrix(0.707 0.409 -0.707 0.409 0 -0.816) translate(-150, -80)\">\n" +
                     "                <path\n" +
@@ -143,57 +149,57 @@ public class PlanRendererServiceImpl implements PlanRendererService {
                     "            </g>\n" +
                     "            <g id=\"layer2\">\n" +
                     "                <g transform=\"translate(86.8, 8.4), scale(0.03,0.1)\">\n" +
-                    "                    <path style=\"fill:#b1b1b1;\"\n" +
+                    "                    <path style=\"fill:url(#grad1);\"\n" +
                     "                          d=\"M29,8C13.536,8,1,6.209,1,4v50c0,2.209,12.536,4,28,4s28-1.791,28-4V4C57,6.209,44.464,8,29,8z\"/>\n" +
                     "                    <ellipse style=\"fill:#939393;\" cx=\"29\" cy=\"4\" rx=\"28\" ry=\"4\"/>\n" +
-                    "                    <ellipse style=\"fill:#939393;\" cx=\"29\" cy=\"54\" rx=\"28\" ry=\"4\"/>\n" +
+                    "                    <ellipse style=\"fill:url(#grad1);\" cx=\"29\" cy=\"54\" rx=\"28\" ry=\"4\"/>\n" +
                     "                </g><g transform=\"translate(66.4, 20.4), scale(0.03,0.1)\">\n" +
-                    "                    <path style=\"fill:#b1b1b1;\"\n" +
+                    "                    <path style=\"fill:url(#grad1);\"\n" +
                     "                          d=\"M29,8C13.536,8,1,6.209,1,4v50c0,2.209,12.536,4,28,4s28-1.791,28-4V4C57,6.209,44.464,8,29,8z\"/>\n" +
                     "                    <ellipse style=\"fill:#939393;\" cx=\"29\" cy=\"4\" rx=\"28\" ry=\"4\"/>\n" +
-                    "                    <ellipse style=\"fill:#939393;\" cx=\"29\" cy=\"54\" rx=\"28\" ry=\"4\"/>\n" +
+                    "                    <ellipse style=\"fill:url(#grad1);\" cx=\"29\" cy=\"54\" rx=\"28\" ry=\"4\"/>\n" +
                     "                </g><g transform=\"translate(46.0, 32.4), scale(0.03,0.1)\">\n" +
-                    "                    <path style=\"fill:#b1b1b1;\"\n" +
+                    "                    <path style=\"fill:url(#grad1);\"\n" +
                     "                          d=\"M29,8C13.536,8,1,6.209,1,4v50c0,2.209,12.536,4,28,4s28-1.791,28-4V4C57,6.209,44.464,8,29,8z\"/>\n" +
                     "                    <ellipse style=\"fill:#939393;\" cx=\"29\" cy=\"4\" rx=\"28\" ry=\"4\"/>\n" +
-                    "                    <ellipse style=\"fill:#939393;\" cx=\"29\" cy=\"54\" rx=\"28\" ry=\"4\"/>\n" +
+                    "                    <ellipse style=\"fill:url(#grad1);\" cx=\"29\" cy=\"54\" rx=\"28\" ry=\"4\"/>\n" +
                     "                </g><g transform=\"translate(25.6, 44.4), scale(0.03,0.1)\">\n" +
-                    "                    <path style=\"fill:#b1b1b1;\"\n" +
+                    "                    <path style=\"fill:url(#grad1);\"\n" +
                     "                          d=\"M29,8C13.536,8,1,6.209,1,4v50c0,2.209,12.536,4,28,4s28-1.791,28-4V4C57,6.209,44.464,8,29,8z\"/>\n" +
                     "                    <ellipse style=\"fill:#939393;\" cx=\"29\" cy=\"4\" rx=\"28\" ry=\"4\"/>\n" +
-                    "                    <ellipse style=\"fill:#939393;\" cx=\"29\" cy=\"54\" rx=\"28\" ry=\"4\"/>\n" +
+                    "                    <ellipse style=\"fill:url(#grad1);\" cx=\"29\" cy=\"54\" rx=\"28\" ry=\"4\"/>\n" +
                     "                </g>\n" +
                     "                <g transform=\"translate(155.3, 47.8), scale(0.03,0.1)\">\n" +
-                    "                    <path style=\"fill:#b1b1b1;\"\n" +
+                    "                    <path style=\"fill:url(#grad1);\"\n" +
                     "                          d=\"M29,8C13.536,8,1,6.209,1,4v50c0,2.209,12.536,4,28,4s28-1.791,28-4V4C57,6.209,44.464,8,29,8z\"/>\n" +
                     "                    <ellipse style=\"fill:#939393;\" cx=\"29\" cy=\"4\" rx=\"28\" ry=\"4\"/>\n" +
-                    "                    <ellipse style=\"fill:#939393;\" cx=\"29\" cy=\"54\" rx=\"28\" ry=\"4\"/>\n" +
+                    "                    <ellipse style=\"fill:url(#grad1);\" cx=\"29\" cy=\"54\" rx=\"28\" ry=\"4\"/>\n" +
                     "                </g><g transform=\"translate(134.9, 59.8), scale(0.03,0.1)\">\n" +
-                    "                    <path style=\"fill:#b1b1b1;\"\n" +
+                    "                    <path style=\"fill:url(#grad1);\"\n" +
                     "                          d=\"M29,8C13.536,8,1,6.209,1,4v50c0,2.209,12.536,4,28,4s28-1.791,28-4V4C57,6.209,44.464,8,29,8z\"/>\n" +
                     "                    <ellipse style=\"fill:#939393;\" cx=\"29\" cy=\"4\" rx=\"28\" ry=\"4\"/>\n" +
-                    "                    <ellipse style=\"fill:#939393;\" cx=\"29\" cy=\"54\" rx=\"28\" ry=\"4\"/>\n" +
+                    "                    <ellipse style=\"fill:url(#grad1);\" cx=\"29\" cy=\"54\" rx=\"28\" ry=\"4\"/>\n" +
                     "                </g><g transform=\"translate(114.5, 71.8), scale(0.03,0.1)\">\n" +
-                    "                    <path style=\"fill:#b1b1b1;\"\n" +
+                    "                    <path style=\"fill:url(#grad1);\"\n" +
                     "                          d=\"M29,8C13.536,8,1,6.209,1,4v50c0,2.209,12.536,4,28,4s28-1.791,28-4V4C57,6.209,44.464,8,29,8z\"/>\n" +
                     "                    <ellipse style=\"fill:#939393;\" cx=\"29\" cy=\"4\" rx=\"28\" ry=\"4\"/>\n" +
-                    "                    <ellipse style=\"fill:#939393;\" cx=\"29\" cy=\"54\" rx=\"28\" ry=\"4\"/>\n" +
+                    "                    <ellipse style=\"fill:url(#grad1);\" cx=\"29\" cy=\"54\" rx=\"28\" ry=\"4\"/>\n" +
                     "                </g>\n" +
                     "                <g transform=\"translate(46.0, 111.5), scale(0.03,0.1)\">\n" +
-                    "                    <path style=\"fill:#b1b1b1;\"\n" +
+                    "                    <path style=\"fill:url(#grad1);\"\n" +
                     "                          d=\"M29,8C13.536,8,1,6.209,1,4v50c0,2.209,12.536,4,28,4s28-1.791,28-4V4C57,6.209,44.464,8,29,8z\"/>\n" +
                     "                    <ellipse style=\"fill:#939393;\" cx=\"29\" cy=\"4\" rx=\"28\" ry=\"4\"/>\n" +
-                    "                    <ellipse style=\"fill:#939393;\" cx=\"29\" cy=\"54\" rx=\"28\" ry=\"4\"/>\n" +
+                    "                    <ellipse style=\"fill:url(#grad1);\" cx=\"29\" cy=\"54\" rx=\"28\" ry=\"4\"/>\n" +
                     "                </g><g transform=\"translate(28.7, 121.3), scale(0.03,0.1)\">\n" +
-                    "                    <path style=\"fill:#b1b1b1;\"\n" +
+                    "                    <path style=\"fill:url(#grad1);\"\n" +
                     "                          d=\"M29,8C13.536,8,1,6.209,1,4v50c0,2.209,12.536,4,28,4s28-1.791,28-4V4C57,6.209,44.464,8,29,8z\"/>\n" +
                     "                    <ellipse style=\"fill:#939393;\" cx=\"29\" cy=\"4\" rx=\"28\" ry=\"4\"/>\n" +
-                    "                    <ellipse style=\"fill:#939393;\" cx=\"29\" cy=\"54\" rx=\"28\" ry=\"4\"/>\n" +
+                    "                    <ellipse style=\"fill:url(#grad1);\" cx=\"29\" cy=\"54\" rx=\"28\" ry=\"4\"/>\n" +
                     "                </g><g transform=\"translate(11.4, 131.1), scale(0.03,0.1)\">\n" +
-                    "                    <path style=\"fill:#b1b1b1;\"\n" +
+                    "                    <path style=\"fill:url(#grad1);\"\n" +
                     "                          d=\"M29,8C13.536,8,1,6.209,1,4v50c0,2.209,12.536,4,28,4s28-1.791,28-4V4C57,6.209,44.464,8,29,8z\"/>\n" +
                     "                    <ellipse style=\"fill:#939393;\" cx=\"29\" cy=\"4\" rx=\"28\" ry=\"4\"/>\n" +
-                    "                    <ellipse style=\"fill:#939393;\" cx=\"29\" cy=\"54\" rx=\"28\" ry=\"4\"/>\n" +
+                    "                    <ellipse style=\"fill:url(#grad1);\" cx=\"29\" cy=\"54\" rx=\"28\" ry=\"4\"/>\n" +
                     "                </g>\n" +
                     "            </g>\n" +
                     "        </svg>";

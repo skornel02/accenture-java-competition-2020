@@ -153,11 +153,13 @@ public class WebController {
     public RedirectView setCapacity(
             @ModelAttribute("login") UserInfo userInfo,
             @RequestParam int capacity,
-            @RequestParam double percentage
+            @RequestParam double percentage,
+            @RequestParam double centimeters
     ) {
         OfficeResource officeResource = OfficeResource.builder()
                 .capacity(capacity)
                 .percentage(percentage / 100)
+                .centimetersBetweenEmployeeStations(centimeters)
                 .build();
         patchRequest(userInfo, "office/settings", officeResource);
         return new RedirectView("/building");
