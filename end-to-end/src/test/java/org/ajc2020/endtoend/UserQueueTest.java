@@ -41,6 +41,7 @@ public class UserQueueTest extends SeleniumTestBase {
         }
         try {
             getRowElement(worker.getEmail(), "delete").click();
+            webDriver.findElement(By.cssSelector("[onclick='requestRemoval()']")).click();
         } catch (Exception ignored) {
 
         }

@@ -27,6 +27,7 @@ public class AdminTests extends SeleniumTestBase {
     private void deleteAdmin(AdminCreationRequest admin) {
         webDriver.navigate().to(baseUrl + "/admins");
         getRowElement(admin.getEmail(), "delete").click();
+        webDriver.findElement(By.cssSelector("[onclick='requestRemoval()']")).click();
     }
 
     private final AdminCreationRequest mike = AdminCreationRequest.builder()
