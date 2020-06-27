@@ -27,7 +27,12 @@
       "noOfficeHours": "Ezen a napon nem voltál bent",
       "yesOfficeHours": "Ezen a napon bent voltál",
       "cancel": "Regisztráció lemondása",
-      "create": "Regisztrálás"
+      "create": "Regisztrálás",
+      "areYouSure": "Biztos vagy benne?",
+      "areYouSureCreate": "Biztos hogy regisztráni szeretnél?",
+      "areYouSureCancel": "Mégsem",
+      "areYouSureYes": "Igen!",
+      "areYouSureRemove": "Biztos törölni szeretnéd a regisztrációdat?"
     }
   }
 }

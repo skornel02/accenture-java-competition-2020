@@ -10,6 +10,8 @@ import {isSameDateMoment} from "../utility/DateUtils";
 import moment from "moment";
 // @ts-ignore
 import {Online} from 'react-detect-offline'
+import {confirmAlert} from "react-confirm-alert";
+import 'react-confirm-alert/src/react-confirm-alert.css'; // Import cs
 
 const WorkerTickets: React.FunctionComponent = () => {
     const info = useAuthInformation();
@@ -23,19 +25,43 @@ const WorkerTickets: React.FunctionComponent = () => {
     const ticketsToday = tickets?.filter(ticket => isSameDateMoment(moment(ticket.targetDay), selectedDate)) ?? [];
 
     const createTicket = () => {
-        const date = moment(selectedDate).format("YYYY-MM-DD")
-        Backend.createTicketForDay(worker.id, date)
-            .finally(() => {
-                reValidateCache().then(r => {});
-            });
+        confirmAlert({
+            title: t("worker.areYouSure"),
+            message: t("worker.areYouSureCreate"),
+            buttons: [
+                {label: t("worker.areYouSureCancel"), onClick: () => {} },
+                {
+                    label: t("worker.areYouSureYes"),
+                    onClick: () => {
+                        const date = moment(selectedDate).format("YYYY-MM-DD")
+                        Backend.createTicketForDay(worker.id, date)
+                            .finally(() => {
+                                reValidateCache().then(r => {});
+                            });
+                    }
+                }
+            ]
+        })
     };
 
     const removeTicket = () => {
-        const date = moment(selectedDate).format("YYYY-MM-DD")
-        Backend.removeTicketFromDay(worker.id, date)
-            .finally(() => {
-                reValidateCache().then(r => {});
-            });
+        confirmAlert({
+            title: t("worker.areYouSure"),
+            message: t("worker.areYouSureRemove"),
+            buttons: [
+                {label: t("worker.areYouSureCancel"), onClick: () => {} },
+                {
+                    label: t("worker.areYouSureYes"),
+                    onClick: () => {
+                        const date = moment(selectedDate).format("YYYY-MM-DD")
+                        Backend.removeTicketFromDay(worker.id, date)
+                            .finally(() => {
+                                reValidateCache().then(r => {});
+                            });
+                    }
+                }
+            ]
+        })
     }
 
     return (
