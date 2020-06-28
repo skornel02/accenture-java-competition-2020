@@ -1,10 +1,10 @@
 # KIBe 
-A KIBe projekt törekszik a jelen járványügyi helyzeben arra, hogy mindenki problémáját a lehető legjobban oldja meg.
+A KIBe projekt törekszik a jelen járványügyi helyzetben arra, hogy mindenki problémáját a lehető legjobban oldja meg.
 
 ## Kibe részei
 
 ### Alkalmazotti PWA
-Ez egy alacsony hálózati kapcsolatt mellett is jól működő reszponzív, progresszív web alkalmazás, melynek célja hogy az alkalmazottak a lehető legkevesebbet ütközzenek a rendszerrel, és azzal foglalkozhassanak, ami tényleg fontos. *(React, Typescript)*
+Ez egy alacsony hálózati kapcsolat mellett is jól működő reszponzív, progresszív web alkalmazás, melynek célja hogy az alkalmazottak a lehető legkevesebbet ütközzenek a rendszerrel, és azzal foglalkozhassanak, ami tényleg fontos. *(React, Typescript)*
 
 ### Bejelentkeztető rendszer
 Egy naiv webprogram, ami az alkalmazottak ki- és bemenetelét kezeli aranyos képek segítségével. *(React, Typescript)*
@@ -12,8 +12,10 @@ Egy naiv webprogram, ami az alkalmazottak ki- és bemenetelét kezeli aranyos k�
 ### Webfelület
 Ezen a felületen lehetőség nyílik a rendszer összes funkcióját kezelni, mind az alkalmazottaknak, mind az adminisztrátoroknak. *(Spring, Tymeleaf)*
 
-## Funkciók
-A KIBe lehetőséget nyújt az iroda körüli élet hatékony irányítására, kezelésére. Ezt erőteljes alkalmazotti és adminisztrátori eszközökkel éri el. Az alkalmazottak könnyű szerrel kérhetnek hozzáférést az irodához, amely alapján a rendszer sorba állítja őket, és automatikusan megtippeli a várakozási időt. Amint bejutott az alkalmazott az irodába, a KIBe automatikusan választ nekik egy asztalt, a többi jelen lévő személytől biztonságos távolságra. Ezt egy választható 2 vagy 3D-s térképen 
+## Lehetőségek
+A KIBe lehetőséget nyújt az iroda körüli élet hatékony irányítására, kezelésére. Ezt erőteljes alkalmazotti és adminisztrátori eszközökkel éri el. Az alkalmazottak könnyű szerrel kérhetnek hozzáférést az irodához, amely alapján a rendszer sorba állítja őket, és automatikusan előrevetíti a várakozási időt. Amint bejutott az alkalmazott az irodába, a KIBe automatikusan választ nekik egy munkaállomást, a többi jelen lévő személytől biztonságos távolságra. Ezt egy választható két vagy háromdimenziós térképen is jelzi, a könnyű tájékozódás érdekében. Az egész folyamat néhány gombnyomsással lezajlik. 
+
+Mindezt az adminisztrátorok manuálisan, az otthonuk kényelméből is tudják kezelni. Beállíthatják az irodában tartózkodók létszámát és távolságát is. Joguk van továbbá az alkalmazottak be- és kiléptetésére, illetve bizonyos épületrészek lezárására és feloldására. Ezeket az kézenfekvő eszközöket egy könnyen irányítható webes felületen érhetik el.
 
 ## Kinek miért jó ez a szoftver
 
