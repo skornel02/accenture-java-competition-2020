@@ -34,6 +34,7 @@ services:
       - kibe-network
     ports:
       - 5000:5000
+
   entry-ui:
     container_name: entry.ui.kibe
     build:
@@ -104,6 +105,21 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     networks:
       - kibe-network
+
+  proxy:
+    image: nginx:alpine
+    ports:
+      - 443:443
+      - 80:80
+    container_name: proxy
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/cert:/cert
+    depends_on:
+      - frontend.kibe
+    networks:
+      - kibe-network
+
 
 networks:
   kibe-network:
