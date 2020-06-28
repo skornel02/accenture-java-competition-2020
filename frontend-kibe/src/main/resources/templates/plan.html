@@ -83,6 +83,7 @@
     const claimed = /*[[#{claimed}]]*/ "Claimed";
     const free = /*[[#{free}]]*/ "Free";
     const forbidden = /*[[#{forbidden}]]*/ "Forbidden";
+    const infectious = /*[[#{infectious}]]*/ "Forbidden";
     /*]]>*/
 
     var lastSelected = null;
@@ -140,10 +141,21 @@
                 $("#sitting-action-kick").hide();
                 $("#sitting-action-permit").hide();
             }
+            if ($(this).hasClass("ws-infectious")) {
+                $("#sitting-state").text(infectious);
+                $("#sitting-claimed").text(notAvailable);
+                $("#sitting-action-forbid").hide();
+                $("#sitting-action-kick").hide();
+                $("#sitting-action-permit").hide();
+            }
             if ($(this).hasClass("ws-occupied")) {
                 $("#sitting-state").text(claimed);
-                // TODO: get user name
-                $("#sitting-claimed").text("John Doe");
+                $.ajax({
+                    url: "/placeInfo/"+id,
+                    success: function(result) {
+                        $("#sitting-claimed").text(result.occupier.name);
+                    }
+                });
                 $("#sitting-action-forbid").hide();
                 $("#sitting-action-kick").show();
                 $("#sitting-action-permit").hide();

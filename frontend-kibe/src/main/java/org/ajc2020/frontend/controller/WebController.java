@@ -525,6 +525,14 @@ public class WebController {
         return "plan";
     }
 
+    @GetMapping("/placeInfo/{workstationId}")
+    public @ResponseBody WorkstationResource getPlaceInfo(
+            @ModelAttribute("login") UserInfo userInfo,
+            @PathVariable String workstationId
+    ) {
+        return getRequest(userInfo, "workstations/" + workstationId, WorkstationResource.class).getBody();
+    }
+
     @GetMapping("/plan/update/{planId}/{operation}")
     public @ResponseBody
     PasswordStatus updatePlan(
