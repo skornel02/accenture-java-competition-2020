@@ -47,6 +47,7 @@ public class WorkerPositionServiceImpl implements WorkerPositionService {
 
     @StreamListener(WorkerPositionReceiverProcessor.IN)
     public void handlePositionUpdate(WorkerPosition workerPosition) {
+        waitingList.put(workerPosition.getWorkerId(), workerPosition.getPosition());
         getListeners(workerPosition.getWorkerId())
                 .forEach(consumer -> consumer.accept(workerPosition.getPosition()));
         log.info("Position update event: {}", workerPosition);

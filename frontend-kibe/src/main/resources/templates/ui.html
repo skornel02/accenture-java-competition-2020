@@ -257,7 +257,7 @@
                                     : format(statusEnter, result.projectedEntryTime));
                         }
                         if (result.rank > 0) {
-                            document.getElementById("counter").innerText += yourRankInLine + result.rank;
+                            document.getElementById("counter").innerHTML += "<br />" + yourRankInLine + result.rank;
                         }
                         document.getElementById("counter").classList.remove("waiting");
                         break;
