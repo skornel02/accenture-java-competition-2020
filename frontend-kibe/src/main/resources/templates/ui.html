@@ -125,7 +125,6 @@
 </div>
 <script th:inline="javascript" th:if="${actingAdmin || !adminMode}">
     /*<!<CDATA[*/
-    const ticketNew = /*[[#{ticket.new}]]*/ "New ticket";
     const ticketRegister = /*[[#{ticket.register}]]*/ "Register ticket";
     const ticketCancel = /*[[#{ticket.reset}]]*/ "Reset";
     const ticketDelete = /*[[#{ticket.delete}]]*/ "Delete ticket";
@@ -134,9 +133,8 @@
     const statusEnter = /*[[#{status.enter}]]*/ "Enter in {0}";
     const calendarChooseDate = /*[[#{calendar.choose.date}]]*/ "Please choose a date!";
     const cannotEnter = /*[[#{status.cannot.enter}]]*/ "You can't enter right now";
-    const calendarPastEntry = /*[[#{calendar.past.entry}]]*/ "You could have entered on {0}";
-    const calendarFutureEntry = /*[[#{calendar.future.entry}]]*/ "You can enter on {0}";
     const uuid = /*[[${uuid}]]*/ "0";
+    const yourRankInLine = /*[[#{calendar.user.rank}]]*/ 0;
     const currentIds = /*[[${currentIds}]]*/ [];
 
     /*]]>*/
@@ -148,10 +146,10 @@
     }
 
     function format(fmt, ...args) {
-        if (!fmt.match(/^(?:(?:(?:[^{}]|(?:\{\{)|(?:\}\}))+)|(?:\{[0-9]+\}))+$/)) {
+        if (!fmt.match(/^(?:(?:(?:[^{}]|(?:{{)|(?:}}))+)|(?:{[0-9]+}))+$/)) {
             throw new Error('invalid format string.');
         }
-        return fmt.replace(/((?:[^{}]|(?:\{\{)|(?:\}\}))+)|(?:\{([0-9]+)\})/g, (m, str, index) => {
+        return fmt.replace(/((?:[^{}]|(?:{{)|(?:}}))+)|(?:{([0-9]+)})/g, (m, str, index) => {
             if (str) {
                 return str.replace(/(?:{{)|(?:}})/g, m => m[0]);
             } else {
@@ -162,7 +160,6 @@
             }
         });
     }
-
 
     function resize() {
         document.querySelectorAll('.resized').forEach(x => {
@@ -182,7 +179,6 @@
         for (let i = 0; i < reservations.length; i++) {
             calendarEvents.push(new Date(reservations[i]).toDateString());
         }
-        console.log(calendarEvents);
         M.Datepicker.init(picker,
             {
                 format: "yyyy-mm-dd",
@@ -205,7 +201,6 @@
                         document.querySelector("#doneButton").textContent = ticketRegister;
                         document.querySelector("#doneButton").classList.remove("red-text");
                     }
-                    console.log(date);
                 }
             }
         );
@@ -218,8 +213,6 @@
         instance.cancelBtn.setAttribute("id", "resetButton");
         instance.cancelBtn.classList.add("blue-text");
         instance.cancelBtn.classList.add("text-darken-1");
-        instance.cancelBtn.outerHTML = instance.cancelBtn.outerHTML;
-        instance.doneBtn.outerHTML = instance.doneBtn.outerHTML;
         document.querySelector("#resetButton").onclick = function () {
             instance.gotoDate(now);
         };
@@ -243,35 +236,52 @@
         $.ajax({
             url: "/timeToEnter?rid=" + uuid,
             success: function (result) {
-                if (result.status === "OnList") {
-                    document.getElementById("workStations").style.display = "none";
-                    document.getElementById("counterContainer").style.display = "";
-                    document.getElementById("calendar").classList.add("offset-l3");
-                    if (result.permittedToEnter) {
-                        document.getElementById("counter").innerText = ticketEnter;
-                    } else {
-                        document.getElementById("counter").innerText = (result.projectedEntryTime === "00:00:00" ? cannotEnter : format(statusEnter, result.projectedEntryTime));
-                    }
-                    document.getElementById("counter").classList.remove("waiting");
-                } else if (result.status === "InOffice") {
-                    document.getElementById("workStations").style.display = "";
-                    document.getElementById("counterContainer").style.display = "none";
-                    document.getElementById("login-place").innerHTML = result.locationSVG;
-                    document.getElementById("calendar").classList.remove("offset-l3");
-                    document.getElementById(result.workstation.id + "rect").classList.remove("fill-black");
-                    document.getElementById(result.workstation.id + "rect").classList.add("ws-occupiable");
-                    document.querySelectorAll(".fill-green").forEach(x => {
-                        if (x.id !== result.workstation.id + "rect") {
-                            x.classList.add("fill-black");
-                            x.classList.remove("ws-occupiable");
+                /**
+                 * @param result.permittedToEnter:boolean
+                 * @param result.projectedEntryTime:string
+                 * @param result.rank:integer
+                 * @param result.locationSVG:string
+                 * @param result.workstation.id:string
+                 **/
+                switch (result.status) {
+                    case "OnList":
+                        document.getElementById("workStations").style.display = "none";
+                        document.getElementById("counterContainer").style.display = "";
+                        document.getElementById("calendar").classList.add("offset-l3");
+                        if (result.permittedToEnter) {
+                            document.getElementById("counter").innerText = ticketEnter;
+                        } else {
+                            document.getElementById("counter").innerText =
+                                (result.projectedEntryTime === "00:00:00"
+                                    ? cannotEnter
+                                    : format(statusEnter, result.projectedEntryTime));
                         }
-                    });
-                    $("#counter").removeClass("waiting");
-                } else if (result.status === "WorkingFromHome") {
-                    document.getElementById("workStations").style.display = "none";
-                    document.getElementById("counterContainer").style.display = "none";
-                    document.getElementById("calendar").classList.add("offset-l3");
-                    document.getElementById("counter").classList.remove("waiting");
+                        if (result.rank > 0) {
+                            document.getElementById("counter").innerText += yourRankInLine + result.rank;
+                        }
+                        document.getElementById("counter").classList.remove("waiting");
+                        break;
+                    case "InOffice":
+                        document.getElementById("workStations").style.display = "";
+                        document.getElementById("counterContainer").style.display = "none";
+                        document.getElementById("login-place").innerHTML = result.locationSVG;
+                        document.getElementById("calendar").classList.remove("offset-l3");
+                        document.getElementById(result.workstation.id + "rect").classList.remove("fill-black");
+                        document.getElementById(result.workstation.id + "rect").classList.add("ws-occupiable");
+                        document.querySelectorAll(".fill-green").forEach(x => {
+                            if (x.id !== result.workstation.id + "rect") {
+                                x.classList.add("fill-black");
+                                x.classList.remove("ws-occupiable");
+                            }
+                        });
+                        $("#counter").removeClass("waiting");
+                        break;
+                    case "WorkingFromHome":
+                        document.getElementById("workStations").style.display = "none";
+                        document.getElementById("counterContainer").style.display = "none";
+                        document.getElementById("calendar").classList.add("offset-l3");
+                        document.getElementById("counter").classList.remove("waiting");
+                        break;
                 }
             }
         });

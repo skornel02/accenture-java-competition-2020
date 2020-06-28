@@ -1,10 +1,7 @@
 package org.ajc2020.utility.communication;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.ajc2020.utility.resource.WorkerStatus;
 
 import java.time.LocalTime;
@@ -22,4 +19,8 @@ public class RemainingTime {
     private WorkstationResource workstation;
     private String locationSVG;
 
+
+    public RemainingTime(RemainingTime copy) {
+        this(copy.projectedEntryTime, copy.permittedToEnter, copy.status, copy.workstation, copy.locationSVG);
+    }
 }

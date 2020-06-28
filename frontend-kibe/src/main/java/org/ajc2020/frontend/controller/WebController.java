@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.ajc2020.frontend.communication.PasswordStatus;
+import org.ajc2020.frontend.communication.RemainingTimeEntry;
 import org.ajc2020.frontend.communication.UserInfo;
+import org.ajc2020.frontend.service.WorkerPositionService;
 import org.ajc2020.utility.communication.*;
 import org.ajc2020.utility.resource.PermissionLevel;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,7 +41,10 @@ public class WebController {
     @Value("${frontend.rest.service.url}")
     private String restServiceUrl;
 
-    public WebController() {
+    private final WorkerPositionService workerPositionService;
+
+    public WebController(WorkerPositionService workerPositionService) {
+        this.workerPositionService = workerPositionService;
     }
 
     @GetMapping("/login")
@@ -429,11 +434,13 @@ public class WebController {
 
     @GetMapping("/timeToEnter")
     public @ResponseBody
-    RemainingTime getRemainingTime(
+    RemainingTimeEntry getRemainingTime(
             @ModelAttribute("login") UserInfo userInfo,
             @RequestParam String rid
     ) {
-        return getRequest(userInfo, "users/" + rid + "/entry-time-remaining", RemainingTime.class).getBody();
+        RemainingTimeEntry remainingTimeEntry = new RemainingTimeEntry(getRequest(userInfo, "users/" + rid + "/entry-time-remaining", RemainingTime.class).getBody());
+        remainingTimeEntry.setRank(workerPositionService.getCurrentIndex(rid).orElse(-1));
+        return remainingTimeEntry;
     }
 
     @GetMapping("/checkin/{rfid}")
