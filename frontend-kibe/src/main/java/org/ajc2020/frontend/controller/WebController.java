@@ -9,6 +9,7 @@ import org.ajc2020.frontend.communication.UserInfo;
 import org.ajc2020.frontend.service.WorkerPositionService;
 import org.ajc2020.utility.communication.*;
 import org.ajc2020.utility.resource.PermissionLevel;
+import org.ajc2020.utility.resource.WorkerStatus;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -439,7 +440,7 @@ public class WebController {
             @RequestParam String rid
     ) {
         RemainingTimeEntry remainingTimeEntry = new RemainingTimeEntry(getRequest(userInfo, "users/" + rid + "/entry-time-remaining", RemainingTime.class).getBody());
-        remainingTimeEntry.setRank(workerPositionService.getCurrentIndex(rid).orElse(-1));
+        remainingTimeEntry.setRank(remainingTimeEntry.isPermittedToEnter() ? -1 : workerPositionService.getCurrentIndex(rid).orElse(-1));
         return remainingTimeEntry;
     }
 

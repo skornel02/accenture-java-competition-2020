@@ -184,6 +184,7 @@ public class UserQueueTest extends SeleniumTestBase {
 
         String ticketEnter = (String)javascriptExecutor.executeScript("return window.eval('ticketEnter')");
         String cannotEnter = (String)javascriptExecutor.executeScript("return window.eval('cannotEnter')");
+        String rank = (String)javascriptExecutor.executeScript("return window.eval('yourRankInLine')");
 
         // Admit only 2 people
         setBuildingParameters(200, 1);
@@ -204,15 +205,15 @@ public class UserQueueTest extends SeleniumTestBase {
 
         Assert.assertEquals("", getCounter(workerCreationRequests[0]));
         Assert.assertEquals(ticketEnter, getCounter(workerCreationRequests[1]));
-        Assert.assertEquals(cannotEnter, getCounter(workerCreationRequests[2]));
-        Assert.assertEquals(cannotEnter, getCounter(workerCreationRequests[3]));
+        Assert.assertEquals(prepareQueueLine(cannotEnter, rank, 1), getCounter(workerCreationRequests[2]));
+        Assert.assertEquals(prepareQueueLine(cannotEnter, rank, 2), getCounter(workerCreationRequests[3]));
 
         checkIn(workerCreationRequests[1].getEmail());
 
         Assert.assertEquals("", getCounter(workerCreationRequests[0]));
         Assert.assertEquals("", getCounter(workerCreationRequests[1]));
-        Assert.assertEquals(cannotEnter, getCounter(workerCreationRequests[2]));
-        Assert.assertEquals(cannotEnter, getCounter(workerCreationRequests[3]));
+        Assert.assertEquals(prepareQueueLine(cannotEnter, rank, 1), getCounter(workerCreationRequests[2]));
+        Assert.assertEquals(prepareQueueLine(cannotEnter, rank, 2), getCounter(workerCreationRequests[3]));
 
 
         checkOut(workerCreationRequests[0].getEmail());
@@ -220,7 +221,7 @@ public class UserQueueTest extends SeleniumTestBase {
         Assert.assertEquals("", getCounter(workerCreationRequests[0]));
         Assert.assertEquals("", getCounter(workerCreationRequests[1]));
         Assert.assertEquals(ticketEnter, getCounter(workerCreationRequests[2]));
-        Assert.assertEquals(cannotEnter, getCounter(workerCreationRequests[3]));
+        Assert.assertEquals(prepareQueueLine(cannotEnter, rank, 1), getCounter(workerCreationRequests[3]));
 
         checkOut(workerCreationRequests[1].getEmail());
 
@@ -245,6 +246,10 @@ public class UserQueueTest extends SeleniumTestBase {
 
     }
 
+    private String prepareQueueLine(String cannotEnter, String rank, int expectedRank) {
+        return cannotEnter + "\n" + rank + expectedRank;
+    }
+
     @Test
     public void testWaitQueueOnFullHouseWithAdmission() {
         Assert.assertTrue(loginWithSuperAdmin());
@@ -254,6 +259,7 @@ public class UserQueueTest extends SeleniumTestBase {
 
         String ticketEnter = (String)javascriptExecutor.executeScript("return window.eval('ticketEnter')");
         String cannotEnter = (String)javascriptExecutor.executeScript("return window.eval('cannotEnter')");
+        String rank = (String)javascriptExecutor.executeScript("return window.eval('yourRankInLine')");
 
 
         // Admit only 6 people
@@ -289,13 +295,13 @@ public class UserQueueTest extends SeleniumTestBase {
         Assert.assertEquals("", getCounter(workerCreationRequests[3]));
         Assert.assertEquals("", getCounter(workerCreationRequests[4]));
         Assert.assertEquals("", getCounter(workerCreationRequests[5]));
-        Assert.assertEquals(cannotEnter, getCounter(workerCreationRequests[6]));
-        Assert.assertEquals(cannotEnter, getCounter(workerCreationRequests[7]));
+        Assert.assertEquals(prepareQueueLine(cannotEnter, rank, 1), getCounter(workerCreationRequests[6]));
+        Assert.assertEquals(prepareQueueLine(cannotEnter, rank, 2), getCounter(workerCreationRequests[7]));
 
         checkOut(workerCreationRequests[4].getEmail());
 
         Assert.assertEquals(ticketEnter, getCounter(workerCreationRequests[6]));
-        Assert.assertEquals(cannotEnter, getCounter(workerCreationRequests[7]));
+        Assert.assertEquals(prepareQueueLine(cannotEnter, rank, 1), getCounter(workerCreationRequests[7]));
 
         checkOut(workerCreationRequests[0].getEmail());
 
