@@ -9,61 +9,77 @@
 <div class="row">
     <div class="col s12 m12 xl10 offset-xl1">
         <h5 th:text="#{users.users}">Workers</h5>
-        <table class="responsive-table striped bordered">
+        <table class="responsive-table striped bordered fixed-table">
             <thead>
             <tr>
-                <th th:text="#{users.uuid}">uuid</th>
+                <th th:text="#{users.uuid}" class="hide">uuid</th>
                 <th th:text="#{users.name}">name</th>
                 <th th:text="#{users.email}">email</th>
                 <th th:text="#{users.rfid}">rfid</th>
                 <th th:text="#{users.password}">password</th>
-                <th class="center"><i class="material-icons" th:title="#{icons.check.in.out}">swap_horiz</i><br/><span
-                        th:text="#{icons.check.in.out}">Check
-                    in / Check out</span>
+                <th><i class="material-icons row-vertical" th:title="#{icons.check.in.out}">swap_horiz</i>&nbsp;
+                    <span th:text="#{icons.check.in.out}">Check in / Check out</span>
                 </th>
-                <th class="center"><i class="material-icons"
-                                      th:title="#{icons.reservations}">verified_user</i><br/><span
-                        th:text="#{icons.reservations}">Reservations</span>
+                <th><i class="material-icons row-vertical"
+                                      th:title="#{icons.reservations}">verified_user</i>&nbsp;
+                    <span th:text="#{icons.reservations}">Reservations</span>
                 </th>
-                <th class="center">
-                    <i class="material-icons" th:title="#{icons.delete}">delete_forever</i><br/><span
-                        th:text="#{users.delete}">Delete</span>
+                <th>
+                    <i class="material-icons row-vertical" th:title="#{icons.delete}">delete_forever</i>&nbsp;
+                    <span th:text="#{users.delete}">Delete</span>
                 </th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="user : ${users}">
-                <td th:text="${user.getId()}" data-role="uuid">uuid</td>
-                <td><a href="#" th:text="${user.getName()}" data-role="name"
-                       th:onclick="editUserName([[${user.getId()}]], [[${user.getName()}]])">John Doe</a></td>
-                <td><a href="#" th:text="${user.getEmail()}" data-role="email"
-                       th:onclick="editUserEmail([[${user.getId()}]], [[${user.getEmail()}]])">john.doe@kibe</a></td>
-                <td><a href="#" th:text="${user.getRfId()}" data-role="rfid"
-                       th:onclick="editUserRfid([[${user.getId()}]], [[${user.getRfId()}]])">36324743743747</a></td>
-                <td><a href="#" th:text="#{users.change.password}" data-role="password"
-                       th:onclick="editUserPassword([[${user.getId()}]])">Change password</a>
+                <td th:text="${user.getId()}" data-role="uuid" class="hide">uuid</td>
+                <td><a href="#" th:text="${user.getName()}"
+                       data-role="name"
+                       th:data-uuid="${user.getId()}"
+                       th:data-name="${user.getName()}"
+                       onclick="editUserName(this.getAttribute('data-uuid'), this.getAttribute('data-name'))">
+                    John Doe</a></td>
+                <td><a href="#" th:text="${user.getEmail()}"
+                       data-role="email"
+                       th:data-uuid="${user.getId()}"
+                       th:data-email="${user.getEmail()}"
+                       onclick="editUserEmail(this.getAttribute('data-uuid'), this.getAttribute('data-email'))">
+                    john.doe@kibe</a></td>
+                <td><a href="#" th:text="${user.getRfId()}"
+                       data-role="rfid"
+                       th:data-uuid="${user.getId()}"
+                       th:data-rfid="${user.getRfId()}"
+                       onclick="editUserRfid(this.getAttribute('data-uuid'), this.getAttribute('data-rfid'))">
+                    36324743743747</a></td>
+                <td><a href="#" th:text="#{users.change.password}"
+                       data-role="password"
+                       th:data-uuid="${user.getId()}"
+                       onclick="editUserPassword(this.getAttribute('data-uuid'))">Change password</a>
                 </td>
 
                 <td th:switch="${user.getStatus()}">
-                    <a class="valign-wrapper" th:case="${T(org.ajc2020.utility.resource.WorkerStatus).InOffice}"
+                    <a th:case="${T(org.ajc2020.utility.resource.WorkerStatus).InOffice}"
                        th:href="'/checkout/'+${user.getRfId()}" data-role="checkout">
-                        <i class="material-icons">swap_horiz</i>
+                        <i class="material-icons row-vertical">swap_horiz</i>&nbsp;
                         <span th:text="#{icons.check.out}">Check out</span>
                     </a>
-                    <a class="valign-wrapper" th:case="*" th:href="'/checkin/'+${user.getRfId()}" data-role="checkin">
-                        <i class="material-icons">code</i>
+                    <a th:case="*" th:href="'/checkin/'+${user.getRfId()}" data-role="checkin">
+                        <i class="material-icons row-vertical">code</i>&nbsp;
                         <span th:text="#{icons.check.in}">Check in</span>
                     </a>
                 </td>
 
-                <td><a class="valign-wrapper" th:href="'/userview?rid='+${user.getId()}" data-role="reservations"><i
+                <td><a th:href="'/userview?rid='+${user.getId()}" data-role="reservations"><i
                         class="material-icons"
-                        th:title="#{icons.reservations}">verified_user</i>
+                        th:title="#{icons.reservations}">verified_user</i>&nbsp;
                     <span th:text="#{icons.reservations}">reservations</span></a>
                 </td>
                 <td>
-                    <a class="valign-wrapper" href="#" data-role="delete" th:onclick="deleteUser([[${user.getId()}]])">
-                        <i class="material-icons" th:title="#{icons.delete}">delete_forever</i>
+                    <a href="#"
+                       data-role="delete"
+                       th:data-uuid="${user.getId()}"
+                       onclick="deleteUser(this.getAttribute('data-uuid'))">
+                        <i class="material-icons" th:title="#{icons.delete}">delete_forever</i>&nbsp;
                         <span th:text="#{users.delete}">Delete</span></a>
                 </td>
             </tr>
@@ -246,8 +262,7 @@
         clearUserForm();
         let modal = $('#edit-user-modal');
         $('#edit\\.user\\.password').val("");
-        $('#edit\\.user\\.password\\.row').show();
-        $('#edit\\.user\\.password\\.row').val("");
+        $('#edit\\.user\\.password\\.row').show().val("");
         $('#edit\\.user\\.password\\.confirm\\.row').show();
         $('#edit\\.user\\.uuid').val(uuid);
         modal.modal();
@@ -261,7 +276,7 @@
         modal.modal('open');
     }
 
-    function requestRemoval(e) {
+    function requestRemoval() {
         $(location).attr('href', "/deleteUser/" + $('#delete\\.user\\.uuid').val());
     }
 

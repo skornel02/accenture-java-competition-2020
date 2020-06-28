@@ -132,3 +132,11 @@ table.striped > tbody > tr:nth-child(even) {
 .datepicker-footer > .confirmation-btns {
     text-align: center;
 }
+
+.fixed-table {
+    table-layout: fixed;
+}
+
+.row-vertical {
+    vertical-align: text-bottom;
+}

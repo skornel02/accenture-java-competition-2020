@@ -295,8 +295,7 @@ public class WebController {
     ) {
         try {
             deleteRequest(userInfo, "users/" + uuid);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ignored) {
         }
         return new RedirectView("/users");
     }

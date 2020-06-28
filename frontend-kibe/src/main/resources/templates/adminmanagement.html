@@ -1,4 +1,4 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
 <head th:insert="fragments/main.html :: headerfiles" th:remove="tag">
     <title>KiBe</title>
@@ -9,14 +9,14 @@
 <div class="row">
     <div class="col s12 m12 xl10 offset-xl1">
         <h5 th:text="#{users.admins}">Admins</h5>
-        <table class="responsive-table striped bordered">
+        <table class="responsive-table striped bordered fixed-table">
             <thead>
             <tr>
-                <th th:text="#{users.uuid}">uuid</th>
+                <th th:text="#{users.uuid}" class="hide">uuid</th>
                 <th th:text="#{users.name}">name</th>
                 <th th:text="#{users.email}">email</th>
                 <th th:text="#{users.password}">password</th>
-                <th class="center"><i class="material-icons" th:title="#{icons.delete}">delete_forever</i><br/><span
+                <th><i class="material-icons row-vertical" th:title="#{icons.delete}">delete_forever</i>&nbsp;<span
                         th:text="#{users.delete}">delete</span>
                 </th>
 
@@ -24,19 +24,31 @@
             </thead>
             <tbody>
             <tr th:each="admin : ${admins}">
-                <td th:text="${admin.getUuid()}" data-role="uuid">uuid</td>
+                <td th:text="${admin.getUuid()}" data-role="uuid" class="hide">uuid</td>
                 <td><a href="#" th:text="${admin.getName()}"
-                       th:onclick="editAdminName([[${admin.getUuid()}]], [[${admin.getName()}]])" data-role="name">John
-                    Doe</a></td>
+                       th:data-uuid="${admin.getUuid()}"
+                       th:data-name="${admin.getName()}"
+                       data-role="name"
+                       onclick="editAdminName(this.getAttribute('data-uuid'), this.getAttribute('data-name'))">
+                    John Doe</a></td>
                 <td><a href="#" th:text="${admin.getEmail()}"
-                       th:onclick="editAdminEmail([[${admin.getUuid()}]], [[${admin.getEmail()}]])" data-role="email">john.doe@kibe</a>
+                       th:data-uuid="${admin.getUuid()}"
+                       th:data-email="${admin.getEmail()}"
+                       data-role="email"
+                       onclick="editAdminEmail(this.getAttribute('data-uuid'), this.getAttribute('data-email'))">
+                    john.doe@kibe</a>
                 </td>
                 <td><a href="#" th:text="#{users.change.password}"
-                       th:onclick="editAdminPassword([[${admin.getUuid()}]])" data-role="password">Change password</a>
+                       th:data-uuid="${admin.getUuid()}"
+                       data-role="password"
+                       onclick="editAdminPassword(this.getAttribute('data-uuid'))">Change password</a>
                 </td>
-                <td><a class="valign-wrapper" href="#" data-role="delete" th:onclick="deleteAdmin([[${admin.getUuid()}]])">
-                        <i class="material-icons" th:title="#{icons.delete}">delete_forever</i>
-                        <span th:text="#{users.delete}">Delete</span></a></td>
+                <td><a href="#"
+                       data-role="delete"
+                       th:data-uuid="${admin.getUuid()}"
+                       onclick="deleteAdmin(this.getAttribute('data-uuid'))">
+                    <i class="material-icons row-vertical" th:title="#{icons.delete}">delete_forever</i>&nbsp;
+                    <span th:text="#{users.delete}">Delete</span></a></td>
 
             </tr>
             </tbody>
@@ -70,12 +82,14 @@
                 </tr>
                 <tr id="edit.admin.password.row">
                     <td><label for="edit.admin.password" th:text="#{editor.password}">New password:</label></td>
-                    <td><input autocomplete="new-password" id="edit.admin.password" type="password" name="edit.admin.password"></td>
+                    <td><input autocomplete="new-password" id="edit.admin.password" type="password"
+                               name="edit.admin.password"></td>
                 </tr>
                 <tr id="edit.admin.password.confirm.row">
                     <td><label for="edit.admin.password.confirm" th:text="#{editor.password.confirm}">Confirm
                         password:</label></td>
-                    <td><input autocomplete="new-password"  id="edit.admin.password.confirm" type="password" name="edit.admin.password.confirm"></td>
+                    <td><input autocomplete="new-password" id="edit.admin.password.confirm" type="password"
+                               name="edit.admin.password.confirm"></td>
                 </tr>
                 <tr>
                     <td><input type="submit" value="Submit" th:value="#{editor.save}" class="btn-flat"></td>
@@ -124,12 +138,14 @@
                 </tr>
                 <tr>
                     <td><label for="create.admin.password" th:text="#{editor.password}">New password:</label></td>
-                    <td><input autocomplete="new-password" id="create.admin.password" type="password" name="create.admin.password"></td>
+                    <td><input autocomplete="new-password" id="create.admin.password" type="password"
+                               name="create.admin.password"></td>
                 </tr>
                 <tr>
                     <td><label for="create.admin.password.confirm" th:text="#{editor.password.confirm}">Confirm
                         password:</label></td>
-                    <td><input autocomplete="new-password" id="create.admin.password.confirm" type="password" name="create.admin.password.confirm">
+                    <td><input autocomplete="new-password" id="create.admin.password.confirm" type="password"
+                               name="create.admin.password.confirm">
                     </td>
                 </tr>
                 <tr>
@@ -204,7 +220,7 @@
         modal.modal('open');
     }
 
-    function requestRemoval(e) {
+    function requestRemoval() {
         $(location).attr('href', "/deleteAdmin/" + $('#delete\\.admin\\.uuid').val());
     }
 </script>
