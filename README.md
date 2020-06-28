@@ -32,9 +32,8 @@ Mindezt az adminisztrátorok manuálisan, az otthonuk kényelméből is tudják 
 ## Projekt elindítása
 Az egyszerű telepítéshez és kipróbáláshoz nem kell több, mint egy telepített [docker](https://docs.docker.com/get-docker/) a rendszerünkön.
 ```
-git clone https://github.com/skornel02/accenture-java-competition-2020
-cd accenture-java-competition-2020
-docker-compose up docker-compose.yaml
+./mvnw package
+docker-compose up docker-compose.yaml --build
 ```
 A szoftverek elindulásával egyidejűleg az end-to-end Selenium teszt is le fog futni.
 ## Dokumentáció
