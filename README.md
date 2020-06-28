@@ -1,23 +1,49 @@
 # KIBe 
-A KIBe projekt törekszik a jelen járványügyi helyzeben arra, hogy mindenki problémáját a lehető legjobban oldja meg. Ebben a leírásban felhasználási szempontok szerint fogjuk bemutatni a szoftvercsomagot.
-## Alkalmazott
-A szoftver alap koncepciója, hogy minden alkalmazottnak lehetősége van időpontot foglalni, hogy biztonságosan léphessen az épület területére.
-A rendszer ezentúl azt is jelzi, hogy az alkalmazott éppen bemehetne-e az irodába, és ha sorbááll, vagy most állna sorba, akkor mennyi idő múlva várhatna a beengedésig. Ezt a bent lévők és a sorban állók átlagos benntöltött ideje alapján vetíti előre a rendszer.
-### Webkliens
-A rendszer össes funckiója elérhető a KIBe webkliensén keresztül. Ezt az eszközt a Spring Framework hajtja, és Thymeleaf végzi a renderelést a Google Material dizájnelve szerint.
-### PWA
-A KIBe rendelkezik egy progresszív webapplikációval. Ennek a koncepciója az, hogy egy mindenhol elérhető, reszponzív eszközt adunk a felhasználó kezébe, ami a válogatott funkcionalitásért cserébe egyszerűbb és jobb felhasználói élményt nyújt. Ez a kliens a React könyvtár felhasználásával készült. 
-## Adminisztrátor
-Az adminisztrátor (HR-es) számára elérhetőek hasznos eszközök, amivel meg tudja mondani mi történik az irodában, anélkül, hogy ott lenne. Egyik kedvenc funkciónk, hogy meg lehet tekinteni az irodában jelenleg tartozkodó alkalmazottakat, a belépésre várakozó alkalmazottakat, akiknek rögtön levelet is lehet küldeni, továbbá probléma esetén távolról ki- vagy beléptethetőek az alkalmazottak (logikailag, nem fizikailag).
-Ezentúl lehetőségük van az összes felhasználó kilistázására, az adataik és foglalásaik módosítására, illetve azok törlésére. Továbbá a rendszergazdának lehetősége van ezen a felületen az adminisztrátorok kilistázására és az adataik módosítására.
-## Statisztika
-Az épület használatának előrevetítése érdekében minden adat lekérhető az API segítségével.
-## Rendszer tervező
-A rendszer kiépítőjének az életét ez a szoftvercsomag úgy könnyíti meg, hogy minden egyes program Docker támogatott, ráadásul előre be van konfigurálva a Docker Compose, ami lehetővé teszi az egyszerű telepítést.
-Ezentúl a backendet alkotó szoftver alkalmas horizontális skálázásra, ami a felmerülő teljesítmény kérdéseket megválaszolja.
-## Szoftver fejlesztő
-Egy új fejlesztőnek megkönnyíti a projekten való munkáját az, hogy a backend a REST elveket a harmadik szintjén követi, így a tartalmak egymásra szisztéma szerint hivatkoznak. A platform megismerését továbbá segítí a beépített Swagger felület, ahol ki is lehet próbálni a funkciókat. Mindezen túl elérhető a fejlesztők által készített [Postman dokumentáció](https://documenter.getpostman.com/view/5139955/Szzg9yhv) is.
-## Szoftver fenntartó 
-Az elvárásoknak megfelelően a kód a clean kód elvek szerint készült, és kritikus rendszereknél unit tesztelve van.
+A KIBe projekt törekszik a jelen járványügyi helyzetben arra, hogy mindenki problémáját a lehető legjobban oldja meg.
+## Kibe részei
+### Alkalmazotti PWA
+Ez egy alacsony hálózati kapcsolat mellett is jól működő reszponzív, progresszív web alkalmazás, melynek célja hogy az alkalmazottak a lehető legkevesebbet ütközzenek a rendszerrel, és azzal foglalkozhassanak, ami tényleg fontos. *(React, Typescript)*
+### Bejelentkeztető rendszer
+Egy naiv webprogram, ami az alkalmazottak ki- és bemenetelét kezeli aranyos képek segítségével. *(React, Typescript)*
+### Webfelület
+Ezen a felületen lehetőség nyílik a rendszer összes funkcióját kezelni, mind az alkalmazottaknak, mind az adminisztrátoroknak. *(Spring, Tymeleaf)*
+## Lehetőségek
+A KIBe lehetőséget nyújt az iroda körüli élet hatékony irányítására, kezelésére. Ezt erőteljes alkalmazotti és adminisztrátori eszközökkel éri el. Az alkalmazottak könnyű szerrel kérhetnek hozzáférést az irodához, amely alapján a rendszer sorba állítja őket, és automatikusan előrevetíti a várakozási időt. Amint bejutott az alkalmazott az irodába, a KIBe automatikusan választ nekik egy munkaállomást, a többi jelen lévő személytől biztonságos távolságra. Ezt egy választható két vagy háromdimenziós térképen is jelzi, a könnyű tájékozódás érdekében. Az egész folyamat néhány gombnyomsással lezajlik. 
+Mindezt az adminisztrátorok manuálisan, az otthonuk kényelméből is tudják kezelni. Beállíthatják az irodában tartózkodók létszámát és távolságát is. Joguk van továbbá az alkalmazottak be- és kiléptetésére, illetve bizonyos épületrészek lezárására és feloldására. Ezeket az kézenfekvő eszközöket egy könnyen irányítható webes felületen érhetik el.
+## Kinek miért jó ez a szoftver
+### Alkalmazottnak:
+ - Könnyű kezelés
+ - Offline multiplatformos PWA
+### Adminisztrátornak:
+ - Egyszerű irányítás
+ - Teljes átláthatóság
+### Statisztikusnak:
+ - Funkció gazdag API
+### Rendszer tervezőnek:
+ - Docker virtualizáció
+ - Docker Compose horizontális skálázáshoz
+### Szoftver fejlesztőnek:
+ - REST 3. szintű api + HATEOAS
+ - Swagger dokumentáció
+ - Postman dokumentáció
+### Szoftver fenntartónak:
+ - Clean code elvek
+ - Modul, integrációs és end-to-end tesztek
+## Projekt elindítása
+Az egyszerű telepítéshez és kipróbáláshoz nem kell több, mint egy telepített [docker](https://docs.docker.com/get-docker/) a rendszerünkön.
+```
+git clone https://github.com/skornel02/accenture-java-competition-2020
+cd accenture-java-competition-2020
+docker-compose up docker-compose.yaml
+```
+A szoftverek elindulásával egyidejűleg az end-to-end Selenium teszt is le fog futni.
+## Dokumentáció
+ - [Swagger](http://localhost:8080/swagger-ui.html) *(indítás után)*
+ - [Postman](https://documenter.getpostman.com/view/5139955/Szzg9yhv)
+## Szolgáltatás elérhetőség
+ - Backend  :8080 
+ - Frontend :8081 :80 :447
+ - Worker-ui :5000
+ - Entry-ui :5001
 ## Külön elismerés:
 Máté csapattársunk gépének, aki a verseny ideje alatt villámcsapás által vesztette életét (meg lett villámcsapva).
