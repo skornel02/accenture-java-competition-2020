@@ -105,10 +105,12 @@ public class SeleniumTestBase {
             log.info("{} - Login ready, resume tests", testName.getMethodName());
         }
          javascriptExecutor = (JavascriptExecutor) webDriver;
+        log.info("{} - Starting test", testName.getMethodName());
     }
 
     @After
     public void tearDown() {
+        log.info("{} - Finishing test", testName.getMethodName());
         try {
             onTeardown();
             logout();

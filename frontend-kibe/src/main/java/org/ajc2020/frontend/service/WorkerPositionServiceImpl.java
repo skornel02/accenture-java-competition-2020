@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.IntConsumer;
 
@@ -16,6 +17,8 @@ import java.util.function.IntConsumer;
 public class WorkerPositionServiceImpl implements WorkerPositionService {
 
     private final HashMap<String, List<IntConsumer>> workerListeners;
+    private final HashMap<String, Integer> waitingList = new HashMap<>();
+
 
     public WorkerPositionServiceImpl() {
         workerListeners = new HashMap<>();
@@ -35,8 +38,16 @@ public class WorkerPositionServiceImpl implements WorkerPositionService {
         getListeners(workerId).remove(position);
     }
 
+    @Override
+    public Optional<Integer> getCurrentIndex(String workerId) {
+        if (!waitingList.containsKey(workerId))
+            return Optional.empty();
+        return Optional.of(waitingList.get(workerId));
+    }
+
     @StreamListener(WorkerPositionReceiverProcessor.IN)
     public void handlePositionUpdate(WorkerPosition workerPosition) {
+        waitingList.put(workerPosition.getWorkerId(), workerPosition.getPosition());
         getListeners(workerPosition.getWorkerId())
                 .forEach(consumer -> consumer.accept(workerPosition.getPosition()));
         log.info("Position update event: {}", workerPosition);

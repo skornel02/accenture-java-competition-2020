@@ -32,19 +32,22 @@ public class HomeController {
     private final WorkstationService workstationService;
     private final WorkerPositionService workerPositionService;
     private final PlanRendererService planRendererService;
+    private final OfficeService officeService;
 
     public HomeController(SessionManager sessionManager,
                           WorkerService workerService,
                           EntryLogicService entryLogicService,
                           WorkstationService workstationService,
                           WorkerPositionService workerPositionService,
-                          PlanRendererService planRendererService) {
+                          PlanRendererService planRendererService,
+                          OfficeService officeService) {
         this.sessionManager = sessionManager;
         this.workerService = workerService;
         this.entryLogicService = entryLogicService;
         this.workstationService = workstationService;
         this.workerPositionService = workerPositionService;
         this.planRendererService = planRendererService;
+        this.officeService = officeService;
     }
 
     @Operation(
@@ -68,11 +71,17 @@ public class HomeController {
         if (worker.checkin(OffsetDateTime.now())) {
             Workstation station = workstationService.occupyWorkstation(worker);
             workerService.save(worker);
-            workerService.getUsersWaiting().forEach(waiter
-                    -> workerPositionService.updateWorkerPosition(waiter, workerService.getRank(waiter)));
+            pushQueueNotifications();
             return RfIdStatus.okWithMap(planRendererService.createWorker2DSVG(workstationService.findAll(), station));
         }
         return RfIdStatus.error();
+    }
+
+    private void pushQueueNotifications() {
+        int freeSpace = officeService.getOfficeSetting().getEffectiveCapacity() - workerService.countUsersInOffice();
+        workerService.getUsersWaiting().forEach(waiter
+                -> workerPositionService.updateWorkerPosition(waiter, workerService.getRank(waiter) - freeSpace + 1));
+
     }
 
     @Operation(
@@ -93,6 +102,7 @@ public class HomeController {
         if (worker.checkout(OffsetDateTime.now())) {
             workerService.save(worker);
             workstationService.freeWorkstations(worker);
+            pushQueueNotifications();
             return RfIdStatus.ok();
         }
         return RfIdStatus.error();
