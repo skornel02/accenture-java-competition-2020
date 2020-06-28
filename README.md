@@ -33,7 +33,7 @@ Mindezt az adminisztrátorok manuálisan, az otthonuk kényelméből is tudják 
 Az egyszerű telepítéshez és kipróbáláshoz nem kell több, mint egy telepített [docker](https://docs.docker.com/get-docker/) a rendszerünkön.
 ```
 ./mvnw package
-docker-compose up docker-compose.yaml --build
+docker-compose up --build
 ```
 A szoftverek elindulásával egyidejűleg az end-to-end Selenium teszt is le fog futni.
 ## Dokumentáció
