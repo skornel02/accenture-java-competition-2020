@@ -295,8 +295,7 @@ public class WebController {
     ) {
         try {
             deleteRequest(userInfo, "users/" + uuid);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ignored) {
         }
         return new RedirectView("/users");
     }
@@ -524,6 +523,14 @@ public class WebController {
         model.addAttribute("layout", layout);
         model.addAttribute("dimensions", dims);
         return "plan";
+    }
+
+    @GetMapping("/placeInfo/{workstationId}")
+    public @ResponseBody WorkstationResource getPlaceInfo(
+            @ModelAttribute("login") UserInfo userInfo,
+            @PathVariable String workstationId
+    ) {
+        return getRequest(userInfo, "workstations/" + workstationId, WorkstationResource.class).getBody();
     }
 
     @GetMapping("/plan/update/{planId}/{operation}")
